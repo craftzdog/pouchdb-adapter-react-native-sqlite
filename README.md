@@ -3,6 +3,27 @@ pouchdb-adapter-react-native-sqlite
 
 PouchDB adapter using ReactNative SQLite as its backing store.
 
+### Why?
+
+SQLite storage performs much faster than AsyncStorage, especially with secondary index.
+Here is benchmark results:
+
+| 1) `allDocs` speed | min  | max  | mean |
+|---------------|------|------|------|
+| AsyncStorage  | 72ms | 94ms | 77ms |
+| SQLite        | 27ms | 39ms | 28ms |
+
+| 2) `query` speed   | min    | max    | mean   |
+|---------------|--------|--------|--------|
+| AsyncStorage  | 1075ms | 1117ms | 1092ms |
+| SQLite        | 33ms   | 39ms   | 35ms   |
+
+ * Device: iPhone 6s
+ * Documents: 434
+ * Update seq: 453
+ * Iterations: 100
+ * Used options: `{ include_docs: true }`
+
 ### Prerequisites
 
 - [pouchdb-react-native](https://github.com/stockulus/pouchdb-react-native)
