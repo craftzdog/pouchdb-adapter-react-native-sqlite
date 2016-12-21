@@ -31,5 +31,7 @@ const db = new PouchDB('mydb.db', {adapter: 'react-native-sqlite'});
 
 ## Changelog
 
+- 1.0.1
+  - Remove unnecessary console output
 - 1.0.0
   - Initial release
