@@ -72,6 +72,8 @@ const db = new PouchDB('mydb.db', {adapter: 'react-native-sqlite'});
 
 ## Changelog
 
+- 1.0.3
+  + Remove `pouchdb-utils` dependency
 - 1.0.2
   + Upgrade pouchdb-util & pouchdb-adapter-websql-core to 6.2.0
   + Update benchmark result
