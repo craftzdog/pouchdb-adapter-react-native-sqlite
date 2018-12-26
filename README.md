@@ -72,6 +72,8 @@ const db = new PouchDB('mydb.db', {adapter: 'react-native-sqlite'});
 
 ## Changelog
 
+- 2.0.0
+  + Upgrade pouchdb-adapter-websql-core to 7.0.0
 - 1.0.3
   + Remove `pouchdb-utils` dependency
 - 1.0.2
