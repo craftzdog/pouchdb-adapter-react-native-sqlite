@@ -4,9 +4,9 @@
   "description": "PouchDB adapter using ReactNative SQLite Plugin as its data store.",
   "main": "./lib/index.js",
   "keywords": [],
-  "author": "Takuya Matsuyama <nora@odoruinu.net>",
+  "author": "Takuya Matsuyama <hi@craftz.dog>",
   "license": "MIT",
-  "repository": "https://github.com/noradaiko/pouchdb-adapter-react-native-sqlite",
+  "repository": "https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite",
   "files": [
     "lib"
   ],
@@ -14,7 +14,7 @@
     "test": "standard"
   },
   "dependencies": {
-    "pouchdb-adapter-websql-core": "6.2.0"
+    "pouchdb-adapter-websql-core": "7.0.0"
   },
   "devDependencies": {
     "standard": "^10.0.2"
