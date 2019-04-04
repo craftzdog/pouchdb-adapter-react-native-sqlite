@@ -3,7 +3,7 @@ pouchdb-adapter-react-native-sqlite
 
 PouchDB adapter using ReactNative SQLite as its backing store.
 
-### Why?
+## Why?
 
 SQLite storage performs much faster than AsyncStorage, especially with secondary index.
 Here is benchmark results:
@@ -24,7 +24,7 @@ Here is benchmark results:
  * Iterations: 100
  * Used options: `{ include_docs: true }`
 
-#### On Simulator
+### On Simulator
 
  * Device: iPad Pro 9.7" (Simulator) - iOS 10.3.2
  * Documents: 5000
@@ -42,32 +42,93 @@ Here is benchmark results:
  * `allDocs` options: `{ include_docs: true, attachments: true }`
  * Using this test [script](https://gist.github.com/hnq90/972f6597a0927f45d9075b8627892783)
 
-### Prerequisites
+## How to use it
 
-- [pouchdb-react-native](https://github.com/stockulus/pouchdb-react-native)
-- A SQLite module
-  - [react-native-sqlite-2 (recommended)](https://github.com/noradaiko/react-native-sqlite-2)
-  - [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage)
+Read [this blogpost](https://dev.to/craftzdog/hacking-pouchdb-to-use-on-react-native-1gjh) for the complete description.
+Here is [a working demo app](https://github.com/craftzdog/pouchdb-react-native-demo).
 
-### Usage
+### Install deps
 
-Install from npm:
+Install PouchDB core packages:
 
 ```bash
-npm install pouchdb-react-native pouchdb-adapter-react-native-sqlite --save
-react-native install react-native-sqlite-2
+npm i pouchdb-adapter-http pouchdb-mapreduce
 ```
 
-Then `import` it, notify PouchDB of the plugin, and initialize a database using the `react-native-sqlite` adapter name:
+And install hacked packages for React Native:
+
+```bash
+npm i @craftzdog/pouchdb-core-react-native @craftzdog/pouchdb-replication-react-native 
+```
+
+Next, install SQLite3 engine modules:
+
+```bash
+npm i pouchdb-adapter-react-native-sqlite react-native-sqlite-2
+react-native link react-native-sqlite-2
+```
+
+Then, install some packages to polyfill functions that PouchDB needs:
+
+```bash
+npm i base-64 events
+```
+
+### Create polyfills
+
+Make a js file to polyfill some functions that PouchDB needs:
 
 ```js
-import PouchDB from 'pouchdb-react-native'
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {
+    global.btoa = encode;
+}
+
+if (!global.atob) {
+    global.atob = decode;
+}
+
+// Avoid using node dependent modules
+process.browser = true
+```
+
+Import it at the first line of your `index.js`.
+
+### Load PouchDB
+
+Make `pouchdb.js` like so:
+
+```js
+import PouchDB from '@craftzdog/pouchdb-core-react-native'
+import HttpPouch from 'pouchdb-adapter-http'
+import replication from '@craftzdog/pouchdb-replication-react-native'
+import mapreduce from 'pouchdb-mapreduce'
+
 import SQLite from 'react-native-sqlite-2'
 import SQLiteAdapterFactory from 'pouchdb-adapter-react-native-sqlite'
 
 const SQLiteAdapter = SQLiteAdapterFactory(SQLite)
-PouchDB.plugin(SQLiteAdapter)
-const db = new PouchDB('mydb.db', {adapter: 'react-native-sqlite'});
+
+export default PouchDB
+  .plugin(HttpPouch)
+  .plugin(replication)
+  .plugin(mapreduce)
+  .plugin(SQLiteAdapter)
+```
+
+If you need other plugins like `pouchdb-find`, just add them to it.
+
+### Use PouchDB
+
+Then, use it as usual:
+
+```js
+import PouchDB from './pouchdb'
+
+function loadDB () {
+  return new PouchDB('mydb.db', { adapter: 'react-native-sqlite' })
+}
 ```
 
 ## Changelog
