@@ -14,7 +14,7 @@
     "test": "standard"
   },
   "dependencies": {
-    "@craftzdog/pouchdb-adapter-websql-core": "^7.2.2"
+    "@craftzdog/pouchdb-adapter-websql-core": "^7.2.3"
   },
   "devDependencies": {
     "standard": "^10.0.2"
