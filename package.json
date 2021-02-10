@@ -1,6 +1,6 @@
 {
   "name": "pouchdb-adapter-react-native-sqlite",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "PouchDB adapter using ReactNative SQLite Plugin as its data store.",
   "main": "./lib/index.js",
   "keywords": [],
