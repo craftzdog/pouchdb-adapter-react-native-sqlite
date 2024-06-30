@@ -1,0 +1,96 @@
+module.exports = {
+  root: true,
+  env: {
+    es6: true,
+  },
+
+  parser: '@typescript-eslint/parser',
+  extends: ['prettier'],
+  plugins: ['@typescript-eslint/eslint-plugin'],
+
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
+
+  overrides: [
+    {
+      files: ['*.js'],
+      parser: '@babel/eslint-parser',
+    },
+    {
+      files: ['*.jsx'],
+      parser: '@babel/eslint-parser',
+    },
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint/eslint-plugin'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': 'off',
+        'no-unused-vars': 'off',
+        'no-shadow': 'off',
+        '@typescript-eslint/no-shadow': 'off',
+        'no-undef': 'off',
+        'func-call-spacing': 'off',
+        '@typescript-eslint/func-call-spacing': 1,
+      },
+    },
+  ],
+
+  // Map from global var to bool specifying if it can be redefined
+  globals: {
+    __DEV__: true,
+    __dirname: false,
+    __fbBatchedBridgeConfig: false,
+    AbortController: false,
+    Blob: true,
+    alert: false,
+    cancelAnimationFrame: false,
+    cancelIdleCallback: false,
+    clearImmediate: true,
+    clearInterval: false,
+    clearTimeout: false,
+    console: false,
+    document: false,
+    ErrorUtils: false,
+    escape: false,
+    Event: false,
+    EventTarget: false,
+    exports: false,
+    fetch: false,
+    File: true,
+    FileReader: false,
+    FormData: false,
+    global: false,
+    Headers: false,
+    Intl: false,
+    Map: true,
+    module: false,
+    navigator: false,
+    process: false,
+    Promise: true,
+    requestAnimationFrame: true,
+    requestIdleCallback: true,
+    require: false,
+    Set: true,
+    setImmediate: true,
+    setInterval: false,
+    setTimeout: false,
+    queueMicrotask: true,
+    URL: false,
+    URLSearchParams: false,
+    WebSocket: true,
+    window: false,
+    XMLHttpRequest: false,
+  },
+
+  rules: {
+    '@typescript-eslint/no-unused-vars': 'off',
+    'no-unused-vars': 'off',
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 1,
+    'no-undef': 'off',
+  },
+}
