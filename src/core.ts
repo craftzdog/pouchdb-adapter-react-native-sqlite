@@ -218,9 +218,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     // Do nothing
   }
 
-  api.type = () => {
-    return 'sqlite'
-  }
+  api._remote = false
 
   api._id = (callback: (err: any, id?: string) => void) => {
     callback(null, instanceId)
