@@ -1,6 +1,6 @@
 {
   "name": "pouchdb-adapter-react-native-sqlite",
-  "version": "4.0.0-rc.1",
+  "version": "4.0.1-0",
   "description": "PouchDB adapter for React Native SQLite",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
