@@ -2,6 +2,7 @@ import { createError, WSQ_ERROR } from 'pouchdb-errors'
 import { guardedConsole } from 'pouchdb-utils'
 
 import { BY_SEQ_STORE, ATTACH_STORE, ATTACH_AND_SEQ_STORE } from './constants'
+import type { Transaction } from '@op-engineering/op-sqlite'
 
 function stringifyDoc(doc: Record<string, any>): string {
   // don't bother storing the id/rev. it uses lots of space,
@@ -54,97 +55,87 @@ function select(
   )
 }
 
-function compactRevs(revs: string[], docId: string, tx: any): void {
+async function compactRevs(
+  revs: string[],
+  docId: string,
+  tx: Transaction
+): Promise<void> {
   if (!revs.length) {
     return
   }
 
-  let numDone = 0
   const seqs: number[] = []
 
-  function checkDone() {
-    if (++numDone === revs.length) {
-      // done
-      deleteOrphans()
-    }
-  }
-
-  function deleteOrphans() {
+  async function deleteOrphans() {
     // find orphaned attachment digests
 
     if (!seqs.length) {
       return
     }
 
-    const sql =
+    let sql =
       'SELECT DISTINCT digest AS digest FROM ' +
       ATTACH_AND_SEQ_STORE +
       ' WHERE seq IN ' +
       qMarks(seqs.length)
 
-    tx.executeSql(sql, seqs, function (tx: any, res: any) {
-      const digestsToCheck: string[] = []
-      for (let i = 0; i < res.rows.length; i++) {
-        digestsToCheck.push(res.rows.item(i).digest)
-      }
-      if (!digestsToCheck.length) {
-        return
-      }
+    let res = await tx.executeAsync(sql, seqs)
+    const digestsToCheck: string[] = []
+    for (let i = 0; i < res.rows!.length; i++) {
+      digestsToCheck.push(res.rows!.item(i).digest)
+    }
+    if (!digestsToCheck.length) {
+      return
+    }
 
-      const sql =
-        'DELETE FROM ' +
-        ATTACH_AND_SEQ_STORE +
-        ' WHERE seq IN (' +
-        seqs.map(() => '?').join(',') +
-        ')'
-      tx.executeSql(sql, seqs, function (tx: any) {
-        const sql =
-          'SELECT digest FROM ' +
-          ATTACH_AND_SEQ_STORE +
-          ' WHERE digest IN (' +
-          digestsToCheck.map(() => '?').join(',') +
-          ')'
-        tx.executeSql(sql, digestsToCheck, function (tx: any, res: any) {
-          const nonOrphanedDigests = new Set<string>()
-          for (let i = 0; i < res.rows.length; i++) {
-            nonOrphanedDigests.add(res.rows.item(i).digest)
-          }
-          digestsToCheck.forEach(function (digest) {
-            if (nonOrphanedDigests.has(digest)) {
-              return
-            }
-            tx.executeSql(
-              'DELETE FROM ' + ATTACH_AND_SEQ_STORE + ' WHERE digest=?',
-              [digest]
-            )
-            tx.executeSql('DELETE FROM ' + ATTACH_STORE + ' WHERE digest=?', [
-              digest,
-            ])
-          })
-        })
-      })
-    })
+    sql =
+      'DELETE FROM ' +
+      ATTACH_AND_SEQ_STORE +
+      ' WHERE seq IN (' +
+      seqs.map(() => '?').join(',') +
+      ')'
+    await tx.executeAsync(sql, seqs)
+    sql =
+      'SELECT digest FROM ' +
+      ATTACH_AND_SEQ_STORE +
+      ' WHERE digest IN (' +
+      digestsToCheck.map(() => '?').join(',') +
+      ')'
+    res = await tx.executeAsync(sql, digestsToCheck)
+    const nonOrphanedDigests = new Set<string>()
+    for (let i = 0; i < res.rows!.length; i++) {
+      nonOrphanedDigests.add(res.rows!.item(i).digest)
+    }
+    for (const digest of digestsToCheck) {
+      if (nonOrphanedDigests.has(digest)) {
+        continue
+      }
+      await tx.executeAsync(
+        'DELETE FROM ' + ATTACH_AND_SEQ_STORE + ' WHERE digest=?',
+        [digest]
+      )
+      await tx.executeAsync('DELETE FROM ' + ATTACH_STORE + ' WHERE digest=?', [
+        digest,
+      ])
+    }
   }
 
   // update by-seq and attach stores in parallel
-  revs.forEach(function (rev) {
+  for (const rev of revs) {
     const sql = 'SELECT seq FROM ' + BY_SEQ_STORE + ' WHERE doc_id=? AND rev=?'
 
-    tx.executeSql(sql, [docId, rev], function (tx: any, res: any) {
-      if (!res.rows.length) {
-        // already deleted
-        return checkDone()
-      }
-      const seq = res.rows.item(0).seq
+    const res = await tx.executeAsync(sql, [docId, rev])
+    if (res.rows!.length > 0) {
+      const seq = res.rows!.item(0).seq
       seqs.push(seq)
 
-      tx.executeSql(
-        'DELETE FROM ' + BY_SEQ_STORE + ' WHERE seq=?',
-        [seq],
-        checkDone
-      )
-    })
-  })
+      await tx.executeAsync('DELETE FROM ' + BY_SEQ_STORE + ' WHERE seq=?', [
+        seq,
+      ])
+    }
+  }
+
+  await deleteOrphans()
 }
 
 export function handleSQLiteError(

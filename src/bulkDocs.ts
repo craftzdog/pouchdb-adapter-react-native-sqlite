@@ -272,7 +272,7 @@ function sqliteBulkDocs(
         revsToCompact = compactTree(docInfo.metadata).concat(revsToCompact)
       }
       if (revsToCompact.length) {
-        compactRevs(revsToCompact, id, tx)
+        await compactRevs(revsToCompact, id, tx)
       }
 
       docInfo.metadata.seq = seq

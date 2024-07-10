@@ -723,7 +723,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         sql = 'UPDATE ' + DOC_STORE + ' SET json = ? WHERE id = ?'
         await tx.executeAsync(sql, [safeJsonStringify(metadata), docId])
 
-        compactRevs(revs, docId, tx)
+        await compactRevs(revs, docId, tx)
       } catch (e: any) {
         handleSQLiteError(e, callback)
       }
