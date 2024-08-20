@@ -737,14 +737,18 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
 
   api._getLocal = (id: string, callback: (err: any, doc?: any) => void) => {
     readTransaction(async (tx: Transaction) => {
-      const sql = 'SELECT json, rev FROM ' + LOCAL_STORE + ' WHERE id=?'
-      const res = await tx.executeAsync(sql, [id])
-      if (res.rows?.length) {
-        const item = res.rows.item(0)
-        const doc = unstringifyDoc(item.json, id, item.rev)
-        callback(null, doc)
-      } else {
-        callback(createError(MISSING_DOC))
+      try {
+        const sql = 'SELECT json, rev FROM ' + LOCAL_STORE + ' WHERE id=?'
+        const res = await tx.executeAsync(sql, [id])
+        if (res.rows?.length) {
+          const item = res.rows.item(0)
+          const doc = unstringifyDoc(item.json, id, item.rev)
+          callback(null, doc)
+        } else {
+          callback(createError(MISSING_DOC))
+        }
+      } catch (e: any) {
+        handleSQLiteError(e, callback)
       }
     })
   }
