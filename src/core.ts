@@ -124,7 +124,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
   }
 
   function checkEncoding(tx: Transaction) {
-    const res = tx.execute('SELECT HEX("a") AS hex')
+    const res = tx.execute("SELECT HEX('a') AS hex")
     const hex = res.rows?.item(0).hex
     encoding = hex.length === 2 ? 'UTF-8' : 'UTF-16'
   }
@@ -240,21 +240,25 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     })
   }
 
-  api._bulkDocs = (
+  api._bulkDocs = async (
     req: any,
     reqOpts: any,
     callback: (err: any, response?: any) => void
   ) => {
     logger.debug('**********bulkDocs!!!!!!!!!!!!!!!!!!!')
-    sqliteBulkDocs(
-      { revs_limit: undefined },
-      req,
-      reqOpts,
-      api,
-      transaction,
-      sqliteChanges,
-      callback
-    )
+    try {
+      const response = await sqliteBulkDocs(
+        { revs_limit: undefined },
+        req,
+        reqOpts,
+        api,
+        transaction,
+        sqliteChanges
+      )
+      callback(null, response)
+    } catch (err: any) {
+      handleSQLiteError(err, callback)
+    }
   }
 
   api._get = (
@@ -723,7 +727,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         sql = 'UPDATE ' + DOC_STORE + ' SET json = ? WHERE id = ?'
         await tx.executeAsync(sql, [safeJsonStringify(metadata), docId])
 
-        await compactRevs(revs, docId, tx)
+        compactRevs(revs, docId, tx)
       } catch (e: any) {
         handleSQLiteError(e, callback)
       }
@@ -817,9 +821,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           return callback(createError(MISSING_DOC))
         }
         ret = { ok: true, id: doc._id, rev: '0-0' }
-        if (opts.ctx) {
-          callback(null, ret)
-        }
+        callback(null, ret)
       } catch (e: any) {
         handleSQLiteError(e, callback)
       }

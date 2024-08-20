@@ -10,7 +10,7 @@ import {
   ScrollView,
 } from 'react-native'
 import PouchDB from './pouchdb'
-import { open } from '@op-engineering/op-sqlite'
+// import { open } from '@op-engineering/op-sqlite'
 
 // @ts-ignore eslint-ignore-next-line
 const uiManager = global?.nativeFabricUIManager ? 'Fabric' : 'Paper'
@@ -21,26 +21,26 @@ const pouch = new PouchDB('mydb', {
   adapter: 'react-native-sqlite',
 })
 
-async function run() {
-  const db = open({ name: 'test' })
-  db.execute(
-    'CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, name TEXT)'
-  )
-
-  await db.transaction(async (tx) => {
-    await Promise.all(
-      Array.from({ length: 100 }, (_, i) =>
-        tx
-          .executeAsync('INSERT INTO test (name) VALUES (?)', ['foo'])
-          .then((result) => console.log('insertId:', result.insertId))
-      )
-    )
-  })
-
-  db.execute('DROP TABLE IF EXISTS test')
-}
-
-run()
+// async function run() {
+//   const db = open({ name: 'test' })
+//   db.execute(
+//     'CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, name TEXT)'
+//   )
+//
+//   await db.transaction(async (tx) => {
+//     await Promise.all(
+//       Array.from({ length: 100 }, (_, i) =>
+//         tx
+//           .executeAsync('INSERT INTO test (name) VALUES (?)', ['foo'])
+//           .then((result) => console.log('insertId:', result.insertId))
+//       )
+//     )
+//   })
+//
+//   db.execute('DROP TABLE IF EXISTS test')
+// }
+//
+// run()
 
 export default function App() {
   const [result, setResult] = React.useState<string>('')
@@ -81,6 +81,39 @@ export default function App() {
     console.log('put:', r)
     setResult(JSON.stringify(r, null, 2))
   }
+  const handlePutMultiDocs = async () => {
+    setResult('')
+    let count = 0
+
+    try {
+      const res = await pouch.bulkDocs(
+        Array.from({ length: 10 }, (_, i) => ({
+          _id: `test:${i}`,
+          title: 'Heroes',
+          count: count + 1,
+        }))
+      )
+      setResult(JSON.stringify(res, null, 2))
+    } catch (e: any) {
+      setResult(e.name + ': ' + e.message + '\n' + e.stack)
+      console.error(e)
+    }
+  }
+  // const handlePutMultiDocs = async () => {
+  //   setResult('')
+  //   let count = 0
+  //
+  //   const res = await Promise.all(
+  //     Array.from({ length: 100 }, (_, i) =>
+  //       pouch.put({
+  //         _id: `test:${i}`,
+  //         title: 'Heroes',
+  //         count: count + 1,
+  //       })
+  //     )
+  //   )
+  //   setResult(JSON.stringify(res, null, 2))
+  // }
   const handleRemoveDoc = async () => {
     setResult('')
     try {
@@ -147,6 +180,32 @@ export default function App() {
     }
   }
 
+  const handleWriteLocalDoc = async () => {
+    setResult('')
+    try {
+      const result = await pouch.put({
+        _id: '_local/mydoc',
+        title: 'Heroes',
+      })
+      console.log('ret:', result)
+      setResult(JSON.stringify(result, null, 2))
+    } catch (e: any) {
+      setResult(e.name + ': ' + e.message)
+    }
+  }
+
+  const handleRemoveLocalDoc = async () => {
+    setResult('')
+    try {
+      const mydoc = await pouch.get('_local/mydoc')
+      const result = await pouch.remove(mydoc)
+      console.log('ret:', result)
+      setResult(JSON.stringify(result, null, 2))
+    } catch (e: any) {
+      setResult(e.name + ': ' + e.message)
+    }
+  }
+
   return (
     <ScrollView
       style={styles.container}
@@ -160,6 +219,9 @@ export default function App() {
       </TouchableOpacity>
       <TouchableOpacity onPress={handlePutDoc} style={styles.button}>
         <Text style={styles.buttonText}>Put a doc</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handlePutMultiDocs} style={styles.button}>
+        <Text style={styles.buttonText}>Put docs</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleRemoveDoc} style={styles.button}>
         <Text style={styles.buttonText}>Delete a doc</Text>
@@ -175,6 +237,12 @@ export default function App() {
       </TouchableOpacity>
       <TouchableOpacity onPress={handleGetAttachment} style={styles.button}>
         <Text style={styles.buttonText}>Get an attachment</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleWriteLocalDoc} style={styles.button}>
+        <Text style={styles.buttonText}>Write a local doc</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleRemoveLocalDoc} style={styles.button}>
+        <Text style={styles.buttonText}>Remove a local doc</Text>
       </TouchableOpacity>
       {imageData && (
         <Image

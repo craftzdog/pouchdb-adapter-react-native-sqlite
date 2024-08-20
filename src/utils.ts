@@ -1,6 +1,5 @@
 import { createError, WSQ_ERROR } from 'pouchdb-errors'
 import { guardedConsole } from 'pouchdb-utils'
-
 import { BY_SEQ_STORE, ATTACH_STORE, ATTACH_AND_SEQ_STORE } from './constants'
 import type { Transaction } from '@op-engineering/op-sqlite'
 
@@ -64,7 +63,15 @@ async function compactRevs(
     return
   }
 
+  let numDone = 0
   const seqs: number[] = []
+
+  function checkDone() {
+    if (++numDone === revs.length) {
+      // done
+      deleteOrphans()
+    }
+  }
 
   async function deleteOrphans() {
     // find orphaned attachment digests
@@ -81,8 +88,10 @@ async function compactRevs(
 
     let res = await tx.executeAsync(sql, seqs)
     const digestsToCheck: string[] = []
-    for (let i = 0; i < res.rows!.length; i++) {
-      digestsToCheck.push(res.rows!.item(i).digest)
+    if (res.rows) {
+      for (let i = 0; i < res.rows.length; i++) {
+        digestsToCheck.push(res.rows.item(i).digest)
+      }
     }
     if (!digestsToCheck.length) {
       return
@@ -103,12 +112,14 @@ async function compactRevs(
       ')'
     res = await tx.executeAsync(sql, digestsToCheck)
     const nonOrphanedDigests = new Set<string>()
-    for (let i = 0; i < res.rows!.length; i++) {
-      nonOrphanedDigests.add(res.rows!.item(i).digest)
+    if (res.rows) {
+      for (let i = 0; i < res.rows.length; i++) {
+        nonOrphanedDigests.add(res.rows.item(i).digest)
+      }
     }
     for (const digest of digestsToCheck) {
       if (nonOrphanedDigests.has(digest)) {
-        continue
+        return
       }
       await tx.executeAsync(
         'DELETE FROM ' + ATTACH_AND_SEQ_STORE + ' WHERE digest=?',
@@ -125,22 +136,20 @@ async function compactRevs(
     const sql = 'SELECT seq FROM ' + BY_SEQ_STORE + ' WHERE doc_id=? AND rev=?'
 
     const res = await tx.executeAsync(sql, [docId, rev])
-    if (res.rows!.length > 0) {
-      const seq = res.rows!.item(0).seq
-      seqs.push(seq)
-
-      await tx.executeAsync('DELETE FROM ' + BY_SEQ_STORE + ' WHERE seq=?', [
-        seq,
-      ])
+    if (!res.rows?.length) {
+      // already deleted
+      return checkDone()
     }
-  }
+    const seq = res.rows.item(0).seq
+    seqs.push(seq)
 
-  await deleteOrphans()
+    await tx.executeAsync('DELETE FROM ' + BY_SEQ_STORE + ' WHERE seq=?', [seq])
+  }
 }
 
 export function handleSQLiteError(
   event: Error,
-  callback: (error: any) => void
+  callback?: (error: any) => void
 ) {
   guardedConsole('error', 'SQLite threw an error', event)
   // event may actually be a SQLError object, so report is as such
@@ -148,7 +157,9 @@ export function handleSQLiteError(
     event && event.constructor.toString().match(/function ([^(]+)/)
   const errorName = (errorNameMatch && errorNameMatch[1]) || event.name
   const errorReason = event.message
-  callback(createError(WSQ_ERROR, errorReason, errorName))
+  const error = createError(WSQ_ERROR, errorReason, errorName)
+  if (callback) callback(error)
+  else return error
 }
 
 export { stringifyDoc, unstringifyDoc, qMarks, select, compactRevs }

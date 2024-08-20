@@ -39,17 +39,14 @@ interface Options {
   new_edits: boolean
 }
 
-type Callback = (err: any, result?: any) => void
-
-function sqliteBulkDocs(
+async function sqliteBulkDocs(
   dbOpts: DBOptions,
   req: Request,
   opts: Options,
   api: any,
-  transaction: (fn: (tx: Transaction) => Promise<void>) => void,
-  sqliteChanges: any,
-  callback: Callback
-) {
+  transaction: (fn: (tx: Transaction) => Promise<void>) => Promise<void>,
+  sqliteChanges: any
+): Promise<any> {
   const newEdits = opts.new_edits
   const userDocs = req.docs
 
@@ -62,207 +59,62 @@ function sqliteBulkDocs(
 
   const docInfoErrors = docInfos.filter((docInfo) => docInfo.error)
   if (docInfoErrors.length) {
-    return callback(docInfoErrors[0])
+    throw docInfoErrors[0]
   }
 
   let tx: Transaction
   const results = new Array(docInfos.length)
   const fetchedDocs = new Map<string, any>()
 
-  let preconditionErrored: any
-  function complete() {
-    if (preconditionErrored) {
-      return callback(preconditionErrored)
-    }
-    sqliteChanges.notify(api._name)
-    callback(null, results)
-  }
-
-  function verifyAttachment(digest: string, callback: (err?: any) => void) {
+  async function verifyAttachment(digest: string) {
     logger.debug('verify attachment:', digest)
     const sql =
       'SELECT count(*) as cnt FROM ' + ATTACH_STORE + ' WHERE digest=?'
-    tx.executeAsync(sql, [digest]).then((result) => {
-      if (result.rows?.item(0).cnt === 0) {
-        const err = createError(
-          MISSING_STUB,
-          'unknown stub attachment with digest ' + digest
-        )
-        logger.error('unknown:', err)
-        callback(err)
-      } else {
-        logger.debug('ok')
-        callback()
-      }
-    })
+    const result = await tx.executeAsync(sql, [digest])
+    if (result.rows?.item(0).cnt === 0) {
+      const err = createError(
+        MISSING_STUB,
+        'unknown stub attachment with digest ' + digest
+      )
+      logger.error('unknown:', err)
+      throw err
+    } else {
+      logger.debug('ok')
+      return true
+    }
   }
 
-  function verifyAttachments(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const digests: string[] = []
-      docInfos.forEach((docInfo) => {
-        if (docInfo.data && docInfo.data._attachments) {
-          Object.keys(docInfo.data._attachments).forEach((filename) => {
-            const att = docInfo.data._attachments[filename]
-            if (att.stub) {
-              logger.debug('attachment digest', att.digest)
-              digests.push(att.digest)
-            }
-          })
-        }
-      })
-
-      if (!digests.length) {
-        return resolve()
-      }
-
-      let numDone = 0
-      let err: any
-
-      function checkDone() {
-        if (++numDone === digests.length) {
-          err ? reject(err) : resolve()
-        }
-      }
-
-      digests.forEach((digest) => {
-        verifyAttachment(digest, (attErr) => {
-          if (attErr && !err) {
-            err = attErr
+  async function verifyAttachments(): Promise<void> {
+    const digests: string[] = []
+    docInfos.forEach((docInfo) => {
+      if (docInfo.data && docInfo.data._attachments) {
+        Object.keys(docInfo.data._attachments).forEach((filename) => {
+          const att = docInfo.data._attachments[filename]
+          if (att.stub) {
+            logger.debug('attachment digest', att.digest)
+            digests.push(att.digest)
           }
-          checkDone()
         })
-      })
+      }
     })
+
+    if (!digests.length) return
+
+    for (const digest of digests) {
+      await verifyAttachment(digest)
+    }
   }
 
-  function writeDoc(
+  async function writeDoc(
     docInfo: DocInfo,
     winningRev: string,
-    winningRevIsDeleted: boolean,
+    _winningRevIsDeleted: boolean,
     newRevIsDeleted: boolean,
     isUpdate: boolean,
-    delta: number,
-    resultsIdx: number,
-    callback: (err?: any) => void
+    _delta: number,
+    resultsIdx: number
   ) {
-    // logger.debug('writeDoc:', { ...docInfo, data: null })
-
-    function finish() {
-      const data = docInfo.data
-      const deletedInt = newRevIsDeleted ? 1 : 0
-
-      const id = data._id
-      const rev = data._rev
-      const json = stringifyDoc(data)
-      const sql =
-        'INSERT INTO ' +
-        BY_SEQ_STORE +
-        ' (doc_id, rev, json, deleted) VALUES (?, ?, ?, ?);'
-      const sqlArgs = [id, rev, json, deletedInt]
-
-      async function insertAttachmentMappings(seq: number) {
-        const attsToAdd = Object.keys(data._attachments || {})
-
-        if (!attsToAdd.length) {
-          return
-        }
-
-        function add(att: string) {
-          const sql =
-            'INSERT INTO ' +
-            ATTACH_AND_SEQ_STORE +
-            ' (digest, seq) VALUES (?,?)'
-          const sqlArgs = [data._attachments[att].digest, seq]
-          return tx.executeAsync(sql, sqlArgs)
-        }
-
-        await Promise.all(attsToAdd.map((att) => add(att)))
-      }
-
-      tx.executeAsync(sql, sqlArgs).then(
-        (result) => {
-          const seq = result.insertId
-          if (typeof seq === 'number')
-            return insertAttachmentMappings(seq).then(() => {
-              return dataWritten(tx, seq)
-            })
-          else return Promise.resolve()
-        },
-        () => {
-          const fetchSql = select(
-            'seq',
-            BY_SEQ_STORE,
-            null,
-            'doc_id=? AND rev=?'
-          )
-          tx.executeAsync(fetchSql, [id, rev]).then(
-            (res) => {
-              const seq = res.rows?.item(0).seq
-              const sql =
-                'UPDATE ' +
-                BY_SEQ_STORE +
-                ' SET json=?, deleted=? WHERE doc_id=? AND rev=?;'
-              const sqlArgs = [json, deletedInt, id, rev]
-              return tx.executeAsync(sql, sqlArgs).then(() => {
-                return insertAttachmentMappings(seq).then(() =>
-                  dataWritten(tx, seq)
-                )
-              })
-            },
-            (err) => {
-              console.error('failed!!', err)
-            }
-          )
-          return false
-        }
-      )
-    }
-
-    function collectResults(attachmentErr?: any) {
-      if (!err) {
-        if (attachmentErr) {
-          err = attachmentErr
-          callback(err)
-        } else if (recv === attachments.length) {
-          finish()
-        }
-      }
-    }
-
-    let err: any = null
-    let recv = 0
-
-    docInfo.data._id = docInfo.metadata.id
-    docInfo.data._rev = docInfo.metadata.rev
-    const attachments = Object.keys(docInfo.data._attachments || {})
-
-    if (newRevIsDeleted) {
-      docInfo.data._deleted = true
-    }
-
-    function attachmentSaved(err: any) {
-      recv++
-      collectResults(err)
-    }
-
-    attachments.forEach((key) => {
-      const att = docInfo.data._attachments[key]
-      if (!att.stub) {
-        const data = att.data
-        delete att.data
-        att.revpos = parseInt(winningRev, 10)
-        const digest = att.digest
-        saveAttachment(digest, data).then(attachmentSaved)
-      } else {
-        recv++
-        collectResults()
-      }
-    })
-
-    if (!attachments.length) {
-      finish()
-    }
+    logger.debug('writeDoc:', { ...docInfo, data: null })
 
     async function dataWritten(tx: Transaction, seq: number) {
       const id = docInfo.metadata.id
@@ -272,7 +124,7 @@ function sqliteBulkDocs(
         revsToCompact = compactTree(docInfo.metadata).concat(revsToCompact)
       }
       if (revsToCompact.length) {
-        await compactRevs(revsToCompact, id, tx)
+        compactRevs(revsToCompact, id, tx)
       }
 
       docInfo.metadata.seq = seq
@@ -295,21 +147,87 @@ function sqliteBulkDocs(
       const params = isUpdate
         ? [metadataStr, seq, winningRev, id]
         : [id, seq, seq, metadataStr]
-      return tx.executeAsync(sql, params).then(
-        () => {
-          results[resultsIdx] = {
-            ok: true,
-            id: docInfo.metadata.id,
-            rev: rev,
-          }
-          fetchedDocs.set(id, docInfo.metadata)
-          callback()
-        },
-        (err) => {
-          console.error('Failed!!', { id, seq, isUpdate }, err)
-          callback(err)
-        }
+      await tx.executeAsync(sql, params)
+      results[resultsIdx] = {
+        ok: true,
+        id: docInfo.metadata.id,
+        rev: rev,
+      }
+      fetchedDocs.set(id, docInfo.metadata)
+    }
+
+    async function insertAttachmentMappings(seq: number) {
+      const attsToAdd = Object.keys(data._attachments || {})
+
+      if (!attsToAdd.length) {
+        return
+      }
+
+      function add(att: string) {
+        const sql =
+          'INSERT INTO ' + ATTACH_AND_SEQ_STORE + ' (digest, seq) VALUES (?,?)'
+        const sqlArgs = [data._attachments[att].digest, seq]
+        return tx.executeAsync(sql, sqlArgs)
+      }
+
+      await Promise.all(attsToAdd.map((att) => add(att)))
+    }
+
+    docInfo.data._id = docInfo.metadata.id
+    docInfo.data._rev = docInfo.metadata.rev
+    const attachments = Object.keys(docInfo.data._attachments || {})
+
+    if (newRevIsDeleted) {
+      docInfo.data._deleted = true
+    }
+
+    for (const key of attachments) {
+      const att = docInfo.data._attachments[key]
+      if (!att.stub) {
+        const data = att.data
+        delete att.data
+        att.revpos = parseInt(winningRev, 10)
+        const digest = att.digest
+        await saveAttachment(digest, data)
+      }
+    }
+
+    const data = docInfo.data
+    const deletedInt = newRevIsDeleted ? 1 : 0
+
+    const id = data._id
+    const rev = data._rev
+    const json = stringifyDoc(data)
+    const sql =
+      'INSERT INTO ' +
+      BY_SEQ_STORE +
+      ' (doc_id, rev, json, deleted) VALUES (?, ?, ?, ?);'
+    const sqlArgs = [id, rev, json, deletedInt]
+
+    try {
+      const result = await tx.executeAsync(sql, sqlArgs)
+      const seq = result.insertId
+      if (typeof seq === 'number') {
+        await insertAttachmentMappings(seq)
+        await dataWritten(tx, seq)
+      }
+    } catch (e) {
+      // constraint error, recover by updating instead (see #1638)
+      // https://github.com/pouchdb/pouchdb/issues/1638
+      const fetchSql = select('seq', BY_SEQ_STORE, null, 'doc_id=? AND rev=?')
+      const res = await tx.executeAsync(fetchSql, [id, rev])
+      const seq = res.rows?.item(0).seq
+      logger.debug(
+        `Got a constraint error, updating instead: seq=${seq}, id=${id}, rev=${rev}`
       )
+      const sql =
+        'UPDATE ' +
+        BY_SEQ_STORE +
+        ' SET json=?, deleted=? WHERE doc_id=? AND rev=?;'
+      const sqlArgs = [json, deletedInt, id, rev]
+      await tx.executeAsync(sql, sqlArgs)
+      await insertAttachmentMappings(seq)
+      await dataWritten(tx, seq)
     }
   }
 
@@ -334,25 +252,15 @@ function sqliteBulkDocs(
           callback: (err?: any) => void
         ) => {
           chain = chain.then(() => {
-            return new Promise<void>((resolve, reject) => {
-              writeDoc(
-                docInfo,
-                winningRev,
-                winningRevIsDeleted,
-                newRevIsDeleted,
-                isUpdate,
-                delta,
-                resultsIdx,
-                (err?: any) => {
-                  if (err) {
-                    reject(err)
-                  } else {
-                    resolve()
-                  }
-                  callback(err)
-                }
-              )
-            })
+            return writeDoc(
+              docInfo,
+              winningRev,
+              winningRevIsDeleted,
+              newRevIsDeleted,
+              isUpdate,
+              delta,
+              resultsIdx
+            ).then(callback, callback)
           })
         },
         opts,
@@ -364,36 +272,23 @@ function sqliteBulkDocs(
     })
   }
 
-  function fetchExistingDocs(): Promise<void> {
-    return new Promise((resolve) => {
-      if (!docInfos.length) {
-        return resolve()
+  async function fetchExistingDocs(): Promise<void> {
+    if (!docInfos.length) return
+
+    for (const docInfo of docInfos) {
+      if (docInfo._id && isLocalId(docInfo._id)) {
+        continue
       }
-
-      let numFetched = 0
-
-      function checkDone() {
-        if (++numFetched === docInfos.length) {
-          resolve()
-        }
+      const id = docInfo.metadata.id
+      const result = await tx.executeAsync(
+        'SELECT json FROM ' + DOC_STORE + ' WHERE id = ?',
+        [id]
+      )
+      if (result.rows?.length) {
+        const metadata = safeJsonParse(result.rows.item(0).json)
+        fetchedDocs.set(id, metadata)
       }
-
-      docInfos.forEach((docInfo) => {
-        if (docInfo._id && isLocalId(docInfo._id)) {
-          return checkDone()
-        }
-        const id = docInfo.metadata.id
-        tx.executeAsync('SELECT json FROM ' + DOC_STORE + ' WHERE id = ?', [
-          id,
-        ]).then((result) => {
-          if (result.rows?.length) {
-            const metadata = safeJsonParse(result.rows.item(0).json)
-            fetchedDocs.set(id, metadata)
-          }
-          checkDone()
-        })
-      })
-    })
+    }
   }
 
   async function saveAttachment(digest: string, data: any) {
@@ -406,30 +301,27 @@ function sqliteBulkDocs(
     await tx.executeAsync(sql, [digest, data])
   }
 
-  preprocessAttachments(docInfos, 'binary', (err: any) => {
-    if (err) {
-      console.error('preprocessAttachments error:', err)
-      return callback(err)
-    }
-    transaction(async (txn: Transaction) => {
-      try {
-        tx = txn
-        try {
-          await verifyAttachments()
-        } catch (err) {
-          preconditionErrored = err
-        }
-        if (!preconditionErrored) {
-          await fetchExistingDocs()
-          await websqlProcessDocs()
-        }
-
-        complete()
-      } catch (e: any) {
-        handleSQLiteError(e, callback)
-      }
+  await new Promise<void>((resolve, reject) => {
+    preprocessAttachments(docInfos, 'binary', (err: any) => {
+      if (err) reject(err)
+      else resolve()
     })
   })
+
+  await transaction(async (txn: Transaction) => {
+    await verifyAttachments()
+
+    try {
+      tx = txn
+      await fetchExistingDocs()
+      await websqlProcessDocs()
+      sqliteChanges.notify(api._name)
+    } catch (err: any) {
+      throw handleSQLiteError(err)
+    }
+  })
+
+  return results
 }
 
 export default sqliteBulkDocs
