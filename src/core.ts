@@ -123,23 +123,23 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     callback(null)
   }
 
-  function checkEncoding(tx: Transaction) {
-    const res = tx.execute("SELECT HEX('a') AS hex")
-    const hex = res.rows?.item(0).hex
+  async function checkEncoding(tx: Transaction) {
+    const res = await tx.execute("SELECT HEX('a') AS hex")
+    const hex = res.rows[0]!.hex as string
     encoding = hex.length === 2 ? 'UTF-8' : 'UTF-16'
   }
 
-  function fetchVersion(tx: Transaction) {
+  async function fetchVersion(tx: Transaction) {
     const sql = 'SELECT sql FROM sqlite_master WHERE tbl_name = ' + META_STORE
-    const result = tx.execute(sql, [])
+    const result = await tx.execute(sql, [])
     if (!result.rows?.length) {
       onGetVersion(tx, 0)
-    } else if (!/db_version/.test(result.rows.item(0).sql)) {
+    } else if (!/db_version/.test(result.rows[0]!.sql as string)) {
       tx.execute('ALTER TABLE ' + META_STORE + ' ADD COLUMN db_version INTEGER')
       onGetVersion(tx, 1)
     } else {
-      const resDBVer = tx.execute('SELECT db_version FROM ' + META_STORE)
-      const dbVersion = resDBVer.rows?.item(0).db_version
+      const resDBVer = await tx.execute('SELECT db_version FROM ' + META_STORE)
+      const dbVersion = resDBVer.rows[0]!.db_version as number
       onGetVersion(tx, dbVersion)
     }
   }
@@ -152,7 +152,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     }
   }
 
-  function createInitialSchema(tx: Transaction) {
+  async function createInitialSchema(tx: Transaction) {
     const meta =
       'CREATE TABLE IF NOT EXISTS ' + META_STORE + ' (dbid, db_version INTEGER)'
     const attach =
@@ -174,22 +174,22 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     const local =
       'CREATE TABLE IF NOT EXISTS ' + LOCAL_STORE + ' (id UNIQUE, rev, json)'
 
-    tx.execute(attach)
-    tx.execute(local)
-    tx.execute(attachAndRev)
-    tx.execute(ATTACH_AND_SEQ_STORE_SEQ_INDEX_SQL)
-    tx.execute(ATTACH_AND_SEQ_STORE_ATTACH_INDEX_SQL)
-    tx.execute(doc)
-    tx.execute(DOC_STORE_WINNINGSEQ_INDEX_SQL)
-    tx.execute(seq)
-    tx.execute(BY_SEQ_STORE_DELETED_INDEX_SQL)
-    tx.execute(BY_SEQ_STORE_DOC_ID_REV_INDEX_SQL)
-    tx.execute(meta)
+    await tx.execute(attach)
+    await tx.execute(local)
+    await tx.execute(attachAndRev)
+    await tx.execute(ATTACH_AND_SEQ_STORE_SEQ_INDEX_SQL)
+    await tx.execute(ATTACH_AND_SEQ_STORE_ATTACH_INDEX_SQL)
+    await tx.execute(doc)
+    await tx.execute(DOC_STORE_WINNINGSEQ_INDEX_SQL)
+    await tx.execute(seq)
+    await tx.execute(BY_SEQ_STORE_DELETED_INDEX_SQL)
+    await tx.execute(BY_SEQ_STORE_DOC_ID_REV_INDEX_SQL)
+    await tx.execute(meta)
     const initSeq =
       'INSERT INTO ' + META_STORE + ' (db_version, dbid) VALUES (?,?)'
     instanceId = uuid()
     const initSeqArgs = [ADAPTER_VERSION, instanceId]
-    tx.execute(initSeq, initSeqArgs)
+    await tx.execute(initSeq, initSeqArgs)
     onGetInstanceId()
   }
 
@@ -205,12 +205,12 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
 
     const migrated = dbVersion < ADAPTER_VERSION
     if (migrated) {
-      db.execute(
+      await db.execute(
         'UPDATE ' + META_STORE + ' SET db_version = ' + ADAPTER_VERSION
       )
     }
-    const result = db.execute('SELECT dbid FROM ' + META_STORE)
-    instanceId = result.rows?.item(0).dbid
+    const result = await db.execute('SELECT dbid FROM ' + META_STORE)
+    instanceId = result.rows[0]!.dbid as string
     onGetInstanceId()
   }
 
@@ -324,19 +324,23 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       sqlArgs = [id, opts.rev]
     }
 
-    tx.executeAsync(sql, sqlArgs).then((results) => {
+    tx.execute(sql, sqlArgs).then((results) => {
       if (!results.rows?.length) {
         const missingErr = createError(MISSING_DOC, 'missing')
         return finish(missingErr)
       }
-      const item = results.rows.item(0)
+      const item = results.rows[0]!
       metadata = safeJsonParse(item.metadata)
       if (item.deleted && !opts.rev) {
         const deletedErr = createError(MISSING_DOC, 'deleted')
         return finish(deletedErr)
       }
-      doc = unstringifyDoc(item.data, metadata.id, item.rev)
+      doc = unstringifyDoc(item.data as string, metadata.id, item.rev as string)
       finish(null)
+    }).catch(e => {
+      // createError will throw in RN 0.76.3
+      // https://github.com/facebook/hermes/issues/1496
+      return finish(e)
     })
   }
 
@@ -481,11 +485,11 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
               limit +
               ' OFFSET ' +
               offset
-            const result = await tx.executeAsync(sql, sqlArgs)
+            const result = await tx.execute(sql, sqlArgs)
             finishedCount++
             if (result.rows) {
               for (let index = 0; index < result.rows.length; index++) {
-                allRows.push(result.rows?.item(index))
+                allRows.push(result.rows[index])
               }
             }
             if (finishedCount === keyChunks.length) {
@@ -505,11 +509,11 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
             limit +
             ' OFFSET ' +
             offset
-          const result = await tx.executeAsync(sql, sqlArgs)
+          const result = await tx.execute(sql, sqlArgs)
           const rows: any[] = []
           if (result.rows) {
             for (let index = 0; index < result.rows.length; index++) {
-              rows.push(result.rows.item(index))
+              rows.push(result.rows[index])
             }
           }
           processResult(rows, results, keys)
@@ -595,18 +599,18 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       let lastSeq = opts.since || 0
       readTransaction(async (tx: Transaction) => {
         try {
-          const result = await tx.executeAsync(sql, sqlArgs)
+          const result = await tx.execute(sql, sqlArgs)
 
           if (result.rows) {
             for (let i = 0, l = result.rows.length; i < l; i++) {
-              const item = result.rows.item(i)
+              const item = result.rows[i]!
               const metadata = safeJsonParse(item.metadata)
               lastSeq = item.maxSeq
 
               const doc = unstringifyDoc(
-                item.winningDoc,
+                item.winningDoc as string,
                 metadata.id,
-                item.winningRev
+                item.winningRev as string
               )
               const change = opts.processChange(doc, metadata, opts)
               change.seq = item.maxSeq
@@ -668,8 +672,8 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     const type = attachment.content_type
     const sql =
       'SELECT escaped, body AS body FROM ' + ATTACH_STORE + ' WHERE digest=?'
-    tx.executeAsync(sql, [digest]).then((result) => {
-      const item = result.rows?.item(0)
+    tx.execute(sql, [digest]).then((result) => {
+      const item = result.rows[0]!
       const data = item.body
       if (opts.binary) {
         res = binStringToBlob(data, type)
@@ -686,11 +690,11 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
   ) => {
     readTransaction(async (tx: Transaction) => {
       const sql = 'SELECT json AS metadata FROM ' + DOC_STORE + ' WHERE id = ?'
-      const result = await tx.executeAsync(sql, [docId])
+      const result = await tx.execute(sql, [docId])
       if (!result.rows?.length) {
         callback(createError(MISSING_DOC))
       } else {
-        const data = safeJsonParse(result.rows?.item(0).metadata)
+        const data = safeJsonParse(result.rows[0]!.metadata)
         callback(null, data.rev_tree)
       }
     })
@@ -707,8 +711,8 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     transaction(async (tx: Transaction) => {
       try {
         let sql = 'SELECT json AS metadata FROM ' + DOC_STORE + ' WHERE id = ?'
-        const result = await tx.executeAsync(sql, [docId])
-        const metadata = safeJsonParse(result.rows?.item(0).metadata)
+        const result = await tx.execute(sql, [docId])
+        const metadata = safeJsonParse(result.rows[0]!.metadata)
         traverseRevTree(
           metadata.rev_tree,
           (
@@ -725,7 +729,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           }
         )
         sql = 'UPDATE ' + DOC_STORE + ' SET json = ? WHERE id = ?'
-        await tx.executeAsync(sql, [safeJsonStringify(metadata), docId])
+        await tx.execute(sql, [safeJsonStringify(metadata), docId])
 
         compactRevs(revs, docId, tx)
       } catch (e: any) {
@@ -739,10 +743,10 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     readTransaction(async (tx: Transaction) => {
       try {
         const sql = 'SELECT json, rev FROM ' + LOCAL_STORE + ' WHERE id=?'
-        const res = await tx.executeAsync(sql, [id])
+        const res = await tx.execute(sql, [id])
         if (res.rows?.length) {
-          const item = res.rows.item(0)
-          const doc = unstringifyDoc(item.json, id, item.rev)
+          const item = res.rows[0]!
+          const doc = unstringifyDoc(item.json as string, id, item.rev as string)
           callback(null, doc)
         } else {
           callback(createError(MISSING_DOC))
@@ -786,7 +790,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           sql = 'INSERT INTO ' + LOCAL_STORE + ' (id, rev, json) VALUES (?,?,?)'
           values = [id, newRev, json]
         }
-        const res = await tx.executeAsync(sql, values)
+        const res = await tx.execute(sql, values)
         if (res.rowsAffected) {
           ret = { ok: true, id: id, rev: newRev }
           callback(null, ret)
@@ -820,7 +824,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       try {
         const sql = 'DELETE FROM ' + LOCAL_STORE + ' WHERE id=? AND rev=?'
         const params = [doc._id, doc._rev]
-        const res = await tx.executeAsync(sql, params)
+        const res = await tx.execute(sql, params)
         if (!res.rowsAffected) {
           return callback(createError(MISSING_DOC))
         }
@@ -903,8 +907,8 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
 
   async function getMaxSeq(tx: Transaction): Promise<number> {
     const sql = 'SELECT MAX(seq) AS seq FROM ' + BY_SEQ_STORE
-    const res = await tx.executeAsync(sql, [])
-    const updateSeq = res.rows?.item(0).seq || 0
+    const res = await tx.execute(sql, [])
+    const updateSeq = res.rows[0]!.seq as number || 0
     return updateSeq
   }
 
@@ -915,8 +919,8 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       DOC_STORE_AND_BY_SEQ_JOINER,
       BY_SEQ_STORE + '.deleted=0'
     )
-    const result = await tx.executeAsync(sql, [])
-    return result.rows?.item(0).num || 0
+    const result = await tx.execute(sql, [])
+    return result.rows[0]!.num as number || 0
   }
 
   async function latest(
@@ -934,12 +938,12 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     )
     const sqlArgs = [id]
 
-    const results = await tx.executeAsync(sql, sqlArgs)
+    const results = await tx.execute(sql, sqlArgs)
     if (!results.rows?.length) {
       const err = createError(MISSING_DOC, 'missing')
       return finish(err)
     }
-    const item = results.rows.item(0)
+    const item = results.rows[0]!
     const metadata = safeJsonParse(item.metadata)
     callback(getLatest(rev, metadata))
   }

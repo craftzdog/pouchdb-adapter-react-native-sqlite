@@ -70,8 +70,8 @@ async function sqliteBulkDocs(
     logger.debug('verify attachment:', digest)
     const sql =
       'SELECT count(*) as cnt FROM ' + ATTACH_STORE + ' WHERE digest=?'
-    const result = await tx.executeAsync(sql, [digest])
-    if (result.rows?.item(0).cnt === 0) {
+    const result = await tx.execute(sql, [digest])
+    if (result.rows[0]?.cnt === 0) {
       const err = createError(
         MISSING_STUB,
         'unknown stub attachment with digest ' + digest
@@ -147,7 +147,7 @@ async function sqliteBulkDocs(
       const params = isUpdate
         ? [metadataStr, seq, winningRev, id]
         : [id, seq, seq, metadataStr]
-      await tx.executeAsync(sql, params)
+      await tx.execute(sql, params)
       results[resultsIdx] = {
         ok: true,
         id: docInfo.metadata.id,
@@ -167,7 +167,7 @@ async function sqliteBulkDocs(
         const sql =
           'INSERT INTO ' + ATTACH_AND_SEQ_STORE + ' (digest, seq) VALUES (?,?)'
         const sqlArgs = [data._attachments[att].digest, seq]
-        return tx.executeAsync(sql, sqlArgs)
+        return tx.execute(sql, sqlArgs)
       }
 
       await Promise.all(attsToAdd.map((att) => add(att)))
@@ -205,7 +205,7 @@ async function sqliteBulkDocs(
     const sqlArgs = [id, rev, json, deletedInt]
 
     try {
-      const result = await tx.executeAsync(sql, sqlArgs)
+      const result = await tx.execute(sql, sqlArgs)
       const seq = result.insertId
       if (typeof seq === 'number') {
         await insertAttachmentMappings(seq)
@@ -215,8 +215,8 @@ async function sqliteBulkDocs(
       // constraint error, recover by updating instead (see #1638)
       // https://github.com/pouchdb/pouchdb/issues/1638
       const fetchSql = select('seq', BY_SEQ_STORE, null, 'doc_id=? AND rev=?')
-      const res = await tx.executeAsync(fetchSql, [id, rev])
-      const seq = res.rows?.item(0).seq
+      const res = await tx.execute(fetchSql, [id, rev])
+      const seq = res.rows[0]!.seq as number
       logger.debug(
         `Got a constraint error, updating instead: seq=${seq}, id=${id}, rev=${rev}`
       )
@@ -225,7 +225,7 @@ async function sqliteBulkDocs(
         BY_SEQ_STORE +
         ' SET json=?, deleted=? WHERE doc_id=? AND rev=?;'
       const sqlArgs = [json, deletedInt, id, rev]
-      await tx.executeAsync(sql, sqlArgs)
+      await tx.execute(sql, sqlArgs)
       await insertAttachmentMappings(seq)
       await dataWritten(tx, seq)
     }
@@ -280,12 +280,12 @@ async function sqliteBulkDocs(
         continue
       }
       const id = docInfo.metadata.id
-      const result = await tx.executeAsync(
+      const result = await tx.execute(
         'SELECT json FROM ' + DOC_STORE + ' WHERE id = ?',
         [id]
       )
       if (result.rows?.length) {
-        const metadata = safeJsonParse(result.rows.item(0).json)
+        const metadata = safeJsonParse(result.rows[0]!.json)
         fetchedDocs.set(id, metadata)
       }
     }
@@ -294,11 +294,11 @@ async function sqliteBulkDocs(
   async function saveAttachment(digest: string, data: any) {
     logger.debug('saveAttachment:', digest)
     let sql = 'SELECT digest FROM ' + ATTACH_STORE + ' WHERE digest=?'
-    const result = await tx.executeAsync(sql, [digest])
+    const result = await tx.execute(sql, [digest])
     if (result.rows?.length) return
     sql =
       'INSERT INTO ' + ATTACH_STORE + ' (digest, body, escaped) VALUES (?,?,0)'
-    await tx.executeAsync(sql, [digest, data])
+    await tx.execute(sql, [digest, data])
   }
 
   await new Promise<void>((resolve, reject) => {
