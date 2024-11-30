@@ -78,7 +78,7 @@
     "@types/react": "^18.2.44"
   },
   "dependencies": {
-    "@op-engineering/op-sqlite": "^6.2.11",
+    "@op-engineering/op-sqlite": "^11.0.2",
     "debug": "^4.3.5",
     "pouchdb-adapter-utils": "^8.0.1",
     "pouchdb-binary-utils": "^8.0.1",
