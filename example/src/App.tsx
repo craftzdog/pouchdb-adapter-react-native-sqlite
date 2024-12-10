@@ -63,7 +63,7 @@ export default function App() {
   }
   const handlePutDoc = async () => {
     setResult('')
-    let rev = undefined
+    let rev
     let count = 0
     try {
       const mydoc = await pouch.get(docId)
