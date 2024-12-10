@@ -324,24 +324,30 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       sqlArgs = [id, opts.rev]
     }
 
-    tx.execute(sql, sqlArgs).then((results) => {
-      if (!results.rows?.length) {
-        const missingErr = createError(MISSING_DOC, 'missing')
-        return finish(missingErr)
-      }
-      const item = results.rows[0]!
-      metadata = safeJsonParse(item.metadata)
-      if (item.deleted && !opts.rev) {
-        const deletedErr = createError(MISSING_DOC, 'deleted')
-        return finish(deletedErr)
-      }
-      doc = unstringifyDoc(item.data as string, metadata.id, item.rev as string)
-      finish(null)
-    }).catch(e => {
-      // createError will throw in RN 0.76.3
-      // https://github.com/facebook/hermes/issues/1496
-      return finish(e)
-    })
+    tx.execute(sql, sqlArgs)
+      .then((results) => {
+        if (!results.rows?.length) {
+          const missingErr = createError(MISSING_DOC, 'missing')
+          return finish(missingErr)
+        }
+        const item = results.rows[0]!
+        metadata = safeJsonParse(item.metadata)
+        if (item.deleted && !opts.rev) {
+          const deletedErr = createError(MISSING_DOC, 'deleted')
+          return finish(deletedErr)
+        }
+        doc = unstringifyDoc(
+          item.data as string,
+          metadata.id,
+          item.rev as string
+        )
+        finish(null)
+      })
+      .catch((e) => {
+        // createError will throw in RN 0.76.3
+        // https://github.com/facebook/hermes/issues/1496
+        return finish(e)
+      })
   }
 
   api._allDocs = (opts: any, callback: (err: any, response?: any) => void) => {
@@ -746,7 +752,11 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         const res = await tx.execute(sql, [id])
         if (res.rows?.length) {
           const item = res.rows[0]!
-          const doc = unstringifyDoc(item.json as string, id, item.rev as string)
+          const doc = unstringifyDoc(
+            item.json as string,
+            id,
+            item.rev as string
+          )
           callback(null, doc)
         } else {
           callback(createError(MISSING_DOC))
@@ -908,7 +918,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
   async function getMaxSeq(tx: Transaction): Promise<number> {
     const sql = 'SELECT MAX(seq) AS seq FROM ' + BY_SEQ_STORE
     const res = await tx.execute(sql, [])
-    const updateSeq = res.rows[0]!.seq as number || 0
+    const updateSeq = (res.rows[0]!.seq as number) || 0
     return updateSeq
   }
 
@@ -920,7 +930,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       BY_SEQ_STORE + '.deleted=0'
     )
     const result = await tx.execute(sql, [])
-    return result.rows[0]!.num as number || 0
+    return (result.rows[0]!.num as number) || 0
   }
 
   async function latest(
