@@ -86,11 +86,11 @@ async function compactRevs(
       ' WHERE seq IN ' +
       qMarks(seqs.length)
 
-    let res = await tx.executeAsync(sql, seqs)
+    let res = await tx.execute(sql, seqs)
     const digestsToCheck: string[] = []
     if (res.rows) {
       for (let i = 0; i < res.rows.length; i++) {
-        digestsToCheck.push(res.rows.item(i).digest)
+        digestsToCheck.push(res.rows[i]!.digest as string)
       }
     }
     if (!digestsToCheck.length) {
@@ -103,29 +103,29 @@ async function compactRevs(
       ' WHERE seq IN (' +
       seqs.map(() => '?').join(',') +
       ')'
-    await tx.executeAsync(sql, seqs)
+    await tx.execute(sql, seqs)
     sql =
       'SELECT digest FROM ' +
       ATTACH_AND_SEQ_STORE +
       ' WHERE digest IN (' +
       digestsToCheck.map(() => '?').join(',') +
       ')'
-    res = await tx.executeAsync(sql, digestsToCheck)
+    res = await tx.execute(sql, digestsToCheck)
     const nonOrphanedDigests = new Set<string>()
     if (res.rows) {
       for (let i = 0; i < res.rows.length; i++) {
-        nonOrphanedDigests.add(res.rows.item(i).digest)
+        nonOrphanedDigests.add(res.rows[i]!.digest as string)
       }
     }
     for (const digest of digestsToCheck) {
       if (nonOrphanedDigests.has(digest)) {
         return
       }
-      await tx.executeAsync(
+      await tx.execute(
         'DELETE FROM ' + ATTACH_AND_SEQ_STORE + ' WHERE digest=?',
         [digest]
       )
-      await tx.executeAsync('DELETE FROM ' + ATTACH_STORE + ' WHERE digest=?', [
+      await tx.execute('DELETE FROM ' + ATTACH_STORE + ' WHERE digest=?', [
         digest,
       ])
     }
@@ -135,15 +135,15 @@ async function compactRevs(
   for (const rev of revs) {
     const sql = 'SELECT seq FROM ' + BY_SEQ_STORE + ' WHERE doc_id=? AND rev=?'
 
-    const res = await tx.executeAsync(sql, [docId, rev])
+    const res = await tx.execute(sql, [docId, rev])
     if (!res.rows?.length) {
       // already deleted
       return checkDone()
     }
-    const seq = res.rows.item(0).seq
+    const seq = res.rows[0]!.seq as number
     seqs.push(seq)
 
-    await tx.executeAsync('DELETE FROM ' + BY_SEQ_STORE + ' WHERE seq=?', [seq])
+    await tx.execute('DELETE FROM ' + BY_SEQ_STORE + ' WHERE seq=?', [seq])
   }
 }
 

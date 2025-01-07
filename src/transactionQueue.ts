@@ -34,12 +34,12 @@ export class TransactionQueue {
         try {
           if (tx.readonly) {
             logger.debug('---> transaction start!')
-            await tx.start({
-              commit: () => ({ rowsAffected: 0 }),
-              execute: this.db.execute.bind(this.db),
-              executeAsync: this.db.executeAsync.bind(this.db),
-              rollback: () => ({ rowsAffected: 0 }),
-            })
+            await this.db.transaction(tx.start)
+            // await tx.start({
+            //   commit: async () => {return { rowsAffected: 0 }},
+            //   execute: this.db.execute.bind(this.db),
+            //   rollback: async () => {return { rowsAffected: 0 }},
+            // })
           } else {
             logger.debug('---> write transaction start!')
             await this.db.transaction(tx.start)
