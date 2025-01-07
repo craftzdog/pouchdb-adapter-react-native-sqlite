@@ -90,12 +90,12 @@
     "@op-engineering/op-sqlite": "^11.2.3",
     "debug": "^4.4.0",
     "events": "^3.3.0",
-    "pouchdb-adapter-utils": "^8.0.1",
-    "pouchdb-binary-utils": "^8.0.1",
-    "pouchdb-errors": "^8.0.1",
-    "pouchdb-json": "^8.0.1",
-    "pouchdb-merge": "^8.0.1",
-    "pouchdb-utils": "^8.0.1"
+    "pouchdb-adapter-utils": "^9.0.0",
+    "pouchdb-binary-utils": "^9.0.0",
+    "pouchdb-errors": "^9.0.0",
+    "pouchdb-json": "^9.0.0",
+    "pouchdb-merge": "^9.0.0",
+    "pouchdb-utils": "^9.0.0"
   },
   "resolutions": {
     "@types/react": "^18.2.44"

@@ -3401,7 +3401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"abort-controller@npm:3.0.0, abort-controller@npm:^3.0.0":
+"abort-controller@npm:^3.0.0":
   version: 3.0.0
   resolution: "abort-controller@npm:3.0.0"
   dependencies:
@@ -4083,7 +4083,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer-from@npm:1.1.2, buffer-from@npm:^1.0.0":
+"buffer-from@npm:^1.0.0":
   version: 1.1.2
   resolution: "buffer-from@npm:1.1.2"
   checksum: 0448524a562b37d4d7ed9efd91685a5b77a50672c556ea254ac9a6d30e3403a517d8981f10e565db24e8339413b43c97ca2951f10e399c6125a0d8911f5679bb
@@ -4419,13 +4419,6 @@ __metadata:
     strip-ansi: ^6.0.1
     wrap-ansi: ^7.0.0
   checksum: 79648b3b0045f2e285b76fb2e24e207c6db44323581e421c3acbd0e86454cba1b37aea976ab50195a49e7384b871e6dfb2247ad7dec53c02454ac6497394cb56
-  languageName: node
-  linkType: hard
-
-"clone-buffer@npm:1.0.0":
-  version: 1.0.0
-  resolution: "clone-buffer@npm:1.0.0"
-  checksum: a39a35e7fd081e0f362ba8195bd15cbc8205df1fbe4598bb4e09c1f9a13c0320a47ab8a61a8aa83561e4ed34dc07666d73254ee952ddd3985e4286b082fe63b9
   languageName: node
   linkType: hard
 
@@ -6118,12 +6111,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fetch-cookie@npm:0.11.0":
-  version: 0.11.0
-  resolution: "fetch-cookie@npm:0.11.0"
+"fetch-cookie@npm:2.2.0":
+  version: 2.2.0
+  resolution: "fetch-cookie@npm:2.2.0"
   dependencies:
-    tough-cookie: ^2.3.3 || ^3.0.1 || ^4.0.0
-  checksum: 0d2082cb7de34c1e566a7c22ab844c6e9e6a8f8c9c1bc7a62382931b4bb99f0ff6c00324ec00874728c57cfd0c655c6fde62badcae019f2e5bb220c5726fdd17
+    set-cookie-parser: ^2.4.8
+    tough-cookie: ^4.0.0
+  checksum: 854fa03df596ddf0ed53cf9e52bae1c224d04d71e439b1c04732c05cadb677a6710aca654efa31ec5b8dd7223880821b12da153107d749a48fbfdc4f2d2540cd
   languageName: node
   linkType: hard
 
@@ -6964,13 +6958,6 @@ __metadata:
   bin:
     image-size: bin/image-size.js
   checksum: 23b3a515dded89e7f967d52b885b430d6a5a903da954fce703130bfb6069d738d80e6588efd29acfaf5b6933424a56535aa7bf06867e4ebd0250c2ee51f19a4a
-  languageName: node
-  linkType: hard
-
-"immediate@npm:3.3.0":
-  version: 3.3.0
-  resolution: "immediate@npm:3.3.0"
-  checksum: 634b4305101e2452eba6c07d485bf3e415995e533c94b9c3ffbc37026fa1be34def6e4f2276b0dc2162a3f91628564a4bfb26280278b89d3ee54624e854d2f5f
   languageName: node
   linkType: hard
 
@@ -9683,9 +9670,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.6.7":
-  version: 2.6.7
-  resolution: "node-fetch@npm:2.6.7"
+"node-fetch@npm:2.6.9":
+  version: 2.6.9
+  resolution: "node-fetch@npm:2.6.9"
   dependencies:
     whatwg-url: ^5.0.0
   peerDependencies:
@@ -9693,7 +9680,7 @@ __metadata:
   peerDependenciesMeta:
     encoding:
       optional: true
-  checksum: 8d816ffd1ee22cab8301c7756ef04f3437f18dace86a1dae22cf81db8ef29c0bf6655f3215cb0cdb22b420b6fe141e64b26905e7f33f9377a7fa59135ea3e10b
+  checksum: acb04f9ce7224965b2b59e71b33c639794d8991efd73855b0b250921382b38331ffc9d61bce502571f6cc6e11a8905ca9b1b6d4aeb586ab093e2756a1fd190d0
   languageName: node
   linkType: hard
 
@@ -10396,31 +10383,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pouchdb-abstract-mapreduce@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-abstract-mapreduce@npm:8.0.1"
+"pouchdb-abstract-mapreduce@npm:9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-abstract-mapreduce@npm:9.0.0"
   dependencies:
-    pouchdb-binary-utils: 8.0.1
-    pouchdb-collate: 8.0.1
-    pouchdb-collections: 8.0.1
-    pouchdb-errors: 8.0.1
-    pouchdb-fetch: 8.0.1
-    pouchdb-mapreduce-utils: 8.0.1
-    pouchdb-md5: 8.0.1
-    pouchdb-utils: 8.0.1
-  checksum: 708fb58269e239673b29f8cc4ba26ffcc9eaadf5818be5aa31aebd1814cb3e186f78364ea8bef74158234673af876791d0b3aefcf85f11e26faca4b96834c84d
+    pouchdb-binary-utils: 9.0.0
+    pouchdb-collate: 9.0.0
+    pouchdb-errors: 9.0.0
+    pouchdb-fetch: 9.0.0
+    pouchdb-mapreduce-utils: 9.0.0
+    pouchdb-md5: 9.0.0
+    pouchdb-utils: 9.0.0
+  checksum: 2748995234a910b360ed96a83f837976ef6d6ac01cd3356b883fdd9dda2b8eca4c0cf9dae391d4056118e5a5ee2f9a5bb0693826faae46749ba048ca0e17983d
   languageName: node
   linkType: hard
 
-"pouchdb-adapter-http@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-adapter-http@npm:8.0.1"
+"pouchdb-adapter-http@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-adapter-http@npm:9.0.0"
   dependencies:
-    pouchdb-binary-utils: 8.0.1
-    pouchdb-errors: 8.0.1
-    pouchdb-fetch: 8.0.1
-    pouchdb-utils: 8.0.1
-  checksum: ed7cfc4be0e0ca8c667381582202a91d58f55391d124a78a6f42655d3b185f75f8b46dfda78c0c15e0baf361d5efb7f18ad58166060ba1b46b31e57a23843629
+    pouchdb-binary-utils: 9.0.0
+    pouchdb-errors: 9.0.0
+    pouchdb-fetch: 9.0.0
+    pouchdb-utils: 9.0.0
+  checksum: 8593de153c04ac5a4fa311e490cc242a070ecaffb9411adf3ae817a4c77eafe3712ce82c8e0f8e8349c68df99963e2553949db831489d1f02bc55506dd0a01d0
   languageName: node
   linkType: hard
 
@@ -10439,10 +10425,10 @@ __metadata:
     "@react-native/metro-config": 0.76.4
     "@react-native/typescript-config": 0.76.4
     debug: ^4.4.0
-    pouchdb-adapter-http: ^8.0.1
-    pouchdb-core: ^8.0.1
-    pouchdb-mapreduce: ^8.0.1
-    pouchdb-replication: ^8.0.1
+    pouchdb-adapter-http: ^9.0.0
+    pouchdb-core: ^9.0.0
+    pouchdb-mapreduce: ^9.0.0
+    pouchdb-replication: ^9.0.0
     react: 18.3.1
     react-native: 0.76.4
     react-native-builder-bob: ^0.35.2
@@ -10471,12 +10457,12 @@ __metadata:
     eslint-plugin-prettier: ^5.0.1
     events: ^3.3.0
     jest: ^29.7.0
-    pouchdb-adapter-utils: ^8.0.1
-    pouchdb-binary-utils: ^8.0.1
-    pouchdb-errors: ^8.0.1
-    pouchdb-json: ^8.0.1
-    pouchdb-merge: ^8.0.1
-    pouchdb-utils: ^8.0.1
+    pouchdb-adapter-utils: ^9.0.0
+    pouchdb-binary-utils: ^9.0.0
+    pouchdb-errors: ^9.0.0
+    pouchdb-json: ^9.0.0
+    pouchdb-merge: ^9.0.0
+    pouchdb-utils: ^9.0.0
     prettier: ^3.0.3
     react: 18.3.1
     react-native: 0.76.4
@@ -10490,189 +10476,173 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"pouchdb-adapter-utils@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-adapter-utils@npm:8.0.1"
+"pouchdb-adapter-utils@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-adapter-utils@npm:9.0.0"
   dependencies:
-    pouchdb-binary-utils: 8.0.1
-    pouchdb-collections: 8.0.1
-    pouchdb-errors: 8.0.1
-    pouchdb-md5: 8.0.1
-    pouchdb-merge: 8.0.1
-    pouchdb-utils: 8.0.1
-  checksum: 96119390507d8f83762a5047b3e5af4a90bdfa3a7644597f33f4381fee0c170a9a655b815524063c6e8d63e92679f7562d50ba7c6ac0c04e2a6f1e62d9c1eaaa
+    pouchdb-binary-utils: 9.0.0
+    pouchdb-errors: 9.0.0
+    pouchdb-md5: 9.0.0
+    pouchdb-merge: 9.0.0
+    pouchdb-utils: 9.0.0
+  checksum: c29a7afed537ca63a25bcab53f3d3c1ed74b53a7e185b2182b8798248178ff7eba861f008c3c8b8f7f61898c31beab78e39fa5292fcd0be22a787361f80a0a53
   languageName: node
   linkType: hard
 
-"pouchdb-binary-utils@npm:8.0.1, pouchdb-binary-utils@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-binary-utils@npm:8.0.1"
+"pouchdb-binary-utils@npm:9.0.0, pouchdb-binary-utils@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-binary-utils@npm:9.0.0"
+  checksum: d852c5330b417572d8ed5ead53dd1a2feb42615dda277616a6c5d194648b09842cb1d6bc10e0e2207ea9229eec468e710c5eee2979debb766be597d6e978ba05
+  languageName: node
+  linkType: hard
+
+"pouchdb-changes-filter@npm:9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-changes-filter@npm:9.0.0"
   dependencies:
-    buffer-from: 1.1.2
-  checksum: c2316d80027d1b9dbdd498eeecdbf4ab6f74e40b676c1f1dfc2133e1c9ff5245ea6102a63f0136cc35c22eb7d3ad6172aae63a3404d0dfc9b828d5c97196ec0b
+    pouchdb-errors: 9.0.0
+    pouchdb-selector-core: 9.0.0
+    pouchdb-utils: 9.0.0
+  checksum: 167bc510c09866c6597f4a8ebdf31e7a0e405bf6585debbe9a09680518e77e140df553f6036d5d45a1e781aa807f1e14a88fad1fa23228e82a6def1d2f3cca9e
   languageName: node
   linkType: hard
 
-"pouchdb-changes-filter@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-changes-filter@npm:8.0.1"
+"pouchdb-checkpointer@npm:9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-checkpointer@npm:9.0.0"
   dependencies:
-    pouchdb-errors: 8.0.1
-    pouchdb-selector-core: 8.0.1
-    pouchdb-utils: 8.0.1
-  checksum: 6e5e88a16e005e7ef6d2bae3140f602a50b10fa921318cf2d41dc595a11115aada35aed04d911c8791d03838d04e4a610dd4b148f0d91e10879087985966edda
+    pouchdb-collate: 9.0.0
+    pouchdb-utils: 9.0.0
+  checksum: 75f4fcad8dcbe11173a68433729ba0691f365132c4aa36905fa5584ddb3a9e963e5ae8f519029b67f410952f4236256da6f0380ee568db48ab3e8c7d7ec67846
   languageName: node
   linkType: hard
 
-"pouchdb-checkpointer@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-checkpointer@npm:8.0.1"
+"pouchdb-collate@npm:9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-collate@npm:9.0.0"
+  checksum: 98e2c8d0910487cb6668a0d30ee56817376b9f1ab37304a9e7332ef10b7005c902de434c150ef560446bbdc106223e644103a1608f0afd5a79d200142247d568
+  languageName: node
+  linkType: hard
+
+"pouchdb-core@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-core@npm:9.0.0"
   dependencies:
-    pouchdb-collate: 8.0.1
-    pouchdb-utils: 8.0.1
-  checksum: f67579fea33c65645d5c8ec1b1c8327e83ab49de66f895baeca8d1af47dc7b6be2a5a07a0857956245e0506967729be8be5600b765f794f6125bceb9ce75aebb
-  languageName: node
-  linkType: hard
-
-"pouchdb-collate@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-collate@npm:8.0.1"
-  checksum: 5031f403653d88d070852d1ac2f525381d2f9bb0308880a0762eeb1492428bd954faa8263978fc831565a7732c072e08dc3cc7fe30ec4211784d9230e4639aa1
-  languageName: node
-  linkType: hard
-
-"pouchdb-collections@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-collections@npm:8.0.1"
-  checksum: df41cbe50097fc8ca25facac68ddaffdd03150834838032c8784d075c6e16b5ec12b19fb07c5ad97555bbcc0abccd6b5529f19f8b1aacf81d1fef11c131c0759
-  languageName: node
-  linkType: hard
-
-"pouchdb-core@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-core@npm:8.0.1"
-  dependencies:
-    pouchdb-changes-filter: 8.0.1
-    pouchdb-collections: 8.0.1
-    pouchdb-errors: 8.0.1
-    pouchdb-fetch: 8.0.1
-    pouchdb-merge: 8.0.1
-    pouchdb-utils: 8.0.1
+    pouchdb-changes-filter: 9.0.0
+    pouchdb-errors: 9.0.0
+    pouchdb-fetch: 9.0.0
+    pouchdb-merge: 9.0.0
+    pouchdb-utils: 9.0.0
     uuid: 8.3.2
-  checksum: 4f4f28fc444892d5034ded880333ddb4f975344fad99e6365fefb7a2f60af4d32950fd283ddfd049a49abe1bcec65122ea7650975a02d077fcb51104c2587f88
+  checksum: a69cde8b5a25e2b77ac13a1902e254ee4ad260e504934ad34a186b114546e9e86d877babd3acee01fed3bc3a38644be95834848b7110c11a3931f9e82940ea55
   languageName: node
   linkType: hard
 
-"pouchdb-errors@npm:8.0.1, pouchdb-errors@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-errors@npm:8.0.1"
-  checksum: 946e82861fcc8cfb1fbe21c9cc4430b81189894abc502f65094e7d1eb6ed4feb1ff736764b2b68a637a8971bf55f7cc4814d56dc39a7f3787790aee4edc91348
+"pouchdb-errors@npm:9.0.0, pouchdb-errors@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-errors@npm:9.0.0"
+  checksum: 262f697c54fb89c8799b3a6da49b3e2dda05017de923ac728bca9e0ad8835720bc14549082b3f06c0e0ad921607c784eb87aa5459d56414e0dea906eec55dd59
   languageName: node
   linkType: hard
 
-"pouchdb-fetch@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-fetch@npm:8.0.1"
+"pouchdb-fetch@npm:9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-fetch@npm:9.0.0"
   dependencies:
-    abort-controller: 3.0.0
-    fetch-cookie: 0.11.0
-    node-fetch: 2.6.7
-  checksum: 1a456805f7200f80b9d28fb0d4eddc4f9e6373dc56e1b2b9e71ff46dd84328cac1b85c6e92207972f7e8b4cb7c4b2772b65af5476a231722a1242f1814375b38
+    fetch-cookie: 2.2.0
+    node-fetch: 2.6.9
+  checksum: 0a41ccb0d845aef63f69cd110a8f3bd6bf7a45d9a557c88b8e5d741b9c891c9295340e65c80f61ccdd83aade9adc0c194c3d82a8a993ce23b3a0add6813aa255
   languageName: node
   linkType: hard
 
-"pouchdb-generate-replication-id@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-generate-replication-id@npm:8.0.1"
+"pouchdb-generate-replication-id@npm:9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-generate-replication-id@npm:9.0.0"
   dependencies:
-    pouchdb-collate: 8.0.1
-    pouchdb-md5: 8.0.1
-  checksum: d83714c944023089ff8ef6773632f4c9b225166da7b810882dd9dc5ab82d4a9deff1702a729504ee00ca21e3c3cb0c461576b5b71e328a2c33ce0c5d63415022
+    pouchdb-collate: 9.0.0
+    pouchdb-md5: 9.0.0
+  checksum: cbe76ba9172539e99acd5cf79341b63a0e3b2b0bb24131a73b935f9d643703bdb53ac7afad6eee6ea34b6b3ed76f91cb159061df7f086d6068845afcf1bb41f7
   languageName: node
   linkType: hard
 
-"pouchdb-json@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-json@npm:8.0.1"
+"pouchdb-json@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-json@npm:9.0.0"
   dependencies:
     vuvuzela: 1.0.3
-  checksum: a78c6cf80e2dafab35414381a43a596c615531fd0c33feaa00ad94b100a964dccafb60b1207ed60fd6d4b0b7216416039ec03bdae0b79b6bfd28687a05b675c8
+  checksum: 3ee7fb9b2a4be148926b69494ac032b21eaba1a957fe0e852070773ef0fabaec5fed5aceb54af38606d305603784206c5ad1182a02921c6f43b49353ef310dba
   languageName: node
   linkType: hard
 
-"pouchdb-mapreduce-utils@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-mapreduce-utils@npm:8.0.1"
+"pouchdb-mapreduce-utils@npm:9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-mapreduce-utils@npm:9.0.0"
   dependencies:
-    pouchdb-collections: 8.0.1
-    pouchdb-utils: 8.0.1
-  checksum: 7c0c80b9c8afb4aaaaddafcc7b0b11341f9846085132ee04f502dcd46079005419cb6cf361ad7b621d8428bcd68bcfa0370fdb4eb76c6ddbe35379f40b6b4f0c
+    pouchdb-utils: 9.0.0
+  checksum: 868ba2446bdc27dcb5fb9ae4bbd87bf33a896fa160993757e319b938e738e9f04b80be04b16ee51df0cfb57e8601d22e1c916aaa38db3f46a2d1de98dd1de7bc
   languageName: node
   linkType: hard
 
-"pouchdb-mapreduce@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-mapreduce@npm:8.0.1"
+"pouchdb-mapreduce@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-mapreduce@npm:9.0.0"
   dependencies:
-    pouchdb-abstract-mapreduce: 8.0.1
-    pouchdb-mapreduce-utils: 8.0.1
-    pouchdb-utils: 8.0.1
-  checksum: d4d867d9bb5349f230a6df8ad8c52405c5a58bad772cb660e2e322ceef1a243e9344116ac9291236239a92fa4f78dec2216f19c72f61a94e4742435ac2f689f4
+    pouchdb-abstract-mapreduce: 9.0.0
+    pouchdb-mapreduce-utils: 9.0.0
+    pouchdb-utils: 9.0.0
+  checksum: 5b2c41f5bac0329f6fbf10a4d589c8bc4d4ae1c8ab1b0ad4db8886b490a22f7b4caf56259e9293f6f7b392e672e1040f1b703a52089497758176eb1ef1f9d5a5
   languageName: node
   linkType: hard
 
-"pouchdb-md5@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-md5@npm:8.0.1"
+"pouchdb-md5@npm:9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-md5@npm:9.0.0"
   dependencies:
-    pouchdb-binary-utils: 8.0.1
+    pouchdb-binary-utils: 9.0.0
     spark-md5: 3.0.2
-  checksum: ab90941577e8fafe3be265ee4ce3e17accc1f6dfe6241c499de89d85aa81ca83848d90ceed589d4691872fd17c953ec28751e02cff6731fbf36b976a1e6b4b5b
+  checksum: 2c6726a24eb79a3abf9c6062866aac9da82cf950818e2098827730765c60817f5b4a06fc117d8b336d4fbe96346d258c47134ee77c07469a0a02c9e33f159ab6
   languageName: node
   linkType: hard
 
-"pouchdb-merge@npm:8.0.1, pouchdb-merge@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-merge@npm:8.0.1"
+"pouchdb-merge@npm:9.0.0, pouchdb-merge@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-merge@npm:9.0.0"
   dependencies:
-    pouchdb-utils: 8.0.1
-  checksum: 014ec5043a989e86311d3a99ee364f8a13ec65fc8afce819a28213c97ea2ce35607d5337f0a92625d6cf66811975047e0dbec5a6c3b82a0dd4a786d07d8388e6
+    pouchdb-utils: 9.0.0
+  checksum: 101238835e1e1e81241b09f9e815d6a1c9c596c729d54ae3c4200b189e49f5fc8815c2b80a01d3f56b1f83ee0ff58eb7c7df4471c53b1c59d14f09ff0968e61c
   languageName: node
   linkType: hard
 
-"pouchdb-replication@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-replication@npm:8.0.1"
+"pouchdb-replication@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-replication@npm:9.0.0"
   dependencies:
-    pouchdb-checkpointer: 8.0.1
-    pouchdb-errors: 8.0.1
-    pouchdb-generate-replication-id: 8.0.1
-    pouchdb-utils: 8.0.1
-  checksum: 18f1ba137e27cf3897af9e8d9c0d8f2206822a0f29ca0d13fab8dd7331b5b6af2d055fc681d29f30292064e6922cc8a60f179485d54600a58234f43ef3ce846f
+    pouchdb-checkpointer: 9.0.0
+    pouchdb-errors: 9.0.0
+    pouchdb-generate-replication-id: 9.0.0
+    pouchdb-utils: 9.0.0
+  checksum: 53d0bcf034c998496e1fe59310b2b99b17a27dbb1f06512da3d5cdfb76107af1e690dacd89111b8ec36c46e77e63b49f7b51b2196b4aec4c575c72087a016786
   languageName: node
   linkType: hard
 
-"pouchdb-selector-core@npm:8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-selector-core@npm:8.0.1"
+"pouchdb-selector-core@npm:9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-selector-core@npm:9.0.0"
   dependencies:
-    pouchdb-collate: 8.0.1
-    pouchdb-utils: 8.0.1
-  checksum: 92862fff8a29194119cc42eea3a37bdacca73f4f4f5c59f3155553a8b57c425405abde8217d6905007648746b6ec776e84189e384c56fd0a34a16277aedf1fbc
+    pouchdb-collate: 9.0.0
+    pouchdb-utils: 9.0.0
+  checksum: 510eac1986030bf2d1a8f9490466ca0fcfb72671bbce4ada4f909b81b088e537942022cb7d7b7e2bdd9d42f44f049037fb70518055748f8b5b313851bae6efac
   languageName: node
   linkType: hard
 
-"pouchdb-utils@npm:8.0.1, pouchdb-utils@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "pouchdb-utils@npm:8.0.1"
+"pouchdb-utils@npm:9.0.0, pouchdb-utils@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "pouchdb-utils@npm:9.0.0"
   dependencies:
-    clone-buffer: 1.0.0
-    immediate: 3.3.0
-    pouchdb-collections: 8.0.1
-    pouchdb-errors: 8.0.1
-    pouchdb-md5: 8.0.1
+    pouchdb-errors: 9.0.0
+    pouchdb-md5: 9.0.0
     uuid: 8.3.2
-  checksum: 4ba6ac24ab5625d4c21ee27856a12685698550d64a885c32adf88659a4f93311820a4553712d1ca11a1290d6f0dc615d181b211ba356596b0eb0311b8bb33118
+  checksum: 0189eafae3b12c296c4c98f498b09e2f60b1f08e0a01621456dbfea980647d288e416bdad21cb2e7646211874b196dd54afdd37d0921bcaecaae8796f9e311e0
   languageName: node
   linkType: hard
 
@@ -11778,6 +11748,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"set-cookie-parser@npm:^2.4.8":
+  version: 2.7.1
+  resolution: "set-cookie-parser@npm:2.7.1"
+  checksum: 2ef8b351094712f8f7df6d63ed4b10350b24a5b515772690e7dec227df85fcef5bc451c7765f484fd9f36694ece5438d1456407d017f237d0d3351d7dbbd3587
+  languageName: node
+  linkType: hard
+
 "set-function-length@npm:^1.2.2":
   version: 1.2.2
   resolution: "set-function-length@npm:1.2.2"
@@ -12497,7 +12474,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:^2.3.3 || ^3.0.1 || ^4.0.0":
+"tough-cookie@npm:^4.0.0":
   version: 4.1.4
   resolution: "tough-cookie@npm:4.1.4"
   dependencies:

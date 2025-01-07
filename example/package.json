@@ -12,10 +12,10 @@
   "dependencies": {
     "@op-engineering/op-sqlite": "^11.2.3",
     "debug": "^4.4.0",
-    "pouchdb-adapter-http": "^8.0.1",
-    "pouchdb-core": "^8.0.1",
-    "pouchdb-mapreduce": "^8.0.1",
-    "pouchdb-replication": "^8.0.1",
+    "pouchdb-adapter-http": "^9.0.0",
+    "pouchdb-core": "^9.0.0",
+    "pouchdb-mapreduce": "^9.0.0",
+    "pouchdb-replication": "^9.0.0",
     "react": "18.3.1",
     "react-native": "0.76.4",
     "react-native-quick-crypto": "^0.7.8"
