@@ -193,7 +193,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     onGetInstanceId()
   }
 
-  async function runMigrations(tx: Transaction, dbVersion: number) {
+  async function runMigrations(_tx: Transaction, dbVersion: number) {
     // const tasks = [setupDone]
     //
     // let i = dbVersion
@@ -666,8 +666,8 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
   }
 
   api._getAttachment = (
-    docId: string,
-    attachId: string,
+    _docId: string,
+    _attachId: string,
     attachment: any,
     opts: any,
     callback: (err: any, response?: any) => void
@@ -722,10 +722,10 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         traverseRevTree(
           metadata.rev_tree,
           (
-            isLeaf: boolean,
+            _isLeaf: boolean,
             pos: number,
             revHash: string,
-            ctx: Transaction,
+            _ctx: Transaction,
             opts: any
           ) => {
             const rev = pos + '-' + revHash
@@ -852,7 +852,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     }
   }
 
-  api._destroy = (opts: any, callback: (err: any, response?: any) => void) => {
+  api._destroy = (_opts: any, callback: (err: any, response?: any) => void) => {
     sqliteChanges.removeAllListeners(api._name)
     transaction(async (tx: Transaction) => {
       try {
