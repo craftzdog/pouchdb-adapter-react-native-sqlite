@@ -11,7 +11,7 @@ It now directly uses op-sqlite, so it's more efficient.
 ### Installation
 
 ```sh
-yarn add @op-engineering/op-sqlite react-native-quick-crypto @craftzdog/react-native-buffer
+yarn add @op-engineering/op-sqlite react-native-quick-crypto @craftzdog/react-native-buffer @craftzdog/pouchdb-errors
 ```
 
 ### Polyfill NodeJS APIs
@@ -42,6 +42,7 @@ Then, in your `babel.config.js`, add the plugin to swap the `crypto`, `stream` a
             crypto: 'react-native-quick-crypto',
             stream: 'readable-stream',
             buffer: '@craftzdog/react-native-buffer',
+            'pouchdb-errors': '@craftzdog/pouchdb-errors'
           },
         },
       ],
