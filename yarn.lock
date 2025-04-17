@@ -2457,16 +2457,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@op-engineering/op-sqlite@npm:^11.2.3":
-  version: 11.4.9
-  resolution: "@op-engineering/op-sqlite@npm:11.4.9"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 5266d9a9ed028d0867c3fb6e99562251c1228cc633452ed99ae67fc763842f96fa78ed243039c3ce92b1eea983bbb990d4d0bef733204e81238475489b20cdab
-  languageName: node
-  linkType: hard
-
 "@op-engineering/op-sqlite@npm:^12.0.2":
   version: 12.0.2
   resolution: "@op-engineering/op-sqlite@npm:12.0.2"
@@ -10492,7 +10482,7 @@ __metadata:
     "@babel/core": ^7.25.2
     "@babel/preset-env": ^7.25.3
     "@babel/runtime": ^7.25.0
-    "@op-engineering/op-sqlite": ^11.2.3
+    "@op-engineering/op-sqlite": ^12.0.2
     "@react-native-community/cli": 15.0.1
     "@react-native-community/cli-platform-android": 15.0.1
     "@react-native-community/cli-platform-ios": 15.0.1

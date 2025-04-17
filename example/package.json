@@ -10,7 +10,7 @@
     "build:ios": "react-native build-ios --scheme PouchdbAdapterReactNativeSqliteExample --mode Debug --extra-params \"-sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO\""
   },
   "dependencies": {
-    "@op-engineering/op-sqlite": "^11.2.3",
+    "@op-engineering/op-sqlite": "^12.0.2",
     "debug": "^4.4.0",
     "pouchdb-adapter-http": "^9.0.0",
     "pouchdb-core": "^9.0.0",
