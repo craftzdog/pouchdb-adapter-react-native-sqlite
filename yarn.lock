@@ -1777,6 +1777,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@craftzdog/pouchdb-errors@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "@craftzdog/pouchdb-errors@npm:9.0.1"
+  checksum: 2e7b899f69f172de9d03ecddfd843b2d1672f79d29b0608912d2f1615b183715e70dc746a75dfba93cee8c514db884b6bd007c35122b42fd035559bdcfdb4e3c
+  languageName: node
+  linkType: hard
+
 "@craftzdog/react-native-buffer@npm:^6.0.5":
   version: 6.0.5
   resolution: "@craftzdog/react-native-buffer@npm:6.0.5"
@@ -10482,6 +10489,7 @@ __metadata:
     "@babel/core": ^7.25.2
     "@babel/preset-env": ^7.25.3
     "@babel/runtime": ^7.25.0
+    "@craftzdog/pouchdb-errors": ^9.0.1
     "@op-engineering/op-sqlite": ^12.0.2
     "@react-native-community/cli": 15.0.1
     "@react-native-community/cli-platform-android": 15.0.1
