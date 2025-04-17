@@ -2467,6 +2467,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@op-engineering/op-sqlite@npm:^12.0.2":
+  version: 12.0.2
+  resolution: "@op-engineering/op-sqlite@npm:12.0.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 6941693a1c30802a9cdc15a9f0d97b26b2209c370a6052f3a9b4437261c9dfdf86e0e00a264423dce5780c109bbe4eb453365ca86c788c8b394eba6a7e8b6eca
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -10507,7 +10517,7 @@ __metadata:
   dependencies:
     "@commitlint/config-conventional": ^17.0.2
     "@evilmartians/lefthook": ^1.5.0
-    "@op-engineering/op-sqlite": ^11.2.3
+    "@op-engineering/op-sqlite": ^12.0.2
     "@react-native-community/cli": 15.0.1
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^9.0.2
