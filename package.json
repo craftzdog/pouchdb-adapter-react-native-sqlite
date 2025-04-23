@@ -1,6 +1,6 @@
 {
   "name": "pouchdb-adapter-react-native-sqlite",
-  "version": "4.0.5",
+  "version": "4.1.0",
   "description": "PouchDB adapter for React Native SQLite",
   "source": "./src/index.ts",
   "main": "./lib/commonjs/index.js",
@@ -74,7 +74,7 @@
     "@types/react": "^18.2.44",
     "commitlint": "^17.0.2",
     "del-cli": "^5.1.0",
-    "eslint": "^8.51.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
     "jest": "^29.7.0",
@@ -87,7 +87,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@op-engineering/op-sqlite": "^11.2.3",
+    "@op-engineering/op-sqlite": "^12.0.2",
     "debug": "^4.4.0",
     "events": "^3.3.0",
     "pouchdb-adapter-utils": "^9.0.0",
@@ -144,6 +144,8 @@
       "prettier"
     ],
     "rules": {
+      "@typescript-eslint/no-shadow": "off",
+      "react-native/no-inline-styles": "off",
       "react/react-in-jsx-scope": "off",
       "prettier/prettier": [
         "error",
