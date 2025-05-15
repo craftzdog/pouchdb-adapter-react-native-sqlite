@@ -117,8 +117,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
 
   async function setup(callback: (err: any) => void) {
     await db.transaction(async (tx) => {
-      checkEncoding(tx)
-      fetchVersion(tx)
+      await Promise.all([checkEncoding(tx), fetchVersion(tx)])
     })
     callback(null)
   }
@@ -133,22 +132,24 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     const sql = 'SELECT sql FROM sqlite_master WHERE tbl_name = ' + META_STORE
     const result = await tx.execute(sql, [])
     if (!result.rows?.length) {
-      onGetVersion(tx, 0)
+      await onGetVersion(tx, 0)
     } else if (!/db_version/.test(result.rows[0]!.sql as string)) {
-      tx.execute('ALTER TABLE ' + META_STORE + ' ADD COLUMN db_version INTEGER')
-      onGetVersion(tx, 1)
+      await tx.execute(
+        'ALTER TABLE ' + META_STORE + ' ADD COLUMN db_version INTEGER'
+      )
+      await onGetVersion(tx, 1)
     } else {
       const resDBVer = await tx.execute('SELECT db_version FROM ' + META_STORE)
       const dbVersion = resDBVer.rows[0]!.db_version as number
-      onGetVersion(tx, dbVersion)
+      await onGetVersion(tx, dbVersion)
     }
   }
 
-  function onGetVersion(tx: Transaction, dbVersion: number) {
+  async function onGetVersion(tx: Transaction, dbVersion: number) {
     if (dbVersion === 0) {
-      createInitialSchema(tx)
+      await createInitialSchema(tx)
     } else {
-      runMigrations(tx, dbVersion)
+      await runMigrations(tx, dbVersion)
     }
   }
 
