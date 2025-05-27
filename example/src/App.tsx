@@ -263,6 +263,7 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 12,
     paddingTop: 80,
+    backgroundColor: 'white',
   },
   contentContainerStyle: {
     gap: 12,
