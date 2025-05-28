@@ -21,6 +21,8 @@ const pouch = new PouchDB('mydb', {
   adapter: 'react-native-sqlite',
   revs_limit: 100,
 })
+// @ts-ignore
+globalThis.pouch = pouch
 
 // async function run() {
 //   const db = open({ name: 'test' })
@@ -127,14 +129,22 @@ export default function App() {
     }
   }
   const handleReplicate = async () => {
-    setResult('Replicating from remote...')
+    const remoteUrl = process.env.COUCHDB_URL
+    setResult(`Replicating from remote...${remoteUrl}`)
+    if (!remoteUrl) {
+      setResult(
+        'CouchDB URL is not set. Please set COUCHDB_URL environment variable in `.env.local`.'
+      )
+      return
+    }
     try {
       const result = await pouch.replicate
-        .from(process.env.EXPO_PUBLIC_COUCHDB_URL, { live: false })
+        .from(remoteUrl, { live: false })
         .on('error', (err: any) => console.log('error:', err))
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
     } catch (e: any) {
+      console.error(e)
       setResult(e.name + ': ' + e.message)
     }
   }
