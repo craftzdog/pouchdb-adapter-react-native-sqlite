@@ -21,6 +21,7 @@ module.exports = getConfig(
           },
         },
       ],
+      ['module:react-native-dotenv'],
     ],
   },
   { root, pkg }

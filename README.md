@@ -81,8 +81,16 @@ import PouchDB from './pouchdb'
 
 const pouch = new PouchDB('mydb', {
   adapter: 'react-native-sqlite',
+  // Other options
 })
 ```
+
+### Options
+
+You can specify the following options in the PouchDB options:
+
+- `location`: The location of the SQLite database file. See [op-sqlite's docs](https://op-engineering.github.io/op-sqlite/docs/configuration) for more details.
+- `encryptionKey`: The encryption key for SQLCipher. See [op-sqlite's docs](https://op-engineering.github.io/op-sqlite/docs/api#sqlcipher-open) for more details.
 
 ## Troubleshootings
 
