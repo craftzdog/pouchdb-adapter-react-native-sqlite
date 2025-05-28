@@ -19,6 +19,7 @@ console.log(`Using ${uiManager}`)
 
 const pouch = new PouchDB('mydb', {
   adapter: 'react-native-sqlite',
+  revs_limit: 100,
 })
 
 // async function run() {

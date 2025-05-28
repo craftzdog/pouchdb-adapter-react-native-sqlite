@@ -3,7 +3,9 @@ import { TransactionQueue } from './transactionQueue'
 import type { DB } from '@op-engineering/op-sqlite'
 
 type SQLiteOpenParams = Parameters<typeof open>
-export type OpenDatabaseOptions = SQLiteOpenParams[0]
+export type OpenDatabaseOptions = SQLiteOpenParams[0] & {
+  revs_limit?: number
+}
 type OpenDatabaseResult =
   | {
       db: DB

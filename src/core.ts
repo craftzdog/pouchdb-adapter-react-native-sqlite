@@ -94,7 +94,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
   api.auto_compaction = false
 
   api._name = opts.name
-  logger.debug('Creating SqlPouch instance: %s', api._name)
+  logger.debug('Creating SqlPouch instance: %s', api._name, opts)
 
   const sqlOpts = Object.assign({}, opts, { name: opts.name + '.sqlite' })
   const openDBResult = openDB(sqlOpts)
@@ -249,7 +249,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     logger.debug('**********bulkDocs!!!!!!!!!!!!!!!!!!!')
     try {
       const response = await sqliteBulkDocs(
-        { revs_limit: undefined },
+        { revs_limit: opts.revs_limit },
         req,
         reqOpts,
         api,
