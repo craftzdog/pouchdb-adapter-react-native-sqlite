@@ -152,6 +152,11 @@ export function handleSQLiteError(
   callback?: (error: any) => void
 ) {
   guardedConsole('error', 'SQLite threw an error', event)
+  if (event.constructor && event.constructor.name === 'PouchError') {
+    if (callback) callback(event)
+    return event
+  }
+
   // event may actually be a SQLError object, so report is as such
   const errorNameMatch =
     event && event.constructor.toString().match(/function ([^(]+)/)
@@ -159,7 +164,7 @@ export function handleSQLiteError(
   const errorReason = event.message
   const error = createError(WSQ_ERROR, errorReason, errorName)
   if (callback) callback(error)
-  else return error
+  return error
 }
 
 export { stringifyDoc, unstringifyDoc, qMarks, select, compactRevs }

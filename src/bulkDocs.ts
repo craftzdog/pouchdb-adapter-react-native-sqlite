@@ -54,12 +54,20 @@ async function sqliteBulkDocs(
     if (doc._id && isLocalId(doc._id)) {
       return doc
     }
-    return parseDoc(doc, newEdits, dbOpts)
+    try {
+      return parseDoc(doc, newEdits, dbOpts)
+    } catch (err: any) {
+      logger.error('Error parsing doc:', err)
+      return {
+        ...doc,
+        error: err,
+      }
+    }
   })
 
   const docInfoErrors = docInfos.filter((docInfo) => docInfo.error)
-  if (docInfoErrors.length) {
-    throw docInfoErrors[0]
+  if (docInfoErrors.length > 0) {
+    throw docInfoErrors[0]?.error
   }
 
   let tx: Transaction
