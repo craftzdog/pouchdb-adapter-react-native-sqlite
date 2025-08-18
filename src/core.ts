@@ -408,7 +408,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     }
 
     readTransaction(async (tx: Transaction) => {
-      const processResult = (rows: any[], results: any[], keys: any) => {
+      const processResult = async (rows: any[], results: any[], keys: any) => {
         for (let i = 0, l = rows.length; i < l; i++) {
           const item = rows[i]
           const metadata = safeJsonParse(item.metadata)
@@ -429,7 +429,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
                 doc.doc._conflicts = conflicts
               }
             }
-            fetchAttachmentsIfNecessary(doc.doc, opts, api, tx)
+            await fetchAttachmentsIfNecessary(doc.doc, opts, api, tx)
           }
           if (item.deleted) {
             if (keys) {
@@ -506,7 +506,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
               }
             }
             if (finishedCount === keyChunks.length) {
-              processResult(allRows, results, keys)
+              await processResult(allRows, results, keys)
             }
           }
         } else {
@@ -529,7 +529,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
               rows.push(result.rows[index])
             }
           }
-          processResult(rows, results, keys)
+          await processResult(rows, results, keys)
         }
 
         const returnVal: any = {
@@ -639,9 +639,8 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
                   results.push(change)
                 }
                 if (opts.attachments && opts.include_docs) {
-                  fetchAttachmentsIfNecessary(doc, opts, api, tx, () =>
-                    opts.onChange(change)
-                  )
+                  await fetchAttachmentsIfNecessary(doc, opts, api, tx)
+                  opts.onChange(change)
                 } else {
                   opts.onChange(change)
                 }
@@ -881,45 +880,49 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     })
   }
 
-  function fetchAttachmentsIfNecessary(
+  async function fetchAttachmentsIfNecessary(
     doc: any,
     opts: any,
     api: any,
-    txn: any,
-    cb?: () => void
+    txn: any
   ) {
     const attachments = Object.keys(doc._attachments || {})
     if (!attachments.length) {
-      return cb && cb()
-    }
-    let numDone = 0
-
-    const checkDone = () => {
-      if (++numDone === attachments.length && cb) {
-        cb()
-      }
+      return
     }
 
-    const fetchAttachment = (doc: any, att: string) => {
+    const fetchAttachment = async (doc: any, att: string) => {
       const attObj = doc._attachments[att]
       const attOpts = { binary: opts.binary, ctx: txn }
-      api._getAttachment(doc._id, att, attObj, attOpts, (_: any, data: any) => {
-        doc._attachments[att] = Object.assign(
-          pick(attObj, ['digest', 'content_type']),
-          { data }
+      return new Promise<void>((resolve, reject) => {
+        api._getAttachment(
+          doc._id,
+          att,
+          attObj,
+          attOpts,
+          (err: any, data: any) => {
+            if (err) {
+              return reject(err)
+            }
+            doc._attachments[att] = Object.assign(
+              pick(attObj, ['digest', 'content_type']),
+              { data }
+            )
+            resolve()
+          }
         )
-        checkDone()
       })
     }
 
-    attachments.forEach((att) => {
-      if (opts.attachments && opts.include_docs) {
-        fetchAttachment(doc, att)
-      } else {
-        doc._attachments[att].stub = true
-        checkDone()
-      }
-    })
+    await Promise.all(
+      attachments.map(async (att) => {
+        if (opts.attachments && opts.include_docs) {
+          await fetchAttachment(doc, att)
+        } else {
+          doc._attachments[att].stub = true
+        }
+      })
+    )
   }
 
   async function getMaxSeq(tx: Transaction): Promise<number> {
