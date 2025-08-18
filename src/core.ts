@@ -359,7 +359,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     const key = 'key' in opts ? opts.key : false
     const keys = 'keys' in opts ? opts.keys : false
     const descending = 'descending' in opts ? opts.descending : false
-    let limit = 'limit' in opts ? opts.limit : -1
+    const limit = 'limit' in opts ? opts.limit : -1
     const offset = 'skip' in opts ? opts.skip : 0
     const inclusiveEnd = opts.inclusive_end !== false
 
