@@ -463,7 +463,13 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         const updateSeq = opts.update_seq ? await getMaxSeq(tx) : undefined
 
         if (limit === 0) {
-          limit = 1
+          const returnVal: any = {
+            total_rows: totalRows,
+            offset: opts.skip,
+            rows: results,
+          }
+          callback(null, returnVal)
+          return
         }
 
         if (keys) {
