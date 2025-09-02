@@ -249,7 +249,13 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     logger.debug('**********bulkDocs!!!!!!!!!!!!!!!!!!!')
     try {
       const response = await sqliteBulkDocs(
-        { revs_limit: opts.revs_limit },
+        {
+          revs_limit: opts.revs_limit,
+          deterministic_revs:
+            typeof opts.deterministic_revs === 'boolean'
+              ? opts.deterministic_revs
+              : true,
+        },
         req,
         reqOpts,
         api,

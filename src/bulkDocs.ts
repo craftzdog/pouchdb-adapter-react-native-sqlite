@@ -29,6 +29,7 @@ interface DocInfo {
 
 interface DBOptions {
   revs_limit?: number
+  deterministic_revs?: boolean
 }
 
 interface Request {
