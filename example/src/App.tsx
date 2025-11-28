@@ -53,6 +53,7 @@ export default function App() {
   const handleAllDocs = async () => {
     setResult('')
     const docs = await pouch.allDocs()
+    console.log('all docs:', docs)
     setResult(JSON.stringify(docs, null, 2))
   }
   const handleGetDoc = async () => {
@@ -142,6 +143,7 @@ export default function App() {
         .from(remoteUrl, { live: false })
         .on('error', (err: any) => console.log('error:', err))
       console.log('ret:', result)
+      setResult('Finished replicating from remote!')
       setResult(JSON.stringify(result, null, 2))
     } catch (e: any) {
       console.error(e)

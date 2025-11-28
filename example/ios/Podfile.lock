@@ -8,15 +8,13 @@ PODS:
   - hermes-engine (0.79.2):
     - hermes-engine/Pre-built (= 0.79.2)
   - hermes-engine/Pre-built (0.79.2)
-  - op-sqlite (12.0.2):
+  - op-sqlite (15.0.7):
     - DoubleConversion
     - glog
     - hermes-engine
     - RCT-Folly (= 2024.11.18.00)
     - RCTRequired
     - RCTTypeSafety
-    - React
-    - React-callinvoker
     - React-Core
     - React-debug
     - React-Fabric
@@ -1946,7 +1944,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 314be5250afa5692b57b4dd1705959e1973a8ebe
-  op-sqlite: d9d8fb604d17fdd0b044ca0af8d0fa23322e54ae
+  op-sqlite: 0f006f5b1a05a65b8a08d3316bae4b6fbdf43bfb
   OpenSSL-Universal: 6082b0bf950e5636fe0d78def171184e2b3899c2
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: 83ffb90c23ee5cea353bd32008a7bca100908f8c
@@ -2016,4 +2014,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 837f5fdb047a8206031c82b2d213e75aeef2aff3
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
