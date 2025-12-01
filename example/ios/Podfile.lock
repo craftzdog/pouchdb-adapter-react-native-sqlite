@@ -8,7 +8,7 @@ PODS:
   - hermes-engine (0.79.2):
     - hermes-engine/Pre-built (= 0.79.2)
   - hermes-engine/Pre-built (0.79.2)
-  - op-sqlite (15.0.7):
+  - op-sqlite (15.1.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1944,7 +1944,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 314be5250afa5692b57b4dd1705959e1973a8ebe
-  op-sqlite: 0f006f5b1a05a65b8a08d3316bae4b6fbdf43bfb
+  op-sqlite: 0e39ed4ecaaaaad8c2357801f9a49a575d4c4ec5
   OpenSSL-Universal: 6082b0bf950e5636fe0d78def171184e2b3899c2
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: 83ffb90c23ee5cea353bd32008a7bca100908f8c
