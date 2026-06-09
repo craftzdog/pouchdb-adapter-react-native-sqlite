@@ -220,7 +220,7 @@ async function sqliteBulkDocs(
         await insertAttachmentMappings(seq)
         await dataWritten(tx, seq)
       }
-    } catch (e) {
+    } catch {
       // constraint error, recover by updating instead (see #1638)
       // https://github.com/pouchdb/pouchdb/issues/1638
       const fetchSql = select('seq', BY_SEQ_STORE, null, 'doc_id=? AND rev=?')
