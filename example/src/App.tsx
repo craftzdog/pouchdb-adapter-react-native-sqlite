@@ -74,7 +74,7 @@ export default function App() {
       console.log('mydoc:', mydoc)
       rev = mydoc._rev
       count = mydoc.count || 0
-    } catch (e) {}
+    } catch {}
 
     const r = await pouch.put({
       _rev: rev,
