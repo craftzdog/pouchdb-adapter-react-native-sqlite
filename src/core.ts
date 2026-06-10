@@ -819,7 +819,15 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           callback(createError(REV_CONFLICT))
         }
       } catch (e: any) {
-        if (e.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+        // op-sqlite surfaces a UNIQUE constraint violation as a plain Error
+        // whose message contains "UNIQUE constraint failed" — it has no
+        // structured `code` — so match on the message too. A clashing _local
+        // INSERT (e.g. concurrent first-writes of the same id) is a rev
+        // conflict, not an unknown SQLite error (#2951).
+        if (
+          e.code === 'SQLITE_CONSTRAINT_UNIQUE' ||
+          /UNIQUE constraint failed/i.test(e.message || '')
+        ) {
           callback(createError(REV_CONFLICT))
         } else {
           handleSQLiteError(e, callback)
