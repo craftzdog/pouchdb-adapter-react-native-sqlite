@@ -90,15 +90,16 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@craftzdog/react-native-buffer": "^6.1.2",
     "@op-engineering/op-sqlite": "^16.2.0",
     "debug": "^4.4.0",
     "events": "^3.3.0",
     "pouchdb-adapter-utils": "^9.0.0",
-    "pouchdb-binary-utils": "^9.0.0",
     "pouchdb-errors": "^9.0.0",
     "pouchdb-json": "^9.0.0",
     "pouchdb-merge": "^9.0.0",
-    "pouchdb-utils": "^9.0.0"
+    "pouchdb-utils": "^9.0.0",
+    "react-native-quick-base64": "^3.0.0"
   },
   "resolutions": {
     "@types/react": "^19.2.0"

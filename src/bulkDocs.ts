@@ -15,7 +15,13 @@ import {
   ATTACH_AND_SEQ_STORE,
 } from './constants'
 
-import { select, stringifyDoc, compactRevs, handleSQLiteError } from './utils'
+import {
+  select,
+  stringifyDoc,
+  compactRevs,
+  handleSQLiteError,
+  binaryStringToArrayBuffer,
+} from './utils'
 import type { Transaction } from '@op-engineering/op-sqlite'
 import { logger } from './debug'
 
@@ -307,7 +313,10 @@ async function sqliteBulkDocs(
     if (result.rows?.length) return
     sql =
       'INSERT INTO ' + ATTACH_STORE + ' (digest, body, escaped) VALUES (?,?,0)'
-    await tx.execute(sql, [digest, data])
+    // Store as a BLOB (ArrayBuffer). Binding the raw binary string would route
+    // through op-sqlite's TEXT path, which truncates at the first NUL byte and
+    // mangles bytes >127 — corrupting binary attachments (e.g. PNGs).
+    await tx.execute(sql, [digest, binaryStringToArrayBuffer(data)])
   }
 
   await new Promise<void>((resolve, reject) => {
@@ -318,10 +327,10 @@ async function sqliteBulkDocs(
   })
 
   await transaction(async (txn: Transaction) => {
+    tx = txn
     await verifyAttachments()
 
     try {
-      tx = txn
       await fetchExistingDocs()
       if (docInfos.length > 0) {
         await websqlProcessDocs()

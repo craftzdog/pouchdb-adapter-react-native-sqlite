@@ -11,10 +11,6 @@ import {
   latest as getLatest,
 } from 'pouchdb-merge'
 import { safeJsonParse, safeJsonStringify } from 'pouchdb-json'
-import {
-  binaryStringToBlobOrBuffer as binStringToBlob,
-  btoa,
-} from 'pouchdb-binary-utils'
 
 import sqliteBulkDocs from './bulkDocs'
 
@@ -37,9 +33,12 @@ import {
   select,
   compactRevs,
   handleSQLiteError,
+  arrayBufferToBinaryString,
+  btoa,
 } from './utils'
 
 import openDB, { closeDB, type OpenDatabaseOptions } from './openDatabase'
+import { Buffer } from '@craftzdog/react-native-buffer'
 import type { DB, Transaction } from '@op-engineering/op-sqlite'
 import type { TransactionQueue } from './transactionQueue'
 import { logger } from './debug'
@@ -283,6 +282,11 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
             id,
             Object.assign({ ctx: txn }, opts),
             (err: any, response: any) => {
+              // Don't hand back a transaction that's about to finalize;
+              // _getAttachment opens its own when it has no ctx.
+              if (response) {
+                response.ctx = undefined
+              }
               callback(err, response)
               resolve()
             }
@@ -683,22 +687,52 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     opts: any,
     callback: (err: any, response?: any) => void
   ) => {
-    let res: any
-    const tx: Transaction = opts.ctx
     const digest = attachment.digest
     const type = attachment.content_type
     const sql =
       'SELECT escaped, body AS body FROM ' + ATTACH_STORE + ' WHERE digest=?'
-    tx.execute(sql, [digest]).then((result) => {
+
+    const fetch = async (tx: Transaction) => {
+      const result = await tx.execute(sql, [digest])
       const item = result.rows[0]!
-      const data = item.body
+      const body = item.body
+      let res: any
+      // Attachments are stored as BLOBs, which op-sqlite returns as an
+      // ArrayBuffer; older rows may still be plain strings.
       if (opts.binary) {
-        res = binStringToBlob(data, type)
+        // React Native's Blob can't be built from an ArrayBuffer, so return a
+        // typed Buffer (a Buffer with a `.type`) — matching pouchdb's Node
+        // behaviour.
+        res =
+          typeof body === 'string'
+            ? Buffer.from(body, 'binary')
+            : Buffer.from(body as ArrayBuffer)
+        res.type = type
       } else {
+        const data =
+          typeof body === 'string'
+            ? body
+            : arrayBufferToBinaryString(body as ArrayBuffer)
         res = btoa(data)
       }
       callback(null, res)
-    })
+    }
+
+    if (opts.ctx) {
+      // Within an active transaction (fetchAttachmentsIfNecessary).
+      fetch(opts.ctx).catch((e: any) => handleSQLiteError(e, callback))
+    } else {
+      // Public getAttachment: open and hold our own read transaction until the
+      // read finishes. op-sqlite reads are async, so reusing the ctx from _get
+      // (which finalizes right after) would race the read against COMMIT.
+      readTransaction(async (txn: Transaction) => {
+        try {
+          await fetch(txn)
+        } catch (e: any) {
+          handleSQLiteError(e, callback)
+        }
+      })
+    }
   }
 
   api._getRevisionTree = (

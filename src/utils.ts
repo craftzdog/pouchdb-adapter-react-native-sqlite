@@ -1,5 +1,6 @@
 import { createError, WSQ_ERROR } from 'pouchdb-errors'
 import { guardedConsole } from 'pouchdb-utils'
+import { Buffer } from '@craftzdog/react-native-buffer'
 import { BY_SEQ_STORE, ATTACH_STORE, ATTACH_AND_SEQ_STORE } from './constants'
 import type { Transaction } from '@op-engineering/op-sqlite'
 
@@ -167,4 +168,50 @@ export function handleSQLiteError(
   return error
 }
 
-export { stringifyDoc, unstringifyDoc, qMarks, select, compactRevs }
+/**
+ * Converts an op-sqlite BLOB (returned as an ArrayBuffer) back into a binary
+ * string. Chunked so large attachments don't overflow the call stack.
+ */
+function arrayBufferToBinaryString(buffer: ArrayBuffer): string {
+  let binary = ''
+  const bytes = new Uint8Array(buffer)
+  const len = bytes.byteLength
+  const chunkSize = 8192
+  for (let i = 0; i < len; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize))
+  }
+  return binary
+}
+
+/**
+ * Converts a binary string (each char code is one byte, 0–255) into an
+ * ArrayBuffer suitable for binding to an op-sqlite BLOB column.
+ */
+function binaryStringToArrayBuffer(bin: string): ArrayBuffer {
+  const length = bin.length
+  const buf = new ArrayBuffer(length)
+  const arr = new Uint8Array(buf)
+  for (let i = 0; i < length; i++) {
+    arr[i] = bin.charCodeAt(i)
+  }
+  return buf
+}
+
+/**
+ * Base64-encodes a binary string (each char code is one byte, 0–255), backed by
+ * react-native-quick-base64 via @craftzdog/react-native-buffer.
+ */
+function btoa(input: string): string {
+  return Buffer.from(input, 'binary').toString('base64')
+}
+
+export {
+  stringifyDoc,
+  unstringifyDoc,
+  qMarks,
+  select,
+  compactRevs,
+  arrayBufferToBinaryString,
+  binaryStringToArrayBuffer,
+  btoa,
+}

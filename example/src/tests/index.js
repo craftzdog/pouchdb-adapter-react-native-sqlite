@@ -4,8 +4,8 @@
 import '../MochaSetup'
 import './setup'
 
-// Core suites (Phase 1 scope). Attachments, replication, and the remote parts of
-// changes come in later phases (they need Buffer-heavy paths / a live CouchDB).
+// Core suites (Phase 1 scope) + attachments (Phase 3). Replication and the
+// remote parts of changes come later (they need a live CouchDB).
 require('./basics.test')
 require('./all_docs.test')
 require('./bulk_docs.test')
@@ -19,3 +19,4 @@ require('./deterministicrevs.test')
 require('./events.test')
 require('./close.test')
 require('./compaction.test')
+require('./attachments.test')
