@@ -173,15 +173,22 @@ async function sqliteBulkDocs(
 
     async function insertAttachmentMappings(seq: number) {
       const attsToAdd = Object.keys(data._attachments || {})
+      const digests: { [key: string]: boolean } = {}
 
       if (!attsToAdd.length) {
         return
       }
 
       function add(att: string) {
+        const digest = data._attachments[att].digest as string
+        // A revision can reference the same content under two names (identical
+        // digest); the (digest, seq) index is UNIQUE, so insert each digest
+        // once per seq.
+        if (digests[digest]) return
+        digests[digest] = true
         const sql =
           'INSERT INTO ' + ATTACH_AND_SEQ_STORE + ' (digest, seq) VALUES (?,?)'
-        const sqlArgs = [data._attachments[att].digest, seq]
+        const sqlArgs = [digest, seq]
         return tx.execute(sql, sqlArgs)
       }
 
