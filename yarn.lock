@@ -1777,7 +1777,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@craftzdog/react-native-buffer@npm:^6.0.5":
+"@craftzdog/react-native-buffer@npm:^6.1.2":
   version: 6.1.2
   resolution: "@craftzdog/react-native-buffer@npm:6.1.2"
   dependencies:
@@ -2417,13 +2417,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@op-engineering/op-sqlite@npm:15.1.3":
-  version: 15.1.3
-  resolution: "@op-engineering/op-sqlite@npm:15.1.3"
+"@op-engineering/op-sqlite@npm:^16.2.0":
+  version: 16.2.0
+  resolution: "@op-engineering/op-sqlite@npm:16.2.0"
   peerDependencies:
+    "@sqlite.org/sqlite-wasm": "*"
     react: "*"
     react-native: "*"
-  checksum: bf0cd964d88fe8899db1a450caa025e0afdb7e2253424e784cb4f4edb5237437d35345905d5be8eb41f125dbef4e457887f6fa1d88fcc5e5384260d213e8c2fc
+  peerDependenciesMeta:
+    "@sqlite.org/sqlite-wasm":
+      optional: true
+  checksum: 6201c72256f116d5ead337e50c55e4c7e583cf6a69983df9fef3e4d04f85b037900b734849c9eff85f4168bede6325a0f17f1a8e6d8348f9c45a05619b86d2b5
   languageName: node
   linkType: hard
 
@@ -5909,7 +5913,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"events@npm:^3.3.0":
+"events@npm:3.3.0, events@npm:^3.3.0":
   version: 3.3.0
   resolution: "events@npm:3.3.0"
   checksum: f6f487ad2198aa41d878fa31452f1a3c00958f46e9019286ff4787c84aac329332ab45c9cdc8c445928fc6d7ded294b9e005a7fce9426488518017831b272780
@@ -9858,7 +9862,7 @@ __metadata:
     "@babel/preset-env": ^7.25.3
     "@babel/runtime": ^7.25.0
     "@craftzdog/pouchdb-errors": ^9.0.1
-    "@op-engineering/op-sqlite": 15.1.3
+    "@op-engineering/op-sqlite": ^16.2.0
     "@react-native-community/cli": 20.1.3
     "@react-native-community/cli-platform-android": 20.1.3
     "@react-native-community/cli-platform-ios": 20.1.3
@@ -9878,7 +9882,9 @@ __metadata:
     react-native-builder-bob: ^0.42.1
     react-native-dotenv: ^3.4.11
     react-native-monorepo-config: ^0.3.5
-    react-native-quick-crypto: ^0.7.8
+    react-native-nitro-modules: 0.35.9
+    react-native-quick-base64: 3.0.0
+    react-native-quick-crypto: 1.1.5
   languageName: unknown
   linkType: soft
 
@@ -9889,7 +9895,7 @@ __metadata:
     "@commitlint/config-conventional": ^17.0.2
     "@craftzdog/pouchdb-errors": ^9.0.1
     "@evilmartians/lefthook": ^1.5.0
-    "@op-engineering/op-sqlite": 15.1.3
+    "@op-engineering/op-sqlite": ^16.2.0
     "@react-native-community/cli": 20.1.3
     "@react-native/babel-preset": 0.85.3
     "@react-native/eslint-config": 0.85.3
@@ -10408,7 +10414,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-quick-base64@npm:^3.0.0":
+"react-native-nitro-modules@npm:0.35.9":
+  version: 0.35.9
+  resolution: "react-native-nitro-modules@npm:0.35.9"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 2c04481b132ae2fb247ae1658b426c04ddfb73ff7622716db2f5d316bc831ffb5c87fdedf65f39d5d8724daf5a56277d838936b49ec308f2e14f7208bbed130c
+  languageName: node
+  linkType: hard
+
+"react-native-quick-base64@npm:3.0.0, react-native-quick-base64@npm:^3.0.0":
   version: 3.0.0
   resolution: "react-native-quick-base64@npm:3.0.0"
   peerDependencies:
@@ -10418,16 +10434,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-quick-crypto@npm:^0.7.8":
-  version: 0.7.17
-  resolution: "react-native-quick-crypto@npm:0.7.17"
+"react-native-quick-crypto@npm:1.1.5":
+  version: 1.1.5
+  resolution: "react-native-quick-crypto@npm:1.1.5"
   dependencies:
-    "@craftzdog/react-native-buffer": ^6.0.5
-    events: ^3.3.0
-    readable-stream: ^4.5.2
+    "@craftzdog/react-native-buffer": ^6.1.2
+    events: 3.3.0
+    readable-stream: 4.7.0
+    safe-buffer: ^5.2.1
     string_decoder: ^1.3.0
-    util: ^0.12.5
-  checksum: 5864b483900b504bff353721dffce2458635d7ad15a4bb87389a9161d83fd60a809c2881293a58ef03de3492ded8e9bf19efc8ae1d1694b500feedc26eee1e5c
+    util: 0.12.5
+  peerDependencies:
+    expo: ">=48.0.0"
+    expo-build-properties: "*"
+    react: "*"
+    react-native: "*"
+    react-native-nitro-modules: ">=0.31.2"
+    react-native-quick-base64: ">=3.0.0"
+  peerDependenciesMeta:
+    expo:
+      optional: true
+    expo-build-properties:
+      optional: true
+  checksum: 85d2218b93791fb79a45504ed19102e3d8ec6df4364f96c6201130c7f4e55df2976daf10c417198036bd4fe3a0c6b9c9c27c75c261de16a626cf6d363796929f
   languageName: node
   linkType: hard
 
@@ -10577,7 +10606,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^4.5.2":
+"readable-stream@npm:4.7.0":
   version: 4.7.0
   resolution: "readable-stream@npm:4.7.0"
   dependencies:
@@ -10980,7 +11009,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:5.2.1, safe-buffer@npm:~5.2.0":
+"safe-buffer@npm:5.2.1, safe-buffer@npm:^5.2.1, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
@@ -12384,7 +12413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"util@npm:^0.12.5":
+"util@npm:0.12.5":
   version: 0.12.5
   resolution: "util@npm:0.12.5"
   dependencies:

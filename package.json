@@ -90,7 +90,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@op-engineering/op-sqlite": "15.1.3",
+    "@op-engineering/op-sqlite": "^16.2.0",
     "debug": "^4.4.0",
     "events": "^3.3.0",
     "pouchdb-adapter-utils": "^9.0.0",
