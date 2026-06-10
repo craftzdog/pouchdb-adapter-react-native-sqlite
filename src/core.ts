@@ -91,7 +91,6 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
   let txnQueue: TransactionQueue
   let instanceId: string
   let encoding: string = 'UTF-8'
-  api.auto_compaction = false
 
   api._name = opts.name
   logger.debug('Creating SqlPouch instance: %s', api._name, opts)
