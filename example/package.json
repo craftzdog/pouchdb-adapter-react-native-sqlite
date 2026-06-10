@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@craftzdog/pouchdb-errors": "^9.0.1",
-    "@op-engineering/op-sqlite": "15.1.3",
+    "@op-engineering/op-sqlite": "^16.2.0",
     "debug": "^4.4.0",
     "pouchdb-adapter-http": "^9.0.0",
     "pouchdb-core": "^9.0.0",
@@ -19,7 +19,9 @@
     "pouchdb-replication": "^9.0.0",
     "react": "19.2.3",
     "react-native": "0.85.3",
-    "react-native-quick-crypto": "^0.7.8"
+    "react-native-nitro-modules": "0.35.9",
+    "react-native-quick-base64": "3.0.0",
+    "react-native-quick-crypto": "1.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
