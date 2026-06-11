@@ -662,7 +662,7 @@ adapters.forEach(function (adapter) {
       })
     })
 
-    it.skip('Testing get with open_revs on nonexistent doc', function (done) {
+    it('Testing get with open_revs on nonexistent doc', function (done) {
       var db = new PouchDB(dbs.name)
       db.get('nonexistent', { open_revs: ['2-whatever'] }, function (err, res) {
         res.length.should.equal(1, 'just one result')
@@ -1067,7 +1067,7 @@ adapters.forEach(function (adapter) {
         })
     })
 
-    it.skip('These fail due to COUCHDB-3239 and COUCHDB-3240', function () {
+    it('These fail due to COUCHDB-3239 and COUCHDB-3240', function () {
       it('5857 - GET latest=true with conflicting parent revs', function () {
         var db = new PouchDB(dbs.name)
         var doctree = [

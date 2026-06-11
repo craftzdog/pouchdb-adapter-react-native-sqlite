@@ -64,15 +64,7 @@ async function compactRevs(
     return
   }
 
-  let numDone = 0
   const seqs: number[] = []
-
-  function checkDone() {
-    if (++numDone === revs.length) {
-      // done
-      deleteOrphans()
-    }
-  }
 
   async function deleteOrphans() {
     // find orphaned attachment digests
@@ -120,7 +112,7 @@ async function compactRevs(
     }
     for (const digest of digestsToCheck) {
       if (nonOrphanedDigests.has(digest)) {
-        return
+        continue
       }
       await tx.execute(
         'DELETE FROM ' + ATTACH_AND_SEQ_STORE + ' WHERE digest=?',
@@ -132,20 +124,23 @@ async function compactRevs(
     }
   }
 
-  // update by-seq and attach stores in parallel
+  // collect the seqs for the revs being compacted and drop their by-seq rows
   for (const rev of revs) {
     const sql = 'SELECT seq FROM ' + BY_SEQ_STORE + ' WHERE doc_id=? AND rev=?'
 
     const res = await tx.execute(sql, [docId, rev])
     if (!res.rows?.length) {
       // already deleted
-      return checkDone()
+      continue
     }
     const seq = res.rows[0]!.seq as number
     seqs.push(seq)
 
     await tx.execute('DELETE FROM ' + BY_SEQ_STORE + ' WHERE seq=?', [seq])
   }
+
+  // now that all by-seq rows are gone, clean up any orphaned attachments
+  await deleteOrphans()
 }
 
 export function handleSQLiteError(

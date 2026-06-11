@@ -191,7 +191,7 @@ adapters.forEach(function (adapter) {
       ]
     ]
 
-    it.skip('Compact more complicated tree', function (done) {
+    it('Compact more complicated tree', function (done) {
       var db = new PouchDB(dbs.name)
       testUtils.putTree(db, exampleTree, function () {
         db.compact(function () {
@@ -202,7 +202,7 @@ adapters.forEach(function (adapter) {
       })
     })
 
-    it.skip('Compact two times more complicated tree', function (done) {
+    it('Compact two times more complicated tree', function (done) {
       var db = new PouchDB(dbs.name)
       testUtils.putTree(db, exampleTree, function () {
         db.compact(function () {
@@ -215,7 +215,7 @@ adapters.forEach(function (adapter) {
       })
     })
 
-    it.skip('Compact database with at least two documents', function (done) {
+    it('Compact database with at least two documents', function (done) {
       var db = new PouchDB(dbs.name)
       testUtils.putTree(db, exampleTree, function () {
         testUtils.putTree(db, exampleTree2, function () {
@@ -360,7 +360,7 @@ adapters.forEach(function (adapter) {
         })
     })
 
-    it.skip('Compaction removes non-leaf revs pt 2 (#2807)', function () {
+    it('Compaction removes non-leaf revs pt 2 (#2807)', function () {
       var db = new PouchDB(dbs.name, { auto_compaction: false })
       var doc = { _id: 'foo' }
       return db
@@ -387,7 +387,7 @@ adapters.forEach(function (adapter) {
         })
     })
 
-    it.skip('Compaction removes non-leaf revs pt 3 (#2807)', function () {
+    it('Compaction removes non-leaf revs pt 3 (#2807)', function () {
       var db = new PouchDB(dbs.name, { auto_compaction: false })
 
       var docs = [
@@ -444,7 +444,7 @@ adapters.forEach(function (adapter) {
         })
     })
 
-    it.skip('Compaction removes non-leaf revs pt 4 (#2807)', function () {
+    it('Compaction removes non-leaf revs pt 4 (#2807)', function () {
       var db = new PouchDB(dbs.name, { auto_compaction: false })
       var doc = { _id: 'foo' }
       return db
@@ -473,7 +473,7 @@ adapters.forEach(function (adapter) {
         })
     })
 
-    it.skip('Compaction removes non-leaf revs pt 5 (#2807)', function () {
+    it('Compaction removes non-leaf revs pt 5 (#2807)', function () {
       var db = new PouchDB(dbs.name, { auto_compaction: false })
       var doc = { _id: 'foo' }
       return db

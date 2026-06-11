@@ -4967,7 +4967,7 @@ repl_adapters.forEach(function (adapters) {
       })
 
       // Cannot resolve this case for me 😂
-      it.skip('#8456 bad attachment rev after replication', async function () {
+      it('#8456 bad attachment rev after replication', async function () {
         const db = new PouchDB(dbs.name, {})
         const remote = new PouchDB(dbs.remote, {})
 
