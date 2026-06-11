@@ -114,6 +114,9 @@
   "packageManager": "yarn@3.6.1",
   "jest": {
     "preset": "@react-native/jest-preset",
+    "roots": [
+      "<rootDir>/src"
+    ],
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
