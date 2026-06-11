@@ -205,6 +205,62 @@ function btoa(input: string): string {
   return Buffer.from(input, 'binary').toString('base64')
 }
 
+/**
+ * Minimal views of the React Native Blob/FileReader globals. The adapter
+ * compiles with `lib: ["ESNext"]` (no DOM), so these globals aren't otherwise
+ * typed here.
+ */
+interface RNBlob {
+  readonly size: number
+  readonly type: string
+}
+
+interface RNFileReader {
+  result: ArrayBuffer | string | null
+  error: unknown
+  onloadend: (() => void) | null
+  onerror: (() => void) | null
+  readAsArrayBuffer(blob: RNBlob): void
+}
+
+const FileReaderCtor = (globalThis as any).FileReader as
+  | (new () => RNFileReader)
+  | undefined
+const BlobCtor = (globalThis as any).Blob as (new () => RNBlob) | undefined
+
+/**
+ * True when a value is a React Native Blob (and not a string/Buffer/TypedArray).
+ */
+function isBlob(data: unknown): data is RNBlob {
+  return BlobCtor != null && data instanceof BlobCtor
+}
+
+/**
+ * Reads a React Native Blob into a Buffer.
+ *
+ * pouchdb-adapter-http hands replicated attachments to us as RN Blobs (its
+ * `getAttachment` returns `await response.blob()` when the fetch Response has no
+ * node-style `.buffer()`). The node builds of pouchdb-md5 and
+ * pouchdb-binary-utils this adapter relies on only understand Buffers/strings:
+ * `binaryMd5` (react-native-quick-crypto) throws on a Blob, and
+ * `blobOrBufferToBinaryString` would stringify it to "[object Blob]". Converting
+ * the Blob to a Buffer up front keeps the whole attachment pipeline on the
+ * Buffer path. RN's FileReader.readAsArrayBuffer yields a real ArrayBuffer.
+ */
+function blobToBuffer(blob: RNBlob): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    if (FileReaderCtor == null) {
+      reject(new Error('FileReader is unavailable to read an attachment Blob'))
+      return
+    }
+    const reader = new FileReaderCtor()
+    reader.onloadend = () => resolve(Buffer.from(reader.result as ArrayBuffer))
+    reader.onerror = () =>
+      reject(reader.error || new Error('Failed to read attachment Blob'))
+    reader.readAsArrayBuffer(blob)
+  })
+}
+
 export {
   stringifyDoc,
   unstringifyDoc,
@@ -214,4 +270,6 @@ export {
   arrayBufferToBinaryString,
   binaryStringToArrayBuffer,
   btoa,
+  isBlob,
+  blobToBuffer,
 }

@@ -4,8 +4,7 @@
 import '../MochaSetup'
 import './setup'
 
-// Core suites (Phase 1 scope) + attachments (Phase 3). Replication and the
-// remote parts of changes come later (they need a live CouchDB).
+// Core suites + attachments.
 require('./basics.test')
 require('./all_docs.test')
 require('./bulk_docs.test')
@@ -20,3 +19,7 @@ require('./events.test')
 require('./close.test')
 require('./compaction.test')
 require('./attachments.test')
+
+// Replication. Start the local server first: `yarn --cwd example run-pouchdb-server`.
+// Adapter pairs (remote vs local) are set at the top of replication.test.js.
+require('./replication.test')

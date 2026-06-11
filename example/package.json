@@ -6,6 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "run-pouchdb-server": "npx -y pouchdb-server@5.0.1-rc1.0 -m -p 5984",
     "build:android": "react-native build-android --extra-params \"--no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a\"",
     "build:ios": "react-native build-ios --scheme PouchdbAdapterReactNativeSqliteExample --mode Debug --extra-params \"-sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO\""
   },
@@ -22,7 +23,8 @@
     "react-native": "0.85.3",
     "react-native-nitro-modules": "0.35.9",
     "react-native-quick-base64": "3.0.0",
-    "react-native-quick-crypto": "1.1.5"
+    "react-native-quick-crypto": "1.1.5",
+    "react-native-url-polyfill": "3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

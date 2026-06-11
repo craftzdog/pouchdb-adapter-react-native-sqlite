@@ -8,6 +8,9 @@ module.exports = getConfig(
   {
     presets: ['module:@react-native/babel-preset'],
     plugins: [
+      // Make fn.toString() return real source in the test files so pouchdb can
+      // compile design-doc views/filters under Hermes (which strips source).
+      path.resolve(__dirname, 'babel-plugin-preserve-fn-source.js'),
       [
         'module-resolver',
         {

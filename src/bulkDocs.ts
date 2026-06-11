@@ -21,6 +21,8 @@ import {
   compactRevs,
   handleSQLiteError,
   binaryStringToArrayBuffer,
+  isBlob,
+  blobToBuffer,
 } from './utils'
 import type { Transaction } from '@op-engineering/op-sqlite'
 import { logger } from './debug'
@@ -324,6 +326,21 @@ async function sqliteBulkDocs(
     // through op-sqlite's TEXT path, which truncates at the first NUL byte and
     // mangles bytes >127 — corrupting binary attachments (e.g. PNGs).
     await tx.execute(sql, [digest, binaryStringToArrayBuffer(data)])
+  }
+
+  // Pull replication delivers attachment payloads as RN Blobs (pouchdb-adapter-
+  // http's getAttachment returns `response.blob()`), which the node builds of
+  // pouchdb-md5/pouchdb-binary-utils can't process. Convert any Blob to a Buffer
+  // before preprocessAttachments so the whole pipeline stays on the Buffer path.
+  for (const docInfo of docInfos) {
+    const attachments = docInfo.data && docInfo.data._attachments
+    if (!attachments) continue
+    for (const name of Object.keys(attachments)) {
+      const att = attachments[name]
+      if (!att.stub && isBlob(att.data)) {
+        att.data = await blobToBuffer(att.data)
+      }
+    }
   }
 
   await new Promise<void>((resolve, reject) => {
