@@ -80,3 +80,7 @@ lib/
 
 .env*.local
 .env
+
+# Misc
+log.txt
+example/config.json

@@ -1,0 +1,4 @@
+node_modules/
+lib/
+# Conformance suite copied verbatim from pouchdb-adapter-sqlite3 — kept as-is to track upstream
+example/src/tests/

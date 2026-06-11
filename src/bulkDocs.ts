@@ -15,7 +15,15 @@ import {
   ATTACH_AND_SEQ_STORE,
 } from './constants'
 
-import { select, stringifyDoc, compactRevs, handleSQLiteError } from './utils'
+import {
+  select,
+  stringifyDoc,
+  compactRevs,
+  handleSQLiteError,
+  binaryStringToArrayBuffer,
+  isBlob,
+  blobToBuffer,
+} from './utils'
 import type { Transaction } from '@op-engineering/op-sqlite'
 import { logger } from './debug'
 
@@ -133,7 +141,7 @@ async function sqliteBulkDocs(
         revsToCompact = compactTree(docInfo.metadata).concat(revsToCompact)
       }
       if (revsToCompact.length) {
-        compactRevs(revsToCompact, id, tx)
+        await compactRevs(revsToCompact, id, tx)
       }
 
       docInfo.metadata.seq = seq
@@ -167,15 +175,22 @@ async function sqliteBulkDocs(
 
     async function insertAttachmentMappings(seq: number) {
       const attsToAdd = Object.keys(data._attachments || {})
+      const digests: { [key: string]: boolean } = {}
 
       if (!attsToAdd.length) {
         return
       }
 
       function add(att: string) {
+        const digest = data._attachments[att].digest as string
+        // A revision can reference the same content under two names (identical
+        // digest); the (digest, seq) index is UNIQUE, so insert each digest
+        // once per seq.
+        if (digests[digest]) return
+        digests[digest] = true
         const sql =
           'INSERT INTO ' + ATTACH_AND_SEQ_STORE + ' (digest, seq) VALUES (?,?)'
-        const sqlArgs = [data._attachments[att].digest, seq]
+        const sqlArgs = [digest, seq]
         return tx.execute(sql, sqlArgs)
       }
 
@@ -307,7 +322,25 @@ async function sqliteBulkDocs(
     if (result.rows?.length) return
     sql =
       'INSERT INTO ' + ATTACH_STORE + ' (digest, body, escaped) VALUES (?,?,0)'
-    await tx.execute(sql, [digest, data])
+    // Store as a BLOB (ArrayBuffer). Binding the raw binary string would route
+    // through op-sqlite's TEXT path, which truncates at the first NUL byte and
+    // mangles bytes >127 — corrupting binary attachments (e.g. PNGs).
+    await tx.execute(sql, [digest, binaryStringToArrayBuffer(data)])
+  }
+
+  // Pull replication delivers attachment payloads as RN Blobs (pouchdb-adapter-
+  // http's getAttachment returns `response.blob()`), which the node builds of
+  // pouchdb-md5/pouchdb-binary-utils can't process. Convert any Blob to a Buffer
+  // before preprocessAttachments so the whole pipeline stays on the Buffer path.
+  for (const docInfo of docInfos) {
+    const attachments = docInfo.data && docInfo.data._attachments
+    if (!attachments) continue
+    for (const name of Object.keys(attachments)) {
+      const att = attachments[name]
+      if (!att.stub && isBlob(att.data)) {
+        att.data = await blobToBuffer(att.data)
+      }
+    }
   }
 
   await new Promise<void>((resolve, reject) => {
@@ -318,10 +351,10 @@ async function sqliteBulkDocs(
   })
 
   await transaction(async (txn: Transaction) => {
+    tx = txn
     await verifyAttachments()
 
     try {
-      tx = txn
       await fetchExistingDocs()
       if (docInfos.length > 0) {
         await websqlProcessDocs()

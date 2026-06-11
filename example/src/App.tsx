@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from 'react-native'
 import PouchDB from './pouchdb'
+import Tests from './Tests'
 // import { open } from '@op-engineering/op-sqlite'
 
 // @ts-ignore eslint-ignore-next-line
@@ -48,6 +49,7 @@ globalThis.pouch = pouch
 export default function App() {
   const [result, setResult] = React.useState<string>('')
   const [imageData, setImageData] = React.useState<string | null>(null)
+  const [showDemo, setShowDemo] = React.useState<boolean>(false)
   const docId = 'mydoc\u0000hoge'
 
   const handleAllDocs = async () => {
@@ -219,11 +221,34 @@ export default function App() {
     }
   }
 
+  if (!showDemo) {
+    return (
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainerStyle}
+      >
+        <Tests />
+        <TouchableOpacity
+          onPress={() => setShowDemo(true)}
+          style={[styles.button, styles.demoButton]}
+        >
+          <Text style={styles.buttonText}>Open demo screen →</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    )
+  }
+
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainerStyle}
     >
+      <TouchableOpacity
+        onPress={() => setShowDemo(false)}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>← Back to tests</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={handleAllDocs} style={styles.button}>
         <Text style={styles.buttonText}>Fetch all docs</Text>
       </TouchableOpacity>
@@ -291,6 +316,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: 'navy',
     borderRadius: 4,
+  },
+  demoButton: {
+    backgroundColor: '#555',
+    marginTop: 8,
   },
   buttonText: {
     color: 'white',

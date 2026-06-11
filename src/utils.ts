@@ -1,5 +1,6 @@
 import { createError, WSQ_ERROR } from 'pouchdb-errors'
 import { guardedConsole } from 'pouchdb-utils'
+import { Buffer } from '@craftzdog/react-native-buffer'
 import { BY_SEQ_STORE, ATTACH_STORE, ATTACH_AND_SEQ_STORE } from './constants'
 import type { Transaction } from '@op-engineering/op-sqlite'
 
@@ -63,15 +64,7 @@ async function compactRevs(
     return
   }
 
-  let numDone = 0
   const seqs: number[] = []
-
-  function checkDone() {
-    if (++numDone === revs.length) {
-      // done
-      deleteOrphans()
-    }
-  }
 
   async function deleteOrphans() {
     // find orphaned attachment digests
@@ -119,7 +112,7 @@ async function compactRevs(
     }
     for (const digest of digestsToCheck) {
       if (nonOrphanedDigests.has(digest)) {
-        return
+        continue
       }
       await tx.execute(
         'DELETE FROM ' + ATTACH_AND_SEQ_STORE + ' WHERE digest=?',
@@ -131,20 +124,23 @@ async function compactRevs(
     }
   }
 
-  // update by-seq and attach stores in parallel
+  // collect the seqs for the revs being compacted and drop their by-seq rows
   for (const rev of revs) {
     const sql = 'SELECT seq FROM ' + BY_SEQ_STORE + ' WHERE doc_id=? AND rev=?'
 
     const res = await tx.execute(sql, [docId, rev])
     if (!res.rows?.length) {
       // already deleted
-      return checkDone()
+      continue
     }
     const seq = res.rows[0]!.seq as number
     seqs.push(seq)
 
     await tx.execute('DELETE FROM ' + BY_SEQ_STORE + ' WHERE seq=?', [seq])
   }
+
+  // now that all by-seq rows are gone, clean up any orphaned attachments
+  await deleteOrphans()
 }
 
 export function handleSQLiteError(
@@ -167,4 +163,108 @@ export function handleSQLiteError(
   return error
 }
 
-export { stringifyDoc, unstringifyDoc, qMarks, select, compactRevs }
+/**
+ * Converts an op-sqlite BLOB (returned as an ArrayBuffer) back into a binary
+ * string. Chunked so large attachments don't overflow the call stack.
+ */
+function arrayBufferToBinaryString(buffer: ArrayBuffer): string {
+  let binary = ''
+  const bytes = new Uint8Array(buffer)
+  const len = bytes.byteLength
+  const chunkSize = 8192
+  for (let i = 0; i < len; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize))
+  }
+  return binary
+}
+
+/**
+ * Converts a binary string (each char code is one byte, 0–255) into an
+ * ArrayBuffer suitable for binding to an op-sqlite BLOB column.
+ */
+function binaryStringToArrayBuffer(bin: string): ArrayBuffer {
+  const length = bin.length
+  const buf = new ArrayBuffer(length)
+  const arr = new Uint8Array(buf)
+  for (let i = 0; i < length; i++) {
+    arr[i] = bin.charCodeAt(i)
+  }
+  return buf
+}
+
+/**
+ * Base64-encodes a binary string (each char code is one byte, 0–255), backed by
+ * react-native-quick-base64 via @craftzdog/react-native-buffer.
+ */
+function btoa(input: string): string {
+  return Buffer.from(input, 'binary').toString('base64')
+}
+
+/**
+ * Minimal views of the React Native Blob/FileReader globals. The adapter
+ * compiles with `lib: ["ESNext"]` (no DOM), so these globals aren't otherwise
+ * typed here.
+ */
+interface RNBlob {
+  readonly size: number
+  readonly type: string
+}
+
+interface RNFileReader {
+  result: ArrayBuffer | string | null
+  error: unknown
+  onloadend: (() => void) | null
+  onerror: (() => void) | null
+  readAsArrayBuffer(blob: RNBlob): void
+}
+
+const FileReaderCtor = (globalThis as any).FileReader as
+  | (new () => RNFileReader)
+  | undefined
+const BlobCtor = (globalThis as any).Blob as (new () => RNBlob) | undefined
+
+/**
+ * True when a value is a React Native Blob (and not a string/Buffer/TypedArray).
+ */
+function isBlob(data: unknown): data is RNBlob {
+  return BlobCtor != null && data instanceof BlobCtor
+}
+
+/**
+ * Reads a React Native Blob into a Buffer.
+ *
+ * pouchdb-adapter-http hands replicated attachments to us as RN Blobs (its
+ * `getAttachment` returns `await response.blob()` when the fetch Response has no
+ * node-style `.buffer()`). The node builds of pouchdb-md5 and
+ * pouchdb-binary-utils this adapter relies on only understand Buffers/strings:
+ * `binaryMd5` (react-native-quick-crypto) throws on a Blob, and
+ * `blobOrBufferToBinaryString` would stringify it to "[object Blob]". Converting
+ * the Blob to a Buffer up front keeps the whole attachment pipeline on the
+ * Buffer path. RN's FileReader.readAsArrayBuffer yields a real ArrayBuffer.
+ */
+function blobToBuffer(blob: RNBlob): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    if (FileReaderCtor == null) {
+      reject(new Error('FileReader is unavailable to read an attachment Blob'))
+      return
+    }
+    const reader = new FileReaderCtor()
+    reader.onloadend = () => resolve(Buffer.from(reader.result as ArrayBuffer))
+    reader.onerror = () =>
+      reject(reader.error || new Error('Failed to read attachment Blob'))
+    reader.readAsArrayBuffer(blob)
+  })
+}
+
+export {
+  stringifyDoc,
+  unstringifyDoc,
+  qMarks,
+  select,
+  compactRevs,
+  arrayBufferToBinaryString,
+  binaryStringToArrayBuffer,
+  btoa,
+  isBlob,
+  blobToBuffer,
+}

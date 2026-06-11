@@ -60,15 +60,23 @@ export class TransactionQueue {
   }
 
   async push(fn: (tx: Transaction) => Promise<void>) {
-    return new Promise<void>((resolve) => {
-      this.queue.push({ readonly: false, start: fn, finish: resolve })
+    return new Promise<void>((resolve, reject) => {
+      this.queue.push({
+        readonly: false,
+        start: (tx) => fn(tx).then(resolve, reject),
+        finish: () => {},
+      })
       this.run()
     })
   }
 
   async pushReadOnly(fn: (tx: Transaction) => Promise<void>) {
-    return new Promise<void>((resolve) => {
-      this.queue.push({ readonly: true, start: fn, finish: resolve })
+    return new Promise<void>((resolve, reject) => {
+      this.queue.push({
+        readonly: true,
+        start: (tx) => fn(tx).then(resolve, reject),
+        finish: () => {},
+      })
       this.run()
     })
   }
