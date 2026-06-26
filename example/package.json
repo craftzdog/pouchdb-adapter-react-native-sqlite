@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@craftzdog/pouchdb-errors": "^9.0.1",
-    "@op-engineering/op-sqlite": "^16.2.0",
+    "@op-engineering/op-sqlite": "^17.0.0",
     "debug": "^4.4.0",
     "events": "^3.3.0",
     "pouchdb-adapter-http": "^9.0.0",

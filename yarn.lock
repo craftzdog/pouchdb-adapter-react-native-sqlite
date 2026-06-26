@@ -2431,9 +2431,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@op-engineering/op-sqlite@npm:^16.2.0":
-  version: 16.2.0
-  resolution: "@op-engineering/op-sqlite@npm:16.2.0"
+"@op-engineering/op-sqlite@npm:^17.0.0":
+  version: 17.0.0
+  resolution: "@op-engineering/op-sqlite@npm:17.0.0"
   peerDependencies:
     "@sqlite.org/sqlite-wasm": "*"
     react: "*"
@@ -2441,7 +2441,7 @@ __metadata:
   peerDependenciesMeta:
     "@sqlite.org/sqlite-wasm":
       optional: true
-  checksum: 6201c72256f116d5ead337e50c55e4c7e583cf6a69983df9fef3e4d04f85b037900b734849c9eff85f4168bede6325a0f17f1a8e6d8348f9c45a05619b86d2b5
+  checksum: 11a4ad167ce9dec9eb969f4d38165e7d74463620d1a22e41680e1ca3bce6afa40665386896df6b680cdb4e57db2a0f538c37bfe01171a8c7bb6eabb566dbd532
   languageName: node
   linkType: hard
 
@@ -10095,7 +10095,7 @@ __metadata:
     "@babel/preset-env": ^7.25.3
     "@babel/runtime": ^7.25.0
     "@craftzdog/pouchdb-errors": ^9.0.1
-    "@op-engineering/op-sqlite": ^16.2.0
+    "@op-engineering/op-sqlite": ^17.0.0
     "@react-native-community/cli": 20.1.3
     "@react-native-community/cli-platform-android": 20.1.3
     "@react-native-community/cli-platform-ios": 20.1.3
@@ -10136,7 +10136,7 @@ __metadata:
     "@craftzdog/pouchdb-errors": ^9.0.1
     "@craftzdog/react-native-buffer": ^6.1.2
     "@evilmartians/lefthook": ^1.5.0
-    "@op-engineering/op-sqlite": ^16.2.0
+    "@op-engineering/op-sqlite": ^17.0.0
     "@react-native-community/cli": 20.1.3
     "@react-native/babel-preset": 0.85.3
     "@react-native/eslint-config": 0.85.3
