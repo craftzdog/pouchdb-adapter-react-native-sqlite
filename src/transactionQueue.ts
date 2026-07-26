@@ -72,11 +72,22 @@ export class TransactionQueue {
 
   async pushReadOnly(fn: (tx: Transaction) => Promise<void>) {
     return new Promise<void>((resolve, reject) => {
-      this.queue.push({
+      const pending: PendingTransaction = {
         readonly: true,
         start: (tx) => fn(tx).then(resolve, reject),
         finish: () => {},
-      })
+      }
+      // Read transactions jump ahead of queued WRITES (but stay behind earlier
+      // reads) so a UI find/get isn't stuck behind a backlog of replication
+      // write batches. Write ordering among writes is preserved.
+      let insertAt = this.queue.length
+      for (let i = 0; i < this.queue.length; i++) {
+        if (!this.queue[i].readonly) {
+          insertAt = i
+          break
+        }
+      }
+      this.queue.splice(insertAt, 0, pending)
       this.run()
     })
   }
