@@ -10674,13 +10674,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-quick-base64@npm:3.0.0, react-native-quick-base64@npm:^3.0.0":
+"react-native-quick-base64@npm:3.0.0":
   version: 3.0.0
   resolution: "react-native-quick-base64@npm:3.0.0"
   peerDependencies:
     react: "*"
     react-native: "*"
   checksum: b9d447a66178e8f72ae3a6d852056bb928256bb9c8703c0b3bcfb9338df12d89ff82617535114f3d04643c908aaf0b48d5c46b0f0fb281bab34855d95c23f448
+  languageName: node
+  linkType: hard
+
+"react-native-quick-base64@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "react-native-quick-base64@npm:3.0.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 3eef519d0cf4b08d9550fd99be02831e49de300fc0098e84fa0074e133a8c7539d2464f8f8503e270d33b9b9dae64486a269bcf0d88684aacb72d62180cc9899
   languageName: node
   linkType: hard
 
