@@ -5389,10 +5389,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^16.4.5":
-  version: 16.6.1
-  resolution: "dotenv@npm:16.6.1"
-  checksum: e8bd63c9a37f57934f7938a9cf35de698097fadf980cb6edb61d33b3e424ceccfe4d10f37130b904a973b9038627c2646a3365a904b4406514ea94d7f1816b69
+"dotenv@npm:^17.4.2":
+  version: 17.4.2
+  resolution: "dotenv@npm:17.4.2"
+  checksum: 217bf2c4696ca40acc13ad063341e9c77cedfdd75e56e4919f4cf2c6333e4f7b38a4b4067e49d006125502a61060cbe85c7eecb0644e4d99ff014693eb7e62c4
   languageName: node
   linkType: hard
 
@@ -10644,13 +10644,13 @@ __metadata:
   linkType: hard
 
 "react-native-dotenv@npm:^3.4.11":
-  version: 3.4.11
-  resolution: "react-native-dotenv@npm:3.4.11"
+  version: 3.4.12
+  resolution: "react-native-dotenv@npm:3.4.12"
   dependencies:
-    dotenv: ^16.4.5
+    dotenv: ^17.4.2
   peerDependencies:
     "@babel/runtime": ^7.20.6
-  checksum: 3ebac2c2ed79dd7e4920fd3fc2da9187413b7190231618e4858b46c47833677838b96d531afe7bd5c4b0a60454dba40cb8708722210df5d522e30aefbf41da05
+  checksum: 79768c06fa6bf4f5abdb458cff8465a5a047d24c804b79cd7fe80e3036b565412629208714a4870ba333ae4cbe28d5b0235c83d51eb44f8a63f2370e39b0b756
   languageName: node
   linkType: hard
 
