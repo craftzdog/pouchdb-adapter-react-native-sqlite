@@ -2432,8 +2432,8 @@ __metadata:
   linkType: hard
 
 "@op-engineering/op-sqlite@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "@op-engineering/op-sqlite@npm:17.0.0"
+  version: 17.2.0
+  resolution: "@op-engineering/op-sqlite@npm:17.2.0"
   peerDependencies:
     "@sqlite.org/sqlite-wasm": "*"
     react: "*"
@@ -2441,7 +2441,7 @@ __metadata:
   peerDependenciesMeta:
     "@sqlite.org/sqlite-wasm":
       optional: true
-  checksum: 11a4ad167ce9dec9eb969f4d38165e7d74463620d1a22e41680e1ca3bce6afa40665386896df6b680cdb4e57db2a0f538c37bfe01171a8c7bb6eabb566dbd532
+  checksum: 9c4cab32c1c533f45c8542cfa9dd13536afea43e4c134add0e7d6a0160b97bc4db6b14524c7c17073dbe9a0af5b1581469d8975ddd059e847207ef3eea2613b3
   languageName: node
   linkType: hard
 
