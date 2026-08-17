@@ -3215,11 +3215,11 @@ __metadata:
   linkType: hard
 
 "@types/react@npm:^19.2.0":
-  version: 19.2.17
-  resolution: "@types/react@npm:19.2.17"
+  version: 19.2.18
+  resolution: "@types/react@npm:19.2.18"
   dependencies:
     csstype: ^3.2.2
-  checksum: 9704dc2001b6bcc32efc6e3fe144e18c411d5ee8a5c8dfe572535e44bd300424c4e7bddc9314299eeec28efb547816368b5c9851c93a3082e8ad1265786f3d31
+  checksum: 01e42509fd2dbe05652bbe50f69883c79f6c5b24e5f306307e1f95eaf7eddf1cdd2646a1e056c6088d2c4403d5e2ab72226e31001c6564630529901514872fb1
   languageName: node
   linkType: hard
 
@@ -10116,7 +10116,7 @@ __metadata:
     pouchdb-core: ^9.0.0
     pouchdb-mapreduce: ^9.0.0
     pouchdb-replication: ^9.0.0
-    react: 19.2.3
+    react: 19.2.8
     react-native: 0.85.3
     react-native-builder-bob: ^0.42.1
     react-native-dotenv: ^3.4.11
@@ -10159,7 +10159,7 @@ __metadata:
     pouchdb-merge: ^9.0.0
     pouchdb-utils: ^9.0.0
     prettier: ^3.0.3
-    react: 19.2.3
+    react: 19.2.8
     react-native: 0.85.3
     react-native-builder-bob: ^0.42.1
     react-native-quick-base64: ^3.0.0
@@ -10776,10 +10776,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:19.2.3":
-  version: 19.2.3
-  resolution: "react@npm:19.2.3"
-  checksum: 506e369ae13cb46b7f303c0201aadf856642f482cdf5b1c3730c3a6d1762fd5a3ae1dd31196a4686bfbbe56456dcd0c48a4656c75cbcb45620e3028c54789ae9
+"react@npm:19.2.8":
+  version: 19.2.8
+  resolution: "react@npm:19.2.8"
+  checksum: cdedb4786eb3eb79c8fbaa6df299de61ecd9e1cd4c7cd52213b5af7a98c67d532fd6b14b9d546ae5851f3962437aec22ad17ee6e8e0450de11c595300c5e5bd7
   languageName: node
   linkType: hard
 
