@@ -36,7 +36,7 @@
     "@react-native/babel-preset": "0.87.0",
     "@react-native/eslint-config": "0.87.0",
     "@react-native/jest-preset": "0.85.3",
-    "@react-native/metro-config": "0.85.3",
+    "@react-native/metro-config": "0.87.0",
     "@react-native/typescript-config": "0.85.3",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
