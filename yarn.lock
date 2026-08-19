@@ -10481,7 +10481,7 @@ __metadata:
     pouchdb-replication: ^9.0.0
     react: 19.2.8
     react-native: 0.85.3
-    react-native-builder-bob: ^0.42.1
+    react-native-builder-bob: ^0.43.0
     react-native-dotenv: ^3.4.11
     react-native-monorepo-config: ^0.3.5
     react-native-nitro-modules: 0.35.9
@@ -10524,7 +10524,7 @@ __metadata:
     prettier: ^3.0.3
     react: 19.2.8
     react-native: 0.85.3
-    react-native-builder-bob: ^0.42.1
+    react-native-builder-bob: ^0.43.0
     react-native-quick-base64: ^3.0.0
     release-it: ^17.10.0
     turbo: ^1.10.7
@@ -10973,9 +10973,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-builder-bob@npm:^0.42.1":
-  version: 0.42.1
-  resolution: "react-native-builder-bob@npm:0.42.1"
+"react-native-builder-bob@npm:^0.43.0":
+  version: 0.43.0
+  resolution: "react-native-builder-bob@npm:0.43.0"
   dependencies:
     "@babel/core": ^7.29.0
     "@babel/plugin-transform-flow-strip-types": ^7.27.1
@@ -10996,13 +10996,12 @@ __metadata:
     json5: ^2.2.3
     kleur: ^4.1.5
     prompts: ^2.4.2
-    react-native-monorepo-config: ^0.3.3
     typescript: ^6.0.3
     which: ^6.0.1
     yargs: ^18.0.0
   bin:
     bob: bin/bob
-  checksum: 642cbe3ad2279f540b6766a8b35b3450a3d7f65e886229eb34b41d569b6109f779ea77185f041ada1836f3d5f4c72174ced0f2e891f9fe23021b5309a5fea67a
+  checksum: 6e4910a2f2858308cd1f1a167b2cd9f951d94e12ee917872dc37b362c34ec6d66d1a5994f4f7fbfa81be3d482dacdc01c989fcea76940f2d913edefc7fe776b9
   languageName: node
   linkType: hard
 
@@ -11017,7 +11016,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-monorepo-config@npm:^0.3.3, react-native-monorepo-config@npm:^0.3.5":
+"react-native-monorepo-config@npm:^0.3.5":
   version: 0.3.5
   resolution: "react-native-monorepo-config@npm:0.3.5"
   dependencies:
