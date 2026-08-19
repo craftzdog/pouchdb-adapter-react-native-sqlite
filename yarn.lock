@@ -2918,10 +2918,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native/typescript-config@npm:0.85.3":
-  version: 0.85.3
-  resolution: "@react-native/typescript-config@npm:0.85.3"
-  checksum: 0d4295fba2b3abc9136457c9fdf788de26c237bf91e96a48d8434f0a919aea26ddb19f4e008c75d00bc7ca41d6fa1839a73cd67a39d12e5e1a36147e102b45ce
+"@react-native/typescript-config@npm:0.87.0":
+  version: 0.87.0
+  resolution: "@react-native/typescript-config@npm:0.87.0"
+  checksum: 002aa089d713c5d4df50116394b34f8872c746910775aad316333bacdb2a15bba98a4ed258e9b14189fa84b198d93cb6147b03806a5e911b851a9e1750d8ada2
   languageName: node
   linkType: hard
 
@@ -10466,7 +10466,7 @@ __metadata:
     "@react-native/eslint-config": 0.87.0
     "@react-native/jest-preset": 0.85.3
     "@react-native/metro-config": 0.87.0
-    "@react-native/typescript-config": 0.85.3
+    "@react-native/typescript-config": 0.87.0
     "@types/chai": ^5.2.3
     "@types/mocha": ^10.0.10
     babel-plugin-module-resolver: ^5.0.3
