@@ -46,7 +46,7 @@
     "mocha": "^11.7.6",
     "react-native-builder-bob": "^0.43.0",
     "react-native-dotenv": "^3.4.11",
-    "react-native-monorepo-config": "^0.3.5"
+    "react-native-monorepo-config": "^0.4.0"
   },
   "op-sqlite": {
     "fts5": true

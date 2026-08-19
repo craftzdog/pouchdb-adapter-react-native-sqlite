@@ -10483,7 +10483,7 @@ __metadata:
     react-native: 0.85.3
     react-native-builder-bob: ^0.43.0
     react-native-dotenv: ^3.4.11
-    react-native-monorepo-config: ^0.3.5
+    react-native-monorepo-config: ^0.4.0
     react-native-nitro-modules: 0.35.9
     react-native-quick-base64: 3.0.1
     react-native-quick-crypto: 1.1.7
@@ -11016,13 +11016,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-monorepo-config@npm:^0.3.5":
-  version: 0.3.5
-  resolution: "react-native-monorepo-config@npm:0.3.5"
+"react-native-monorepo-config@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "react-native-monorepo-config@npm:0.4.0"
   dependencies:
     escape-string-regexp: ^5.0.0
     fast-glob: ^3.3.3
-  checksum: a2664c63f8db1115deb6c71192f3399ead2c1685e247efc7e0ca35fd43e48dc3fe50b254f0c2cd00a5073ee387949ee24e75ec486d271755884675e49ddb5aa3
+  checksum: 671e6eb4cf9640c8963b78ec21e978ccd551eac260cd2197ad539e0f4226644cdaa4ad23b8de29212a2f75701ceac2931dd1ec192df427993a4ba7acbe0f2045
   languageName: node
   linkType: hard
 
