@@ -35,7 +35,7 @@
     "@react-native-community/cli-platform-ios": "20.2.0",
     "@react-native/babel-preset": "0.87.0",
     "@react-native/eslint-config": "0.87.0",
-    "@react-native/jest-preset": "0.85.3",
+    "@react-native/jest-preset": "0.87.0",
     "@react-native/metro-config": "0.87.0",
     "@react-native/typescript-config": "0.87.0",
     "@types/chai": "^5.2.3",
