@@ -10185,7 +10185,7 @@ __metadata:
     react-native-builder-bob: ^0.43.0
     react-native-dotenv: ^3.4.11
     react-native-monorepo-config: ^0.4.0
-    react-native-nitro-modules: 0.35.9
+    react-native-nitro-modules: 0.37.0
     react-native-quick-base64: 3.0.1
     react-native-quick-crypto: 1.1.7
     react-native-url-polyfill: 3.0.0
@@ -10727,13 +10727,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-nitro-modules@npm:0.35.9":
-  version: 0.35.9
-  resolution: "react-native-nitro-modules@npm:0.35.9"
+"react-native-nitro-modules@npm:0.37.0":
+  version: 0.37.0
+  resolution: "react-native-nitro-modules@npm:0.37.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 2c04481b132ae2fb247ae1658b426c04ddfb73ff7622716db2f5d316bc831ffb5c87fdedf65f39d5d8724daf5a56277d838936b49ec308f2e14f7208bbed130c
+  checksum: b11bee4cceb34cb6bd9e3e0d48b90065738a638610711868e2fabd315e4f8a0d1a5a9b58775383ae0b6703abda2063e5ce3a40ab8c5a734b73715650328d16f1
   languageName: node
   linkType: hard
 
