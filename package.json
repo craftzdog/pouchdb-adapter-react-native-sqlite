@@ -68,7 +68,7 @@
     "@craftzdog/pouchdb-errors": "^9.0.1",
     "@evilmartians/lefthook": "^1.5.0",
     "@react-native-community/cli": "20.2.0",
-    "@react-native/babel-preset": "0.87.0",
+    "@react-native/babel-preset": "0.87.1",
     "@react-native/eslint-config": "0.87.0",
     "@react-native/jest-preset": "0.87.0",
     "@release-it/conventional-changelog": "^9.0.2",
