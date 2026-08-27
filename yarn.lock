@@ -2908,18 +2908,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native/jest-preset@npm:0.87.0":
-  version: 0.87.0
-  resolution: "@react-native/jest-preset@npm:0.87.0"
+"@react-native/jest-preset@npm:0.87.1":
+  version: 0.87.1
+  resolution: "@react-native/jest-preset@npm:0.87.1"
   dependencies:
     "@jest/create-cache-key-function": ^29.7.0
-    "@react-native/js-polyfills": 0.87.0
+    "@react-native/js-polyfills": 0.87.1
     babel-jest: ^29.7.0
     jest-environment-node: ^29.7.0
     regenerator-runtime: ^0.13.2
   peerDependencies:
     react: ^19.2.3
-  checksum: d12d1098f0fe0ed3f1f7b772caca3ec38b8f619ad6e7fcb7453821a0fcee0e0368cbaee29191bcd961d3a8e0e96877a9054b696b19e134fe404c793136dbd899
+  checksum: 6c69fcd6659fad633d5ed46636bcb5530d4833221c5e7c243ab7cd2fb633b497f8c8b88883494c36e278e1ec91aa950c29dab4ffb5e39518bead71781aa86394
   languageName: node
   linkType: hard
 
@@ -2927,6 +2927,13 @@ __metadata:
   version: 0.87.0
   resolution: "@react-native/js-polyfills@npm:0.87.0"
   checksum: bc14a20ba288c447267ce8624fa78b053cf6347cf394a5a4ccb2bfcd86d12a26962cc7897d6a2233b6020f0c02055680cff05df5b902f1e8512786bbb34b2a23
+  languageName: node
+  linkType: hard
+
+"@react-native/js-polyfills@npm:0.87.1":
+  version: 0.87.1
+  resolution: "@react-native/js-polyfills@npm:0.87.1"
+  checksum: 0d2b2e0ac0cc0baec11c2d807664828de3c25c2d1fea3eb26edaebfce009a50bc0df7caecb6074224a7fc278d6a2c32697fd822cbe7d266e07a2786dee48cf56
   languageName: node
   linkType: hard
 
@@ -10235,7 +10242,7 @@ __metadata:
     "@react-native-community/cli-platform-ios": 20.2.0
     "@react-native/babel-preset": 0.87.1
     "@react-native/eslint-config": 0.87.1
-    "@react-native/jest-preset": 0.87.0
+    "@react-native/jest-preset": 0.87.1
     "@react-native/metro-config": 0.87.0
     "@react-native/typescript-config": 0.87.0
     "@types/chai": ^5.2.3
@@ -10274,7 +10281,7 @@ __metadata:
     "@react-native-community/cli": 20.2.0
     "@react-native/babel-preset": 0.87.1
     "@react-native/eslint-config": 0.87.1
-    "@react-native/jest-preset": 0.87.0
+    "@react-native/jest-preset": 0.87.1
     "@release-it/conventional-changelog": ^9.0.2
     "@types/jest": ^29.5.5
     "@types/pouchdb-core": ^7.0.15
