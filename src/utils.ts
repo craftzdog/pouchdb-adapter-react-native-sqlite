@@ -219,8 +219,7 @@ interface RNFileReader {
 }
 
 const FileReaderCtor = (globalThis as any).FileReader as
-  | (new () => RNFileReader)
-  | undefined
+  (new () => RNFileReader) | undefined
 const BlobCtor = (globalThis as any).Blob as (new () => RNBlob) | undefined
 
 /**
