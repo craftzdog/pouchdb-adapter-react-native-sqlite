@@ -2445,6 +2445,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@op-engineering/op-sqlite@npm:^18.1.4":
+  version: 18.1.4
+  resolution: "@op-engineering/op-sqlite@npm:18.1.4"
+  peerDependencies:
+    "@sqlite.org/sqlite-wasm": "*"
+    react: "*"
+    react-native: "*"
+  peerDependenciesMeta:
+    "@sqlite.org/sqlite-wasm":
+      optional: true
+  checksum: 1a7e35ef3b85a7ec075152c58ed09289e21e3678dfff82a51cfcf1f08fb1cb5c2e5dc88ef11a611eaad723c792aef26f46d1eaca57f6ebe72a0763508aab4658
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -10172,7 +10186,7 @@ __metadata:
     "@craftzdog/pouchdb-errors": ^9.0.1
     "@craftzdog/react-native-buffer": ^6.1.2
     "@evilmartians/lefthook": ^1.5.0
-    "@op-engineering/op-sqlite": ^17.0.0
+    "@op-engineering/op-sqlite": ^18.1.4
     "@react-native-community/cli": 20.2.0
     "@react-native/babel-preset": 0.87.1
     "@react-native/eslint-config": 0.87.1
@@ -10182,7 +10196,7 @@ __metadata:
     "@types/pouchdb-core": ^7.0.15
     "@types/react": ^19.2.0
     commitlint: ^17.0.2
-    debug: ^4.4.0
+    debug: ^4.4.3
     del-cli: ^5.1.0
     eslint: ^8.57.0
     eslint-config-prettier: ^9.0.0
@@ -10198,7 +10212,7 @@ __metadata:
     react: 19.2.8
     react-native: 0.87.0
     react-native-builder-bob: ^0.43.0
-    react-native-quick-base64: ^3.0.0
+    react-native-quick-base64: ^3.0.1
     release-it: ^17.10.0
     turbo: ^1.10.7
     typescript: ^5.2.2
@@ -10710,7 +10724,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-quick-base64@npm:3.0.1, react-native-quick-base64@npm:^3.0.0":
+"react-native-quick-base64@npm:3.0.1, react-native-quick-base64@npm:^3.0.0, react-native-quick-base64@npm:^3.0.1":
   version: 3.0.1
   resolution: "react-native-quick-base64@npm:3.0.1"
   peerDependencies:
