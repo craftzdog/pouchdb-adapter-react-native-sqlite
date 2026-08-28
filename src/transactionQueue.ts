@@ -72,11 +72,14 @@ export class TransactionQueue {
 
   async pushReadOnly(fn: (tx: Transaction) => Promise<void>) {
     return new Promise<void>((resolve, reject) => {
-      this.queue.push({
+      const pending: PendingTransaction = {
         readonly: true,
         start: (tx) => fn(tx).then(resolve, reject),
         finish: () => {},
-      })
+      }
+      const firstWrite = this.queue.findIndex((tx) => !tx.readonly)
+      const insertAt = firstWrite === -1 ? this.queue.length : firstWrite
+      this.queue.splice(insertAt, 0, pending)
       this.run()
     })
   }
