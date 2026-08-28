@@ -21,7 +21,7 @@
     "pouchdb-replication": "^9.0.0",
     "react": "19.2.8",
     "react-native": "0.87.0",
-    "react-native-nitro-modules": "0.37.0",
+    "react-native-nitro-modules": "0.37.1",
     "react-native-quick-base64": "3.0.1",
     "react-native-quick-crypto": "1.1.7",
     "react-native-url-polyfill": "3.0.0"
