@@ -19,7 +19,7 @@
     "pouchdb-core": "^9.0.0",
     "pouchdb-mapreduce": "^9.0.0",
     "pouchdb-replication": "^9.0.0",
-    "react": "19.2.8",
+    "react": "19.3.0",
     "react-native": "0.87.0",
     "react-native-nitro-modules": "0.37.0",
     "react-native-quick-base64": "3.0.1",
