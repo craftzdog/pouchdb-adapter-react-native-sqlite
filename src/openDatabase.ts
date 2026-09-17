@@ -21,6 +21,8 @@ const cachedDatabases = new Map<string, OpenDatabaseResult>()
 function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
   try {
     const db = open(opts)
+    db.executeSync('PRAGMA journal_mode = WAL')
+    db.executeSync('PRAGMA synchronous = NORMAL')
     const transactionQueue = new TransactionQueue(db)
     return { db, transactionQueue }
   } catch (err: any) {
