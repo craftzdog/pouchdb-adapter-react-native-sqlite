@@ -23,6 +23,8 @@ function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
     const db = open(opts)
     db.executeSync('PRAGMA journal_mode = WAL')
     db.executeSync('PRAGMA synchronous = NORMAL')
+    // op-sqlite's build defaults to a 2 MiB page cache
+    db.executeSync('PRAGMA cache_size = -16000')
     const transactionQueue = new TransactionQueue(db)
     return { db, transactionQueue }
   } catch (err: any) {
