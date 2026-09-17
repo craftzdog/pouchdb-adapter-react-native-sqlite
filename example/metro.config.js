@@ -13,6 +13,7 @@ const root = path.resolve(__dirname, '..')
 const config = withMetroConfig(getDefaultConfig(__dirname), {
   root,
   dirname: __dirname,
+  conditions: ['pouchdb-adapter-react-native-sqlite-source'],
 })
 
 config.resolver.unstable_enablePackageExports = true
