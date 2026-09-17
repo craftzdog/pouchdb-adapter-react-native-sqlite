@@ -12,6 +12,12 @@ adapters.forEach(function (adapters) {
     function () {
       var dbs = {}
 
+      // Fail the suite once with a clear message instead of every test timing
+      // out, since most callbacks below ignore `err`.
+      before(function () {
+        return testUtils.assertCouchReachable()
+      })
+
       beforeEach(function () {
         dbs.name = testUtils.adapterUrl(adapters[0], 'testdb')
         dbs.remote = testUtils.adapterUrl(adapters[1], 'test_repl_remote')

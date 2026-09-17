@@ -4,7 +4,7 @@ import {
   processDocs,
   parseDoc,
 } from 'pouchdb-adapter-utils'
-import { compactTree } from 'pouchdb-merge'
+import { compactTree, isDeleted } from 'pouchdb-merge'
 import { safeJsonParse, safeJsonStringify } from 'pouchdb-json'
 import { MISSING_STUB, createError } from 'pouchdb-errors'
 
@@ -13,6 +13,7 @@ import {
   BY_SEQ_STORE,
   ATTACH_STORE,
   ATTACH_AND_SEQ_STORE,
+  META_STORE,
 } from './constants'
 
 import {
@@ -23,6 +24,9 @@ import {
   binaryStringToArrayBuffer,
   isBlob,
   blobToBuffer,
+  getLastSeq,
+  getStoredDocCount,
+  refreshDocCount,
 } from './utils'
 import type { Transaction } from '@op-engineering/op-sqlite'
 import { logger } from './debug'
@@ -82,6 +86,8 @@ async function sqliteBulkDocs(
   let tx: Transaction
   const results = new Array(docInfos.length)
   const fetchedDocs = new Map<string, any>()
+  let docCountDelta = 0
+  const countedDocs = new Map<string, boolean>()
 
   async function verifyAttachment(digest: string) {
     logger.debug('verify attachment:', digest)
@@ -125,10 +131,10 @@ async function sqliteBulkDocs(
   async function writeDoc(
     docInfo: DocInfo,
     winningRev: string,
-    _winningRevIsDeleted: boolean,
+    winningRevIsDeleted: boolean,
     newRevIsDeleted: boolean,
     isUpdate: boolean,
-    _delta: number,
+    delta: number,
     resultsIdx: number
   ) {
     logger.debug('writeDoc:', { ...docInfo, data: null })
@@ -165,6 +171,8 @@ async function sqliteBulkDocs(
         ? [metadataStr, seq, winningRev, id]
         : [id, seq, seq, metadataStr]
       await tx.execute(sql, params)
+      docCountDelta += delta
+      countedDocs.set(id, !winningRevIsDeleted)
       results[resultsIdx] = {
         ok: true,
         id: docInfo.metadata.id,
@@ -271,11 +279,13 @@ async function sqliteBulkDocs(
           winningRevIsDeleted: boolean,
           newRevIsDeleted: boolean,
           isUpdate: boolean,
-          delta: number,
+          _delta: number,
           resultsIdx: number,
           callback: (err?: any) => void
         ) => {
           chain = chain.then(() => {
+            const wasCounted = countedDocs.get(docInfo.metadata.id) ? 1 : 0
+            const delta = (winningRevIsDeleted ? 0 : 1) - wasCounted
             return writeDoc(
               docInfo,
               winningRev,
@@ -311,8 +321,21 @@ async function sqliteBulkDocs(
       if (result.rows?.length) {
         const metadata = safeJsonParse(result.rows[0]!.json)
         fetchedDocs.set(id, metadata)
+        countedDocs.set(id, !isDeleted(metadata))
       }
     }
+  }
+
+  async function updateDocCount(docCountBefore: number | null) {
+    if (docCountBefore === null) {
+      await refreshDocCount(tx)
+      return
+    }
+    const lastSeq = await getLastSeq(tx)
+    await tx.execute(
+      'UPDATE ' + META_STORE + ' SET doc_count = ?, doc_count_seq = ?',
+      [docCountBefore + docCountDelta, lastSeq]
+    )
   }
 
   async function saveAttachment(digest: string, data: any) {
@@ -355,10 +378,12 @@ async function sqliteBulkDocs(
     await verifyAttachments()
 
     try {
+      const docCountBefore = await getStoredDocCount(tx)
       await fetchExistingDocs()
       if (docInfos.length > 0) {
         await websqlProcessDocs()
       }
+      await updateDocCount(docCountBefore)
       sqliteChanges.notify(api._name)
     } catch (err: any) {
       throw handleSQLiteError(err)

@@ -19,6 +19,7 @@ require('./events.test')
 require('./close.test')
 require('./compaction.test')
 require('./attachments.test')
+require('./doc_count.test')
 
 // Replication. Start the local server first: `yarn --cwd example run-pouchdb-server`.
 // Adapter pairs (remote vs local) are set at the top of replication.test.js.
