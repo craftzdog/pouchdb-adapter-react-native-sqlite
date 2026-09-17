@@ -33,6 +33,9 @@ import {
   select,
   compactRevs,
   handleSQLiteError,
+  getDocCount,
+  getStoredDocCount,
+  refreshDocCount,
   arrayBufferToBinaryString,
   btoa,
 } from './utils'
@@ -153,7 +156,9 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
 
   async function createInitialSchema(tx: Transaction) {
     const meta =
-      'CREATE TABLE IF NOT EXISTS ' + META_STORE + ' (dbid, db_version INTEGER)'
+      'CREATE TABLE IF NOT EXISTS ' +
+      META_STORE +
+      ' (dbid, db_version INTEGER, doc_count INTEGER, doc_count_seq INTEGER)'
     const attach =
       'CREATE TABLE IF NOT EXISTS ' +
       ATTACH_STORE +
@@ -185,14 +190,16 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     await tx.execute(BY_SEQ_STORE_DOC_ID_REV_INDEX_SQL)
     await tx.execute(meta)
     const initSeq =
-      'INSERT INTO ' + META_STORE + ' (db_version, dbid) VALUES (?,?)'
+      'INSERT INTO ' +
+      META_STORE +
+      ' (db_version, dbid, doc_count, doc_count_seq) VALUES (?,?,0,0)'
     instanceId = uuid()
     const initSeqArgs = [ADAPTER_VERSION, instanceId]
     await tx.execute(initSeq, initSeqArgs)
     onGetInstanceId()
   }
 
-  async function runMigrations(_tx: Transaction, dbVersion: number) {
+  async function runMigrations(tx: Transaction, dbVersion: number) {
     // const tasks = [setupDone]
     //
     // let i = dbVersion
@@ -208,9 +215,24 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         'UPDATE ' + META_STORE + ' SET db_version = ' + ADAPTER_VERSION
       )
     }
+    await ensureDocCount(tx, dbVersion)
     const result = await db.execute('SELECT dbid FROM ' + META_STORE)
     instanceId = result.rows[0]!.dbid as string
     onGetInstanceId()
+  }
+
+  async function ensureDocCount(tx: Transaction, dbVersion: number) {
+    if (dbVersion < 8) {
+      await tx.execute(
+        'ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count INTEGER'
+      )
+      await tx.execute(
+        'ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count_seq INTEGER'
+      )
+    }
+    if ((await getStoredDocCount(tx)) === null) {
+      await refreshDocCount(tx)
+    }
   }
 
   function onGetInstanceId() {
@@ -227,7 +249,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     readTransaction(async (tx: Transaction) => {
       try {
         const seq = await getMaxSeq(tx)
-        const docCount = await countDocs(tx)
+        const docCount = await getDocCount(tx)
         callback(null, {
           doc_count: docCount,
           update_seq: seq,
@@ -468,7 +490,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       }
 
       try {
-        const totalRows = await countDocs(tx)
+        const totalRows = await getDocCount(tx)
         const updateSeq = opts.update_seq ? await getMaxSeq(tx) : undefined
 
         if (limit === 0) {
@@ -981,17 +1003,6 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     const res = await tx.execute(sql, [])
     const updateSeq = (res.rows[0]!.seq as number) || 0
     return updateSeq
-  }
-
-  async function countDocs(tx: Transaction): Promise<number> {
-    const sql = select(
-      'COUNT(' + DOC_STORE + ".id) AS 'num'",
-      [DOC_STORE, BY_SEQ_STORE],
-      DOC_STORE_AND_BY_SEQ_JOINER,
-      BY_SEQ_STORE + '.deleted=0'
-    )
-    const result = await tx.execute(sql, [])
-    return (result.rows[0]!.num as number) || 0
   }
 
   async function latest(

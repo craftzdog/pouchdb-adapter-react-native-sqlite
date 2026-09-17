@@ -179,6 +179,22 @@ testUtils.isCouchDB = function (cb) {
     })
 }
 
+testUtils.assertCouchReachable = async () => {
+  const { url, options } = parseHostWithCreds(testUtils.couchHost())
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), 5000)
+  try {
+    await PouchDB.fetch(url, { ...options, signal: controller.signal })
+  } catch (err) {
+    throw new Error(
+      `CouchDB-compatible server is not reachable at ${url} (${err.message}). ` +
+        'Start it with `yarn run-pouchdb-server` in example/.'
+    )
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 testUtils.getServerType = async () => {
   const knownServers = ['couchdb', 'express-pouchdb', 'pouchdb-express-router']
 

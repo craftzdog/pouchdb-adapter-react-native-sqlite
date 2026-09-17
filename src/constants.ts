@@ -2,7 +2,7 @@ function quote(str: string) {
   return "'" + str + "'"
 }
 
-const ADAPTER_VERSION = 7 // used to manage migrations
+const ADAPTER_VERSION = 8 // used to manage migrations
 
 // The object stores created for each database
 // DOC_STORE stores the document meta data, its revision history and state
