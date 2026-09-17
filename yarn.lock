@@ -2445,7 +2445,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@op-engineering/op-sqlite@npm:^18.1.4":
+"@op-engineering/op-sqlite@npm:^18.2.3":
   version: 18.2.3
   resolution: "@op-engineering/op-sqlite@npm:18.2.3"
   peerDependencies:
@@ -10186,7 +10186,7 @@ __metadata:
     "@craftzdog/pouchdb-errors": ^9.0.1
     "@craftzdog/react-native-buffer": ^6.1.2
     "@evilmartians/lefthook": ^1.5.0
-    "@op-engineering/op-sqlite": ^18.1.4
+    "@op-engineering/op-sqlite": ^18.2.3
     "@react-native-community/cli": 20.2.0
     "@react-native/babel-preset": 0.87.1
     "@react-native/eslint-config": 0.87.1
