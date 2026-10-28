@@ -2884,13 +2884,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native/eslint-config@npm:0.88.0":
-  version: 0.88.0
-  resolution: "@react-native/eslint-config@npm:0.88.0"
+"@react-native/eslint-config@npm:0.88.1":
+  version: 0.88.1
+  resolution: "@react-native/eslint-config@npm:0.88.1"
   dependencies:
     "@babel/core": ^7.25.2
     "@babel/eslint-parser": ^7.25.1
-    "@react-native/eslint-plugin": 0.88.0
+    "@react-native/eslint-plugin": 0.88.1
     "@typescript-eslint/eslint-plugin": ^8.59.2
     "@typescript-eslint/parser": ^8.59.2
     eslint-config-prettier: ^8.5.0
@@ -2903,14 +2903,14 @@ __metadata:
   peerDependencies:
     eslint: ^8.0.0 || ^9.0.0
     prettier: ">=2"
-  checksum: 974db520ae738982dd65ccab6665596d55323a7e8673269ac3ce70eb7d5b1dd3854dd513439c94871ffbcec5e83dbf6455797eee01ed83f6000c9c6b61412cf3
+  checksum: 51a3cff325741d985a63f21f91e0d63837b04db99df1f6bf6d840e1dbffebc9a5e263176edfd547403a8b35805b09edaa76d77d0c338ded61d39023bd033936d
   languageName: node
   linkType: hard
 
-"@react-native/eslint-plugin@npm:0.88.0":
-  version: 0.88.0
-  resolution: "@react-native/eslint-plugin@npm:0.88.0"
-  checksum: cb00805f8508dfd61a74cdb4ffdd46014b17e41035c8968efe487b945eac6e78501cb58fad225f6ea5d711adc0919a8c791095a0a403437d51123531d175ee70
+"@react-native/eslint-plugin@npm:0.88.1":
+  version: 0.88.1
+  resolution: "@react-native/eslint-plugin@npm:0.88.1"
+  checksum: a610a533c3aca21628e1c84d50c9080dc89bdeb770af59bf9d3119008fa44909946d7f06f0f454e4baa14d000a5f1581e522aebfbc0462a4eaa0a623362572bd
   languageName: node
   linkType: hard
 
@@ -10207,7 +10207,7 @@ __metadata:
     "@react-native-community/cli-platform-android": 20.2.0
     "@react-native-community/cli-platform-ios": 20.2.0
     "@react-native/babel-preset": 0.88.1
-    "@react-native/eslint-config": 0.88.0
+    "@react-native/eslint-config": 0.88.1
     "@react-native/jest-preset": 0.88.0
     "@react-native/metro-config": 0.88.0
     "@react-native/typescript-config": 0.88.0
@@ -10246,7 +10246,7 @@ __metadata:
     "@op-engineering/op-sqlite": ^18.2.3
     "@react-native-community/cli": 20.2.0
     "@react-native/babel-preset": 0.88.1
-    "@react-native/eslint-config": 0.88.0
+    "@react-native/eslint-config": 0.88.1
     "@react-native/jest-preset": 0.88.0
     "@release-it/conventional-changelog": ^9.0.2
     "@types/jest": ^29.5.5
