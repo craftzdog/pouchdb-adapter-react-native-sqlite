@@ -4,6 +4,7 @@ import { logger } from './debug'
 export interface PendingTransaction {
   readonly: boolean
   start: (tx: Transaction) => Promise<void>
+  fail?: (err: unknown) => void
   finish: () => void
 }
 
@@ -42,7 +43,7 @@ export class TransactionQueue {
             // })
           } else {
             logger.debug('---> write transaction start!')
-            await this.db.transaction(tx.start)
+            await this.runWrite(tx)
           }
         } finally {
           logger.debug(
@@ -59,11 +60,39 @@ export class TransactionQueue {
     }
   }
 
+  // A write transaction takes the write lock as it begins. Started deferred,
+  // it would read first, and SQLite refuses the write that follows at once
+  // (SQLITE_BUSY_SNAPSHOT, whatever the busy timeout) when another connection
+  // has committed in between.
+  private async runWrite(tx: PendingTransaction) {
+    try {
+      await this.db.execute('BEGIN IMMEDIATE')
+    } catch (err) {
+      tx.fail?.(err)
+      return
+    }
+    try {
+      await tx.start({
+        execute: (query: string, params?: any[]) =>
+          this.db.execute(query, params),
+      } as Transaction)
+      await this.db.execute('COMMIT')
+    } catch (err) {
+      try {
+        await this.db.execute('ROLLBACK')
+      } catch (rollbackError) {
+        logger.debug('rollback failed', rollbackError)
+      }
+      tx.fail?.(err)
+    }
+  }
+
   async push(fn: (tx: Transaction) => Promise<void>) {
     return new Promise<void>((resolve, reject) => {
       this.queue.push({
         readonly: false,
         start: (tx) => fn(tx).then(resolve, reject),
+        fail: reject,
         finish: () => {},
       })
       this.run()
