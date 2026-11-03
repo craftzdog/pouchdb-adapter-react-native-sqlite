@@ -9382,6 +9382,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nitro-core@npm:0.37.2":
+  version: 0.37.2
+  resolution: "nitro-core@npm:0.37.2"
+  checksum: f0a065396a79ce680215afa8bcc8108c042b7d229aa307bf9f8380c7f67e82101dde1f409a44063b6dfcc32f7ba61c21e8179f957836a956a7a2b6115eef3c1f
+  languageName: node
+  linkType: hard
+
 "nocache@npm:^3.0.1":
   version: 3.0.4
   resolution: "nocache@npm:3.0.4"
@@ -10158,7 +10165,7 @@ __metadata:
     react-native-builder-bob: ^0.44.0
     react-native-dotenv: ^3.4.11
     react-native-monorepo-config: ^0.4.0
-    react-native-nitro-modules: 0.37.0
+    react-native-nitro-modules: 0.37.2
     react-native-quick-base64: 3.0.1
     react-native-quick-crypto: 1.1.9
     react-native-url-polyfill: 3.0.0
@@ -10692,13 +10699,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-nitro-modules@npm:0.37.0":
-  version: 0.37.0
-  resolution: "react-native-nitro-modules@npm:0.37.0"
+"react-native-nitro-modules@npm:0.37.2":
+  version: 0.37.2
+  resolution: "react-native-nitro-modules@npm:0.37.2"
+  dependencies:
+    nitro-core: 0.37.2
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: b11bee4cceb34cb6bd9e3e0d48b90065738a638610711868e2fabd315e4f8a0d1a5a9b58775383ae0b6703abda2063e5ce3a40ab8c5a734b73715650328d16f1
+  checksum: 094a4d87c0b57c7046c5f602e0be49d11d4d0f714e4151a45e0a7fe4dc6c2cd86d9ae14b4be46458cf528efa5b91d0624bdd5271cd2c494c57fa68c0a1e7217f
   languageName: node
   linkType: hard
 
