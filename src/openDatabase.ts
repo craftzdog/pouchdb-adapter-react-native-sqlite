@@ -6,6 +6,7 @@ type SQLiteOpenParams = Parameters<typeof open>
 export type OpenDatabaseOptions = SQLiteOpenParams[0] & {
   revs_limit?: number
   deterministic_revs?: boolean
+  onOpen?: (db: DB) => void
 }
 type OpenDatabaseResult =
   | {
@@ -19,12 +20,14 @@ type OpenDatabaseResult =
 const cachedDatabases = new Map<string, OpenDatabaseResult>()
 
 function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
+  const { onOpen, ...sqliteOpts } = opts
   try {
-    const db = open(opts)
+    const db = open(sqliteOpts)
     db.executeSync('PRAGMA journal_mode = WAL')
     db.executeSync('PRAGMA synchronous = NORMAL')
     // op-sqlite's build defaults to a 2 MiB page cache
     db.executeSync('PRAGMA cache_size = -16000')
+    onOpen?.(db)
     const transactionQueue = new TransactionQueue(db)
     return { db, transactionQueue }
   } catch (err: any) {
