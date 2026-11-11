@@ -121,6 +121,15 @@ You can specify the following options in the PouchDB options:
 
 - `location`: The location of the SQLite database file. See [op-sqlite's docs](https://op-engineering.github.io/op-sqlite/docs/configuration) for more details.
 - `encryptionKey`: The encryption key for SQLCipher. See [op-sqlite's docs](https://op-engineering.github.io/op-sqlite/docs/api#sqlcipher-open) for more details.
+- `onOpen`: A function called once with the op-sqlite connection, right after the database is opened and configured. Use it to run your own `PRAGMA` statements, or to keep the connection for your own queries. An error thrown from it fails the opening of the database.
+
+  ```ts
+  const pouch = new PouchDB('mydb', {
+    adapter: 'react-native-sqlite',
+    // Wait for a lock held by another connection instead of failing at once
+    onOpen: (db) => db.executeSync('PRAGMA busy_timeout = 5000'),
+  })
+  ```
 
 ### Design-doc views and filters
 
