@@ -23,7 +23,7 @@
     "react-native": "0.88.1",
     "react-native-nitro-modules": "0.37.2",
     "react-native-quick-base64": "3.0.2",
-    "react-native-quick-crypto": "1.1.9",
+    "react-native-quick-crypto": "1.1.10",
     "react-native-url-polyfill": "3.0.0"
   },
   "devDependencies": {
