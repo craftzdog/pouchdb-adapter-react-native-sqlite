@@ -10407,7 +10407,7 @@ __metadata:
     react-native-dotenv: ^3.4.11
     react-native-monorepo-config: ^0.4.0
     react-native-nitro-modules: 0.37.2
-    react-native-quick-base64: 3.0.1
+    react-native-quick-base64: 3.0.2
     react-native-quick-crypto: 1.1.9
     react-native-url-polyfill: 3.0.0
   languageName: unknown
@@ -10952,17 +10952,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-quick-base64@npm:3.0.1":
-  version: 3.0.1
-  resolution: "react-native-quick-base64@npm:3.0.1"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 3eef519d0cf4b08d9550fd99be02831e49de300fc0098e84fa0074e133a8c7539d2464f8f8503e270d33b9b9dae64486a269bcf0d88684aacb72d62180cc9899
-  languageName: node
-  linkType: hard
-
-"react-native-quick-base64@npm:^3.0.0, react-native-quick-base64@npm:^3.0.1":
+"react-native-quick-base64@npm:3.0.2, react-native-quick-base64@npm:^3.0.0, react-native-quick-base64@npm:^3.0.1":
   version: 3.0.2
   resolution: "react-native-quick-base64@npm:3.0.2"
   peerDependencies:
