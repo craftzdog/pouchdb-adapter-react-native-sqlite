@@ -10408,7 +10408,7 @@ __metadata:
     react-native-monorepo-config: ^0.4.0
     react-native-nitro-modules: 0.37.2
     react-native-quick-base64: 3.0.2
-    react-native-quick-crypto: 1.1.9
+    react-native-quick-crypto: 1.1.10
     react-native-url-polyfill: 3.0.0
   languageName: unknown
   linkType: soft
@@ -10962,9 +10962,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-quick-crypto@npm:1.1.9":
-  version: 1.1.9
-  resolution: "react-native-quick-crypto@npm:1.1.9"
+"react-native-quick-crypto@npm:1.1.10":
+  version: 1.1.10
+  resolution: "react-native-quick-crypto@npm:1.1.10"
   dependencies:
     "@craftzdog/react-native-buffer": ^6.1.2
     events: 3.3.0
@@ -10981,7 +10981,7 @@ __metadata:
   peerDependenciesMeta:
     expo:
       optional: true
-  checksum: 5d068408ca1545f03f845dcaaa2c7d59b1e5c35ce18a4296f30d96c7b1ddc175e7f72267efdc166843d7e4414099a84afd8068fc70898a588ad691df8fd0e648
+  checksum: cfe86155b13e40fe20f28a251178b6cb9bcec3352b2faac2b7f0b3c06b82da0476c5f35d8bc6461302c7d95c0633e5fb04186ffb295bbe0b36971283374628df
   languageName: node
   linkType: hard
 
