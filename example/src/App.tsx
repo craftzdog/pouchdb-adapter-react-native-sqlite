@@ -63,7 +63,7 @@ export default function App() {
   }
   const handlePutMultiDocs = async () => {
     setResult('')
-    let count = 0
+    const count = 0
 
     try {
       const res = await pouch.bulkDocs(

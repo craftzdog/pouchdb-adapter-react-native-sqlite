@@ -59,7 +59,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
       EVENT_SUITE_END
     } = Mocha.Runner.constants
 
-    let stats: Stats = { ...defaultStats }
+    const stats: Stats = { ...defaultStats }
 
     rootSuite.eachTest((t: MochaTypes.Test) => {
       t.reset()

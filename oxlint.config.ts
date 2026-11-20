@@ -11,7 +11,6 @@ const rulesNotAdoptedYet = {
   'no-unused-expressions': 'off',
   'no-var': 'off',
   'prefer-arrow-callback': 'off',
-  'prefer-const': 'off',
   'quality/no-chained-type-assertions': 'off',
   'quality/no-known-value-widening': 'off',
   'quality/no-unsafe-dictionary-type': 'off',
