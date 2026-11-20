@@ -698,7 +698,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
   }
 
   api._close = (callback: (err?: any) => void) => {
-    closeDB(api._name)
+    closeDB(sqlOpts.name)
     callback()
   }
 
