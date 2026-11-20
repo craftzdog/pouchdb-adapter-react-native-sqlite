@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+
 import type * as MochaTypes from './mocha-types'
 import { Mocha, rootSuite } from './MochaSetup'
 import type { Stats, SuiteResults, TestResult } from './types'
@@ -40,7 +41,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
     tests: 0,
     passes: 0,
     pending: 0,
-    failures: 0,
+    failures: 0
   }
 
   const run = () => {
@@ -55,7 +56,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
       EVENT_TEST_PENDING,
       EVENT_TEST_END,
       EVENT_SUITE_BEGIN,
-      EVENT_SUITE_END,
+      EVENT_SUITE_END
     } = Mocha.Runner.constants
 
     let stats: Stats = { ...defaultStats }
@@ -88,7 +89,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
           indentation: indents,
           description: test.title,
           suiteName: name,
-          type: 'correct',
+          type: 'correct'
         })
         console.log(`${indent()}pass: ${test.title}`)
       })
@@ -100,7 +101,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
           description: test.title,
           suiteName: name,
           type: 'incorrect',
-          errorMsg: err.message,
+          errorMsg: err.message
         })
         console.log(`${indent()}fail: ${test.title} - error: ${err.message}`)
       })

@@ -2,7 +2,7 @@ import debug from 'debug'
 
 export const logger = {
   debug: debug('pouch-sqlite:debug'),
-  error: debug('pouch-sqlite:error'),
+  error: debug('pouch-sqlite:error')
 }
 
 logger.debug.log = console.log.bind(console)

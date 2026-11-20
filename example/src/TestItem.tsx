@@ -1,5 +1,6 @@
 import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
+
 import type { TestResult } from './types'
 
 type TestItemProps = {
@@ -11,7 +12,7 @@ type TestItemProps = {
 export const TestItem: React.FC<TestItemProps> = ({
   description,
   count,
-  results,
+  results
 }: TestItemProps) => {
   // get pass/fail stats from results
   let pass = 0
@@ -53,24 +54,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     gap: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#ccc'
   },
   label: {
     fontSize: 12,
-    flex: 8,
+    flex: 8
   },
   pass: {
     color: 'green',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   fail: {
     color: 'red',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   count: {
     flex: 1,
     textAlign: 'right',
     fontSize: 12,
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 })

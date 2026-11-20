@@ -1,14 +1,7 @@
 import './shim'
 import React from 'react'
+import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
 
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native'
 import PouchDB from './pouchdb'
 import Tests from './Tests'
 // import { open } from '@op-engineering/op-sqlite'
@@ -20,7 +13,7 @@ console.log(`Using ${uiManager}`)
 
 const pouch = new PouchDB('mydb', {
   adapter: 'react-native-sqlite',
-  revs_limit: 100,
+  revs_limit: 100
 })
 // @ts-ignore
 globalThis.pouch = pouch
@@ -82,7 +75,7 @@ export default function App() {
       _rev: rev,
       _id: docId,
       title: 'Heroes',
-      count: count + 1,
+      count: count + 1
     })
     console.log('put:', r)
     setResult(JSON.stringify(r, null, 2))
@@ -96,7 +89,7 @@ export default function App() {
         Array.from({ length: 10 }, (_, i) => ({
           _id: `test:${i}`,
           title: 'Heroes',
-          count: count + 1,
+          count: count + 1
         }))
       )
       setResult(JSON.stringify(res, null, 2))
@@ -172,7 +165,7 @@ export default function App() {
         descending: true,
         limit: 50,
         skip: 0,
-        conflicts: true,
+        conflicts: true
       })
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
@@ -185,7 +178,7 @@ export default function App() {
     setImageData(null)
     try {
       const result = await pouch.get('file:9yqbnLGSq', {
-        attachments: true,
+        attachments: true
       })
       setResult(JSON.stringify(result, null, 2))
       setImageData('data:image/png;base64,' + result._attachments.index.data)
@@ -200,7 +193,7 @@ export default function App() {
     try {
       const result = await pouch.put({
         _id: '_local/mydoc',
-        title: 'Heroes',
+        title: 'Heroes'
       })
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
@@ -223,10 +216,7 @@ export default function App() {
 
   if (!showDemo) {
     return (
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainerStyle}
-      >
+      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainerStyle}>
         <Tests />
         <TouchableOpacity
           onPress={() => setShowDemo(true)}
@@ -239,14 +229,8 @@ export default function App() {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainerStyle}
-    >
-      <TouchableOpacity
-        onPress={() => setShowDemo(false)}
-        style={styles.button}
-      >
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainerStyle}>
+      <TouchableOpacity onPress={() => setShowDemo(false)} style={styles.button}>
         <Text style={styles.buttonText}>← Back to tests</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleAllDocs} style={styles.button}>
@@ -301,28 +285,28 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 12,
     paddingTop: 80,
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   },
   contentContainerStyle: {
-    gap: 12,
+    gap: 12
   },
   box: {
     width: 60,
     height: 60,
-    marginVertical: 20,
+    marginVertical: 20
   },
   button: {
     padding: 8,
     paddingHorizontal: 16,
     backgroundColor: 'navy',
-    borderRadius: 4,
+    borderRadius: 4
   },
   demoButton: {
     backgroundColor: '#555',
-    marginTop: 8,
+    marginTop: 8
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
-  },
+    fontSize: 16
+  }
 })

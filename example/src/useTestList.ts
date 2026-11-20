@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
+
 import type * as MochaTypes from './mocha-types'
 import { rootSuite } from './MochaSetup'
 import type { Suites } from './types'
-
 // Side-effect import: requires every test file, which registers their suites and
 // tests onto the root suite (describe/it run at module-evaluation time).
 // Imported as './tests/index' (not './tests') to avoid a case-insensitive

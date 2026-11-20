@@ -63,7 +63,7 @@ their Node builds in your `metro.config.js`:
 ```js
 const FORCE_NODE_BUILD = {
   'pouchdb-binary-utils': 'pouchdb-binary-utils/lib/index.js',
-  'pouchdb-md5': 'pouchdb-md5/lib/index.js',
+  'pouchdb-md5': 'pouchdb-md5/lib/index.js'
 }
 
 const defaultResolveRequest = config.resolver.resolveRequest
@@ -92,16 +92,13 @@ yarn add pouchdb-core pouchdb-mapreduce pouchdb-replication pouchdb-adapter-http
 Create `pouchdb.ts`:
 
 ```ts
-import PouchDB from 'pouchdb-core'
 import HttpPouch from 'pouchdb-adapter-http'
-import replication from 'pouchdb-replication'
-import mapreduce from 'pouchdb-mapreduce'
 import sqliteAdapter from 'pouchdb-adapter-react-native-sqlite'
+import PouchDB from 'pouchdb-core'
+import mapreduce from 'pouchdb-mapreduce'
+import replication from 'pouchdb-replication'
 
-export default PouchDB.plugin(HttpPouch)
-  .plugin(replication)
-  .plugin(mapreduce)
-  .plugin(sqliteAdapter)
+export default PouchDB.plugin(HttpPouch).plugin(replication).plugin(mapreduce).plugin(sqliteAdapter)
 ```
 
 ### How to use PouchDB
@@ -110,7 +107,7 @@ export default PouchDB.plugin(HttpPouch)
 import PouchDB from './pouchdb'
 
 const pouch = new PouchDB('mydb', {
-  adapter: 'react-native-sqlite',
+  adapter: 'react-native-sqlite'
   // Other options
 })
 ```
@@ -127,7 +124,7 @@ You can specify the following options in the PouchDB options:
   const pouch = new PouchDB('mydb', {
     adapter: 'react-native-sqlite',
     // Wait for a lock held by another connection instead of failing at once
-    onOpen: (db) => db.executeSync('PRAGMA busy_timeout = 5000'),
+    onOpen: db => db.executeSync('PRAGMA busy_timeout = 5000')
   })
   ```
 
@@ -150,15 +147,15 @@ await db.put({
     by_name: {
       map: function (doc) {
         emit(doc.name)
-      }.toString(),
-    },
-  },
+      }.toString()
+    }
+  }
 })
 
 // ✅ Works — the source is a real string
 await db.put({
   _id: '_design/by_name',
-  views: { by_name: { map: 'function (doc) { emit(doc.name) }' } },
+  views: { by_name: { map: 'function (doc) { emit(doc.name) }' } }
 })
 ```
 

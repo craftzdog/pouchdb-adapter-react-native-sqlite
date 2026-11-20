@@ -32,9 +32,7 @@ bdd.describe = Object.assign((title: string, fn: () => void): Suite => {
   const suite = originalDescribe(title, fn)
   const parent = suite.parent
   if (parent?.root) {
-    const staleIndex = parent.suites.findIndex(
-      (s: Suite) => s !== suite && s.title === title
-    )
+    const staleIndex = parent.suites.findIndex((s: Suite) => s !== suite && s.title === title)
     if (staleIndex !== -1) {
       parent.suites.splice(parent.suites.indexOf(suite), 1)
       parent.suites.splice(staleIndex, 1, suite)

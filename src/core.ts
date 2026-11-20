@@ -1,21 +1,11 @@
-import {
-  clone,
-  pick,
-  filterChange,
-  changesHandler as Changes,
-  uuid,
-} from 'pouchdb-utils'
-import {
-  collectConflicts,
-  traverseRevTree,
-  latest as getLatest,
-} from 'pouchdb-merge'
+import { Buffer } from '@craftzdog/react-native-buffer'
+import type { DB, Transaction } from '@op-engineering/op-sqlite'
+import { MISSING_DOC, REV_CONFLICT, createError } from 'pouchdb-errors'
 import { safeJsonParse, safeJsonStringify } from 'pouchdb-json'
+import { collectConflicts, traverseRevTree, latest as getLatest } from 'pouchdb-merge'
+import { clone, pick, filterChange, changesHandler as Changes, uuid } from 'pouchdb-utils'
 
 import sqliteBulkDocs from './bulkDocs'
-
-import { MISSING_DOC, REV_CONFLICT, createError } from 'pouchdb-errors'
-
 import {
   ADAPTER_VERSION,
   DOC_STORE,
@@ -23,9 +13,11 @@ import {
   ATTACH_STORE,
   LOCAL_STORE,
   META_STORE,
-  ATTACH_AND_SEQ_STORE,
+  ATTACH_AND_SEQ_STORE
 } from './constants'
-
+import { logger } from './debug'
+import openDB, { closeDB, type OpenDatabaseOptions } from './openDatabase'
+import type { TransactionQueue } from './transactionQueue'
 import {
   qMarks,
   stringifyDoc,
@@ -37,39 +29,24 @@ import {
   getStoredDocCount,
   refreshDocCount,
   arrayBufferToBinaryString,
-  btoa,
+  btoa
 } from './utils'
-
-import openDB, { closeDB, type OpenDatabaseOptions } from './openDatabase'
-import { Buffer } from '@craftzdog/react-native-buffer'
-import type { DB, Transaction } from '@op-engineering/op-sqlite'
-import type { TransactionQueue } from './transactionQueue'
-import { logger } from './debug'
 
 // these indexes cover the ground for most allDocs queries
 const BY_SEQ_STORE_DELETED_INDEX_SQL =
-  "CREATE INDEX IF NOT EXISTS 'by-seq-deleted-idx' ON " +
-  BY_SEQ_STORE +
-  ' (seq, deleted)'
+  "CREATE INDEX IF NOT EXISTS 'by-seq-deleted-idx' ON " + BY_SEQ_STORE + ' (seq, deleted)'
 const BY_SEQ_STORE_DOC_ID_REV_INDEX_SQL =
-  "CREATE UNIQUE INDEX IF NOT EXISTS 'by-seq-doc-id-rev' ON " +
-  BY_SEQ_STORE +
-  ' (doc_id, rev)'
+  "CREATE UNIQUE INDEX IF NOT EXISTS 'by-seq-doc-id-rev' ON " + BY_SEQ_STORE + ' (doc_id, rev)'
 const DOC_STORE_WINNINGSEQ_INDEX_SQL =
-  "CREATE INDEX IF NOT EXISTS 'doc-winningseq-idx' ON " +
-  DOC_STORE +
-  ' (winningseq)'
+  "CREATE INDEX IF NOT EXISTS 'doc-winningseq-idx' ON " + DOC_STORE + ' (winningseq)'
 const ATTACH_AND_SEQ_STORE_SEQ_INDEX_SQL =
-  "CREATE INDEX IF NOT EXISTS 'attach-seq-seq-idx' ON " +
-  ATTACH_AND_SEQ_STORE +
-  ' (seq)'
+  "CREATE INDEX IF NOT EXISTS 'attach-seq-seq-idx' ON " + ATTACH_AND_SEQ_STORE + ' (seq)'
 const ATTACH_AND_SEQ_STORE_ATTACH_INDEX_SQL =
   "CREATE UNIQUE INDEX IF NOT EXISTS 'attach-seq-digest-idx' ON " +
   ATTACH_AND_SEQ_STORE +
   ' (digest, seq)'
 
-const DOC_STORE_AND_BY_SEQ_JOINER =
-  BY_SEQ_STORE + '.seq = ' + DOC_STORE + '.winningseq'
+const DOC_STORE_AND_BY_SEQ_JOINER = BY_SEQ_STORE + '.seq = ' + DOC_STORE + '.winningseq'
 
 const SELECT_DOCS =
   BY_SEQ_STORE +
@@ -117,7 +94,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
   }
 
   async function setup(callback: (err: any) => void) {
-    await db.transaction(async (tx) => {
+    await db.transaction(async tx => {
       await Promise.all([checkEncoding(tx), fetchVersion(tx)])
     })
     callback(null)
@@ -135,9 +112,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     if (!result.rows?.length) {
       await onGetVersion(tx, 0)
     } else if (!/db_version/.test(result.rows[0]!.sql as string)) {
-      await tx.execute(
-        'ALTER TABLE ' + META_STORE + ' ADD COLUMN db_version INTEGER'
-      )
+      await tx.execute('ALTER TABLE ' + META_STORE + ' ADD COLUMN db_version INTEGER')
       await onGetVersion(tx, 1)
     } else {
       const resDBVer = await tx.execute('SELECT db_version FROM ' + META_STORE)
@@ -164,9 +139,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       ATTACH_STORE +
       ' (digest UNIQUE, escaped TINYINT(1), body BLOB)'
     const attachAndRev =
-      'CREATE TABLE IF NOT EXISTS ' +
-      ATTACH_AND_SEQ_STORE +
-      ' (digest, seq INTEGER)'
+      'CREATE TABLE IF NOT EXISTS ' + ATTACH_AND_SEQ_STORE + ' (digest, seq INTEGER)'
     const doc =
       'CREATE TABLE IF NOT EXISTS ' +
       DOC_STORE +
@@ -175,8 +148,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       'CREATE TABLE IF NOT EXISTS ' +
       BY_SEQ_STORE +
       ' (seq INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, json, deleted TINYINT(1), doc_id, rev)'
-    const local =
-      'CREATE TABLE IF NOT EXISTS ' + LOCAL_STORE + ' (id UNIQUE, rev, json)'
+    const local = 'CREATE TABLE IF NOT EXISTS ' + LOCAL_STORE + ' (id UNIQUE, rev, json)'
 
     await tx.execute(attach)
     await tx.execute(local)
@@ -190,9 +162,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     await tx.execute(BY_SEQ_STORE_DOC_ID_REV_INDEX_SQL)
     await tx.execute(meta)
     const initSeq =
-      'INSERT INTO ' +
-      META_STORE +
-      ' (db_version, dbid, doc_count, doc_count_seq) VALUES (?,?,0,0)'
+      'INSERT INTO ' + META_STORE + ' (db_version, dbid, doc_count, doc_count_seq) VALUES (?,?,0,0)'
     instanceId = uuid()
     const initSeqArgs = [ADAPTER_VERSION, instanceId]
     await tx.execute(initSeq, initSeqArgs)
@@ -211,9 +181,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
 
     const migrated = dbVersion < ADAPTER_VERSION
     if (migrated) {
-      await db.execute(
-        'UPDATE ' + META_STORE + ' SET db_version = ' + ADAPTER_VERSION
-      )
+      await db.execute('UPDATE ' + META_STORE + ' SET db_version = ' + ADAPTER_VERSION)
     }
     await ensureDocCount(tx, dbVersion)
     const result = await db.execute('SELECT dbid FROM ' + META_STORE)
@@ -223,12 +191,8 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
 
   async function ensureDocCount(tx: Transaction, dbVersion: number) {
     if (dbVersion < 8) {
-      await tx.execute(
-        'ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count INTEGER'
-      )
-      await tx.execute(
-        'ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count_seq INTEGER'
-      )
+      await tx.execute('ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count INTEGER')
+      await tx.execute('ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count_seq INTEGER')
     }
     if ((await getStoredDocCount(tx)) === null) {
       await refreshDocCount(tx)
@@ -253,7 +217,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         callback(null, {
           doc_count: docCount,
           update_seq: seq,
-          sqlite_encoding: encoding,
+          sqlite_encoding: encoding
         })
       } catch (e: any) {
         handleSQLiteError(e, callback)
@@ -261,20 +225,14 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     })
   }
 
-  api._bulkDocs = async (
-    req: any,
-    reqOpts: any,
-    callback: (err: any, response?: any) => void
-  ) => {
+  api._bulkDocs = async (req: any, reqOpts: any, callback: (err: any, response?: any) => void) => {
     logger.debug('**********bulkDocs!!!!!!!!!!!!!!!!!!!')
     try {
       const response = await sqliteBulkDocs(
         {
           revs_limit: opts.revs_limit,
           deterministic_revs:
-            typeof opts.deterministic_revs === 'boolean'
-              ? opts.deterministic_revs
-              : true,
+            typeof opts.deterministic_revs === 'boolean' ? opts.deterministic_revs : true
         },
         req,
         reqOpts,
@@ -288,31 +246,23 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     }
   }
 
-  api._get = (
-    id: string,
-    opts: any,
-    callback: (err: any, response?: any) => void
-  ) => {
+  api._get = (id: string, opts: any, callback: (err: any, response?: any) => void) => {
     logger.debug('get:', id)
     let doc: any
     let metadata: any
     const tx: Transaction = opts.ctx
     if (!tx) {
-      readTransaction(async (txn) => {
-        return new Promise((resolve) => {
-          api._get(
-            id,
-            Object.assign({ ctx: txn }, opts),
-            (err: any, response: any) => {
-              // Don't hand back a transaction that's about to finalize;
-              // _getAttachment opens its own when it has no ctx.
-              if (response) {
-                response.ctx = undefined
-              }
-              callback(err, response)
-              resolve()
+      readTransaction(async txn => {
+        return new Promise(resolve => {
+          api._get(id, Object.assign({ ctx: txn }, opts), (err: any, response: any) => {
+            // Don't hand back a transaction that's about to finalize;
+            // _getAttachment opens its own when it has no ctx.
+            if (response) {
+              response.ctx = undefined
             }
-          )
+            callback(err, response)
+            resolve()
+          })
         })
       })
       return
@@ -357,7 +307,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     }
 
     tx.execute(sql, sqlArgs)
-      .then((results) => {
+      .then(results => {
         if (!results.rows?.length) {
           const missingErr = createError(MISSING_DOC, 'missing')
           return finish(missingErr)
@@ -368,14 +318,10 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           const deletedErr = createError(MISSING_DOC, 'deleted')
           return finish(deletedErr)
         }
-        doc = unstringifyDoc(
-          item.data as string,
-          metadata.id,
-          item.rev as string
-        )
+        doc = unstringifyDoc(item.data as string, metadata.id, item.rev as string)
         finish(null)
       })
-      .catch((e) => {
+      .catch(e => {
         // createError will throw in RN 0.76.3
         // https://github.com/facebook/hermes/issues/1496
         return finish(e)
@@ -449,7 +395,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           const doc: any = {
             id: id,
             key: id,
-            value: { rev: winningRev },
+            value: { rev: winningRev }
           }
           if (opts.include_docs) {
             doc.doc = data
@@ -497,7 +443,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           const returnVal: any = {
             total_rows: totalRows,
             offset: opts.skip,
-            rows: results,
+            rows: results
           }
           callback(null, returnVal)
           return
@@ -566,7 +512,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         const returnVal: any = {
           total_rows: totalRows,
           offset: opts.skip,
-          rows: results,
+          rows: results
         }
 
         if (opts.update_seq) {
@@ -589,7 +535,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       return {
         cancel: () => {
           sqliteChanges.removeListener(api._name, id)
-        },
+        }
       }
     }
 
@@ -685,7 +631,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           if (!opts.continuous) {
             opts.complete(null, {
               results,
-              last_seq: lastSeq,
+              last_seq: lastSeq
             })
           }
         } catch (e: any) {
@@ -711,8 +657,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
   ) => {
     const digest = attachment.digest
     const type = attachment.content_type
-    const sql =
-      'SELECT escaped, body AS body FROM ' + ATTACH_STORE + ' WHERE digest=?'
+    const sql = 'SELECT escaped, body AS body FROM ' + ATTACH_STORE + ' WHERE digest=?'
 
     const fetch = async (tx: Transaction) => {
       const result = await tx.execute(sql, [digest])
@@ -726,15 +671,11 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         // typed Buffer (a Buffer with a `.type`) — matching pouchdb's Node
         // behaviour.
         res =
-          typeof body === 'string'
-            ? Buffer.from(body, 'binary')
-            : Buffer.from(body as ArrayBuffer)
+          typeof body === 'string' ? Buffer.from(body, 'binary') : Buffer.from(body as ArrayBuffer)
         res.type = type
       } else {
         const data =
-          typeof body === 'string'
-            ? body
-            : arrayBufferToBinaryString(body as ArrayBuffer)
+          typeof body === 'string' ? body : arrayBufferToBinaryString(body as ArrayBuffer)
         res = btoa(data)
       }
       callback(null, res)
@@ -757,10 +698,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     }
   }
 
-  api._getRevisionTree = (
-    docId: string,
-    callback: (err: any, rev_tree?: any) => void
-  ) => {
+  api._getRevisionTree = (docId: string, callback: (err: any, rev_tree?: any) => void) => {
     readTransaction(async (tx: Transaction) => {
       const sql = 'SELECT json AS metadata FROM ' + DOC_STORE + ' WHERE id = ?'
       const result = await tx.execute(sql, [docId])
@@ -773,11 +711,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     })
   }
 
-  api._doCompaction = (
-    docId: string,
-    revs: string[],
-    callback: (err?: any) => void
-  ) => {
+  api._doCompaction = (docId: string, revs: string[], callback: (err?: any) => void) => {
     if (!revs.length) {
       return callback()
     }
@@ -788,13 +722,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         const metadata = safeJsonParse(result.rows[0]!.metadata)
         traverseRevTree(
           metadata.rev_tree,
-          (
-            _isLeaf: boolean,
-            pos: number,
-            revHash: string,
-            _ctx: Transaction,
-            opts: any
-          ) => {
+          (_isLeaf: boolean, pos: number, revHash: string, _ctx: Transaction, opts: any) => {
             const rev = pos + '-' + revHash
             if (revs.indexOf(rev) !== -1) {
               opts.status = 'missing'
@@ -819,11 +747,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         const res = await tx.execute(sql, [id])
         if (res.rows?.length) {
           const item = res.rows[0]!
-          const doc = unstringifyDoc(
-            item.json as string,
-            id,
-            item.rev as string
-          )
+          const doc = unstringifyDoc(item.json as string, id, item.rev as string)
           callback(null, doc)
         } else {
           callback(createError(MISSING_DOC))
@@ -834,11 +758,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     })
   }
 
-  api._putLocal = (
-    doc: any,
-    opts: any,
-    callback: (err: any, response?: any) => void
-  ) => {
+  api._putLocal = (doc: any, opts: any, callback: (err: any, response?: any) => void) => {
     if (typeof opts === 'function') {
       callback = opts
       opts = {}
@@ -860,8 +780,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         let sql: string
         let values: any[]
         if (oldRev) {
-          sql =
-            'UPDATE ' + LOCAL_STORE + ' SET rev=?, json=? WHERE id=? AND rev=?'
+          sql = 'UPDATE ' + LOCAL_STORE + ' SET rev=?, json=? WHERE id=? AND rev=?'
           values = [newRev, json, id, oldRev]
         } else {
           sql = 'INSERT INTO ' + LOCAL_STORE + ' (id, rev, json) VALUES (?,?,?)'
@@ -898,11 +817,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     }
   }
 
-  api._removeLocal = (
-    doc: any,
-    opts: any,
-    callback: (err: any, response?: any) => void
-  ) => {
+  api._removeLocal = (doc: any, opts: any, callback: (err: any, response?: any) => void) => {
     if (typeof opts === 'function') {
       callback = opts
       opts = {}
@@ -941,9 +856,9 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           ATTACH_STORE,
           META_STORE,
           LOCAL_STORE,
-          ATTACH_AND_SEQ_STORE,
+          ATTACH_AND_SEQ_STORE
         ]
-        stores.forEach((store) => {
+        stores.forEach(store => {
           tx.execute('DROP TABLE IF EXISTS ' + store, [])
         })
         callback(null, { ok: true })
@@ -953,12 +868,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     })
   }
 
-  async function fetchAttachmentsIfNecessary(
-    doc: any,
-    opts: any,
-    api: any,
-    txn: any
-  ) {
+  async function fetchAttachmentsIfNecessary(doc: any, opts: any, api: any, txn: any) {
     const attachments = Object.keys(doc._attachments || {})
     if (!attachments.length) {
       return
@@ -968,27 +878,18 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       const attObj = doc._attachments[att]
       const attOpts = { binary: opts.binary, ctx: txn }
       return new Promise<void>((resolve, reject) => {
-        api._getAttachment(
-          doc._id,
-          att,
-          attObj,
-          attOpts,
-          (err: any, data: any) => {
-            if (err) {
-              return reject(err)
-            }
-            doc._attachments[att] = Object.assign(
-              pick(attObj, ['digest', 'content_type']),
-              { data }
-            )
-            resolve()
+        api._getAttachment(doc._id, att, attObj, attOpts, (err: any, data: any) => {
+          if (err) {
+            return reject(err)
           }
-        )
+          doc._attachments[att] = Object.assign(pick(attObj, ['digest', 'content_type']), { data })
+          resolve()
+        })
       })
     }
 
     await Promise.all(
-      attachments.map(async (att) => {
+      attachments.map(async att => {
         if (opts.attachments && opts.include_docs) {
           await fetchAttachment(doc, att)
         } else {

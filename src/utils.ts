@@ -1,14 +1,15 @@
+import { Buffer } from '@craftzdog/react-native-buffer'
+import type { Transaction } from '@op-engineering/op-sqlite'
 import { createError, WSQ_ERROR } from 'pouchdb-errors'
 import { guardedConsole } from 'pouchdb-utils'
-import { Buffer } from '@craftzdog/react-native-buffer'
+
 import {
   DOC_STORE,
   BY_SEQ_STORE,
   ATTACH_STORE,
   ATTACH_AND_SEQ_STORE,
-  META_STORE,
+  META_STORE
 } from './constants'
-import type { Transaction } from '@op-engineering/op-sqlite'
 
 function stringifyDoc(doc: Record<string, any>): string {
   // don't bother storing the id/rev. it uses lots of space,
@@ -18,11 +19,7 @@ function stringifyDoc(doc: Record<string, any>): string {
   return JSON.stringify(doc)
 }
 
-function unstringifyDoc(
-  doc: string,
-  id: string,
-  rev: string
-): Record<string, any> {
+function unstringifyDoc(doc: string, id: string, rev: string): Record<string, any> {
   const parsedDoc = JSON.parse(doc)
   parsedDoc._id = id
   parsedDoc._rev = rev
@@ -54,18 +51,12 @@ function select(
     ' FROM ' +
     (typeof table === 'string' ? table : table.join(' JOIN ')) +
     (joiner ? ' ON ' + joiner : '') +
-    (where
-      ? ' WHERE ' + (typeof where === 'string' ? where : where.join(' AND '))
-      : '') +
+    (where ? ' WHERE ' + (typeof where === 'string' ? where : where.join(' AND ')) : '') +
     (orderBy ? ' ORDER BY ' + orderBy : '')
   )
 }
 
-async function compactRevs(
-  revs: string[],
-  docId: string,
-  tx: Transaction
-): Promise<void> {
+async function compactRevs(revs: string[], docId: string, tx: Transaction): Promise<void> {
   if (!revs.length) {
     return
   }
@@ -120,13 +111,8 @@ async function compactRevs(
       if (nonOrphanedDigests.has(digest)) {
         continue
       }
-      await tx.execute(
-        'DELETE FROM ' + ATTACH_AND_SEQ_STORE + ' WHERE digest=?',
-        [digest]
-      )
-      await tx.execute('DELETE FROM ' + ATTACH_STORE + ' WHERE digest=?', [
-        digest,
-      ])
+      await tx.execute('DELETE FROM ' + ATTACH_AND_SEQ_STORE + ' WHERE digest=?', [digest])
+      await tx.execute('DELETE FROM ' + ATTACH_STORE + ' WHERE digest=?', [digest])
     }
   }
 
@@ -149,10 +135,7 @@ async function compactRevs(
   await deleteOrphans()
 }
 
-export function handleSQLiteError(
-  event: Error,
-  callback?: (error: any) => void
-) {
+export function handleSQLiteError(event: Error, callback?: (error: any) => void) {
   guardedConsole('error', 'SQLite threw an error', event)
   if (event.constructor && event.constructor.name === 'PouchError') {
     if (callback) callback(event)
@@ -160,8 +143,7 @@ export function handleSQLiteError(
   }
 
   // event may actually be a SQLError object, so report is as such
-  const errorNameMatch =
-    event && event.constructor.toString().match(/function ([^(]+)/)
+  const errorNameMatch = event && event.constructor.toString().match(/function ([^(]+)/)
   const errorName = (errorNameMatch && errorNameMatch[1]) || event.name
   const errorReason = event.message
   const error = createError(WSQ_ERROR, errorReason, errorName)
@@ -203,10 +185,7 @@ async function getLastSeq(tx: Transaction): Promise<number> {
 }
 
 async function getStoredDocCount(tx: Transaction): Promise<number | null> {
-  const result = await tx.execute(
-    'SELECT doc_count, doc_count_seq FROM ' + META_STORE,
-    []
-  )
+  const result = await tx.execute('SELECT doc_count, doc_count_seq FROM ' + META_STORE, [])
   const row = result.rows[0]
   if (!row || row.doc_count == null || row.doc_count_seq == null) {
     return null
@@ -223,10 +202,10 @@ async function getDocCount(tx: Transaction): Promise<number> {
 async function refreshDocCount(tx: Transaction): Promise<number> {
   const docCount = await countDocs(tx)
   const lastSeq = await getLastSeq(tx)
-  await tx.execute(
-    'UPDATE ' + META_STORE + ' SET doc_count = ?, doc_count_seq = ?',
-    [docCount, lastSeq]
-  )
+  await tx.execute('UPDATE ' + META_STORE + ' SET doc_count = ?, doc_count_seq = ?', [
+    docCount,
+    lastSeq
+  ])
   return docCount
 }
 
@@ -270,8 +249,7 @@ interface RNFileReader {
   readAsArrayBuffer(blob: RNBlob): void
 }
 
-const FileReaderCtor = (globalThis as any).FileReader as
-  (new () => RNFileReader) | undefined
+const FileReaderCtor = (globalThis as any).FileReader as (new () => RNFileReader) | undefined
 const BlobCtor = (globalThis as any).Blob as (new () => RNBlob) | undefined
 
 /**
@@ -301,8 +279,7 @@ function blobToBuffer(blob: RNBlob): Promise<Buffer> {
     }
     const reader = new FileReaderCtor()
     reader.onloadend = () => resolve(Buffer.from(reader.result as ArrayBuffer))
-    reader.onerror = () =>
-      reject(reader.error || new Error('Failed to read attachment Blob'))
+    reader.onerror = () => reject(reader.error || new Error('Failed to read attachment Blob'))
     reader.readAsArrayBuffer(blob)
   })
 }
@@ -322,5 +299,5 @@ export {
   binaryStringToArrayBuffer,
   btoa,
   isBlob,
-  blobToBuffer,
+  blobToBuffer
 }

@@ -29,7 +29,7 @@ global.__preserveFnSource = function (fn, src) {
         return src
       },
       configurable: true,
-      writable: true,
+      writable: true
     })
   } catch (e) {
     // Some exotic function objects may reject the redefinition; harmless.
@@ -71,14 +71,14 @@ if (typeof global.EventTarget === 'undefined') {
     removeEventListener(type, callback) {
       const listeners = this._listeners[type]
       if (listeners) {
-        this._listeners[type] = listeners.filter((cb) => cb !== callback)
+        this._listeners[type] = listeners.filter(cb => cb !== callback)
       }
     }
 
     dispatchEvent(event) {
       const listeners = this._listeners[event.type]
       if (listeners) {
-        listeners.slice().forEach((cb) => cb.call(this, event))
+        listeners.slice().forEach(cb => cb.call(this, event))
       }
       return true
     }

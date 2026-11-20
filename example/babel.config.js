@@ -17,15 +17,15 @@ module.exports = getConfig(
           extensions: ['.tsx', '.ts', '.js', '.json'],
           alias: {
             '@': './src',
-            'crypto': 'react-native-quick-crypto',
-            'stream': 'readable-stream',
-            'buffer': '@craftzdog/react-native-buffer',
-            'pouchdb-errors': '@craftzdog/pouchdb-errors',
-          },
-        },
+            crypto: 'react-native-quick-crypto',
+            stream: 'readable-stream',
+            buffer: '@craftzdog/react-native-buffer',
+            'pouchdb-errors': '@craftzdog/pouchdb-errors'
+          }
+        }
       ],
-      ['module:react-native-dotenv'],
-    ],
+      ['module:react-native-dotenv']
+    ]
   },
   { root, pkg }
 )

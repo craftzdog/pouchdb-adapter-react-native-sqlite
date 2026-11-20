@@ -1,4 +1,5 @@
 import type { DB, Transaction } from '@op-engineering/op-sqlite'
+
 import { META_STORE } from './constants'
 import { logger } from './debug'
 
@@ -46,7 +47,7 @@ export class TransactionQueue {
             // })
           } else {
             logger.debug('---> write transaction start!')
-            await this.db.transaction(async (sqlTx) => {
+            await this.db.transaction(async sqlTx => {
               await sqlTx.execute(TAKE_WRITE_LOCK)
               await tx.fn(sqlTx)
             })
@@ -55,10 +56,7 @@ export class TransactionQueue {
         } catch (err) {
           tx.reject(err)
         } finally {
-          logger.debug(
-            '<--- transaction finished! queue.length:',
-            this.queue.length
-          )
+          logger.debug('<--- transaction finished! queue.length:', this.queue.length)
           this.inProgress = false
           if (this.queue.length) this.run()
         }
@@ -81,9 +79,9 @@ export class TransactionQueue {
         readonly: true,
         fn,
         resolve,
-        reject,
+        reject
       }
-      const firstWrite = this.queue.findIndex((tx) => !tx.readonly)
+      const firstWrite = this.queue.findIndex(tx => !tx.readonly)
       const insertAt = firstWrite === -1 ? this.queue.length : firstWrite
       this.queue.splice(insertAt, 0, pending)
       this.run()

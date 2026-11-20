@@ -1,6 +1,7 @@
 import { open } from '@op-engineering/op-sqlite'
-import { TransactionQueue } from './transactionQueue'
 import type { DB } from '@op-engineering/op-sqlite'
+
+import { TransactionQueue } from './transactionQueue'
 
 type SQLiteOpenParams = Parameters<typeof open>
 export type OpenDatabaseOptions = SQLiteOpenParams[0] & {
@@ -40,9 +41,7 @@ function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
 }
 
 function openDB(opts: OpenDatabaseOptions) {
-  let cachedResult: OpenDatabaseResult | undefined = cachedDatabases.get(
-    opts.name
-  )
+  let cachedResult: OpenDatabaseResult | undefined = cachedDatabases.get(opts.name)
   if (!cachedResult) {
     cachedResult = openDBSafely(opts)
     if ('db' in cachedResult) cachedDatabases.set(opts.name, cachedResult)

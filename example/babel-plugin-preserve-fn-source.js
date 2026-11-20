@@ -31,12 +31,9 @@ module.exports = function ({ types: t }) {
         const src = state.file.code.slice(node.start, node.end)
         node[MARK] = true
         path.replaceWith(
-          t.callExpression(t.identifier('__preserveFnSource'), [
-            node,
-            t.stringLiteral(src),
-          ])
+          t.callExpression(t.identifier('__preserveFnSource'), [node, t.stringLiteral(src)])
         )
-      },
-    },
+      }
+    }
   }
 }
