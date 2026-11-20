@@ -16,6 +16,17 @@ const topSuiteTitle = (test: Runnable): string => {
   return suite?.title || ''
 }
 
+const createStats = (): Stats => ({
+  start: new Date(),
+  end: new Date(),
+  duration: 0,
+  suites: 0,
+  tests: 0,
+  passes: 0,
+  pending: 0,
+  failures: 0
+})
+
 export const useRunTests = (): [SuiteResults, () => void, boolean] => {
   const [results, setResults] = useState<SuiteResults>({})
   const [running, setRunning] = useState<boolean>(false)
@@ -33,17 +44,6 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
     [setResults]
   )
 
-  const defaultStats = {
-    start: new Date(),
-    end: new Date(),
-    duration: 0,
-    suites: 0,
-    tests: 0,
-    passes: 0,
-    pending: 0,
-    failures: 0
-  }
-
   const run = () => {
     setResults({})
     setRunning(true)
@@ -59,7 +59,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
       EVENT_SUITE_END
     } = Mocha.Runner.constants
 
-    const stats: Stats = { ...defaultStats }
+    const stats = createStats()
 
     rootSuite.eachTest((t: Test) => {
       t.reset()

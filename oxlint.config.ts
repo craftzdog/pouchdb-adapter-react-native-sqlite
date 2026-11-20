@@ -9,7 +9,6 @@ const rulesThatDoNotFitThisCode = {
 const rulesNotAdoptedYet = {
   'no-console': 'off',
   'no-undef': 'off',
-  'react/purity': 'off',
   'react/set-state-in-effect': 'off'
 } as const
 
