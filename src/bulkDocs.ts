@@ -93,7 +93,7 @@ async function sqliteBulkDocs(
   }
 
   let tx: Transaction
-  const results = new Array(docInfos.length)
+  const results = Array.from({ length: docInfos.length })
   const fetchedDocs = new Map<string, any>()
   let docCountDelta = 0
   const countedDocs = new Map<string, boolean>()

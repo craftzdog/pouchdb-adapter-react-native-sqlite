@@ -16,7 +16,6 @@ const rulesNotAdoptedYet = {
   'react/set-state-in-effect': 'off',
   'typescript/no-require-imports': 'off',
   'unicorn/consistent-function-scoping': 'off',
-  'unicorn/no-new-array': 'off',
   'unicorn/text-encoding-identifier-case': 'off'
 } as const
 
