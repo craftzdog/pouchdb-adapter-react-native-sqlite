@@ -7,8 +7,7 @@ const rulesThatDoNotFitThisCode = {
 } as const
 
 const rulesNotAdoptedYet = {
-  'no-console': 'off',
-  'no-undef': 'off'
+  'no-console': 'off'
 } as const
 
 const correctnessRulesOfAddedPlugins = {
@@ -78,6 +77,12 @@ export default defineConfig({
       files: ['example/*.config.js'],
       rules: {
         'typescript/no-require-imports': 'off'
+      }
+    },
+    {
+      files: ['*.config.js', 'example/*.config.js', 'example/babel-plugin-*.js'],
+      env: {
+        node: true
       }
     }
   ],

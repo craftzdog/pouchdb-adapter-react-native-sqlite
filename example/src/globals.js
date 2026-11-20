@@ -54,23 +54,23 @@ class EventTargetPolyfill {
   }
 }
 
-if (global.Buffer === undefined) {
-  global.Buffer = Buffer
+if (globalThis.Buffer === undefined) {
+  globalThis.Buffer = Buffer
 }
 
-global.process = global.process || {}
-global.process.env = global.process.env || {}
+globalThis.process = globalThis.process || {}
+globalThis.process.env = globalThis.process.env || {}
 
-global.__preserveFnSource = preserveFnSource
+globalThis.__preserveFnSource = preserveFnSource
 
-if (global.location === undefined) {
-  global.location = {}
+if (globalThis.location === undefined) {
+  globalThis.location = {}
 }
 
-if (global.Event === undefined) {
-  global.Event = EventPolyfill
+if (globalThis.Event === undefined) {
+  globalThis.Event = EventPolyfill
 }
 
-if (global.EventTarget === undefined) {
-  global.EventTarget = EventTargetPolyfill
+if (globalThis.EventTarget === undefined) {
+  globalThis.EventTarget = EventTargetPolyfill
 }
