@@ -6,9 +6,7 @@ const rulesThatDoNotFitThisCode = {
   'unicorn/text-encoding-identifier-case': 'off'
 } as const
 
-const rulesNotAdoptedYet = {
-  'no-console': 'off'
-} as const
+const rulesNotAdoptedYet = {} as const
 
 const correctnessRulesOfAddedPlugins = {
   'promise/no-callback-in-promise': 'off',
@@ -83,6 +81,12 @@ export default defineConfig({
       files: ['*.config.js', 'example/*.config.js', 'example/babel-plugin-*.js'],
       env: {
         node: true
+      }
+    },
+    {
+      files: ['src/debug.ts', 'example/**'],
+      rules: {
+        'no-console': 'off'
       }
     }
   ],
