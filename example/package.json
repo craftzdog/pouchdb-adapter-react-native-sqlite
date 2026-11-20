@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@craftzdog/pouchdb-errors": "^9.0.1",
+    "@craftzdog/react-native-buffer": "^6.1.2",
     "@op-engineering/op-sqlite": "^18.2.3",
     "debug": "^4.4.0",
     "events": "^3.3.0",

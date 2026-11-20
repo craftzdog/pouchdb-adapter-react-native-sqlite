@@ -1,5 +1,5 @@
 import 'react-native-url-polyfill/auto'
-import { Buffer } from 'node:buffer'
+import { Buffer } from '@craftzdog/react-native-buffer'
 
 /**
  * Gives `fn` a `toString` that returns `src`. `babel-plugin-preserve-fn-source.js` wraps the
