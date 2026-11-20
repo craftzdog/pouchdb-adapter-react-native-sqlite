@@ -34,9 +34,7 @@ function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
   } catch (err: any) {
     try {
       db?.close()
-    } catch {
-      // The opening error is the one worth reporting.
-    }
+    } catch {}
     return { error: err }
   }
 }
@@ -47,7 +45,6 @@ function openDB(opts: OpenDatabaseOptions) {
   )
   if (!cachedResult) {
     cachedResult = openDBSafely(opts)
-    // A failed opening is not cached, so the next one tries again.
     if ('db' in cachedResult) cachedDatabases.set(opts.name, cachedResult)
   }
   return cachedResult
