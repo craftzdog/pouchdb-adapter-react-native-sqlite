@@ -21,8 +21,9 @@ const cachedDatabases = new Map<string, OpenDatabaseResult>()
 
 function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
   const { onOpen, ...sqliteOpts } = opts
+  let db: DB | undefined
   try {
-    const db = open(sqliteOpts)
+    db = open(sqliteOpts)
     db.executeSync('PRAGMA journal_mode = WAL')
     db.executeSync('PRAGMA synchronous = NORMAL')
     // op-sqlite's build defaults to a 2 MiB page cache
@@ -31,6 +32,11 @@ function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
     const transactionQueue = new TransactionQueue(db)
     return { db, transactionQueue }
   } catch (err: any) {
+    try {
+      db?.close()
+    } catch {
+      // The opening error is the one worth reporting.
+    }
     return { error: err }
   }
 }
@@ -41,7 +47,8 @@ function openDB(opts: OpenDatabaseOptions) {
   )
   if (!cachedResult) {
     cachedResult = openDBSafely(opts)
-    cachedDatabases.set(opts.name, cachedResult)
+    // A failed opening is not cached, so the next one tries again.
+    if ('db' in cachedResult) cachedDatabases.set(opts.name, cachedResult)
   }
   return cachedResult
 }

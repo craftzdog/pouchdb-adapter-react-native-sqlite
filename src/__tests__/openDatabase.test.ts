@@ -54,4 +54,23 @@ describe('openDB', () => {
 
     expect(result).toEqual({ error: failure })
   })
+
+  it('closes the connection and retries the next opening when onOpen throws', () => {
+    const connection = makeConnection()
+    mockOpen.mockReturnValue(connection)
+    const onOpen = jest
+      .fn()
+      .mockImplementationOnce(() => {
+        throw new Error('database is locked')
+      })
+      .mockImplementationOnce(() => {})
+
+    const failed = openDB({ name: 'test.sqlite', onOpen })
+    const retried = openDB({ name: 'test.sqlite', onOpen })
+
+    expect('error' in failed).toBe(true)
+    expect(connection.close).toHaveBeenCalledTimes(1)
+    expect(mockOpen).toHaveBeenCalledTimes(2)
+    expect('db' in retried && retried.db).toBe(connection)
+  })
 })
