@@ -444,7 +444,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
             keyChunk.forEach(() => {
               bindingStr += '?,'
             })
-            bindingStr = bindingStr.substring(0, bindingStr.length - 1)
+            bindingStr = bindingStr.slice(0, -1)
             criteria.push(DOC_STORE + '.id IN (' + bindingStr + ')')
             sqlArgs = sqlArgs.concat(keyChunk)
 

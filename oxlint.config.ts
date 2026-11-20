@@ -16,8 +16,7 @@ const rulesNotAdoptedYet = {
   'react/set-state-in-effect': 'off',
   'typescript/no-require-imports': 'off',
   'unicorn/consistent-function-scoping': 'off',
-  'unicorn/no-new-array': 'off',
-  'unicorn/prefer-string-slice': 'off'
+  'unicorn/no-new-array': 'off'
 } as const
 
 const correctnessRulesOfAddedPlugins = {
