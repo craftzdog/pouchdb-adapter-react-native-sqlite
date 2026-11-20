@@ -52,7 +52,9 @@ export class TransactionQueue {
         } finally {
           logger.debug('<--- transaction finished! queue.length:', this.queue.length)
           this.inProgress = false
-          if (this.queue.length) this.run()
+          if (this.queue.length) {
+            this.run()
+          }
         }
       })
     } else {

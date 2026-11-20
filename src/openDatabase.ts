@@ -45,7 +45,9 @@ function openDB(opts: OpenDatabaseOptions) {
   let cachedResult: OpenDatabaseResult | undefined = cachedDatabases.get(opts.name)
   if (!cachedResult) {
     cachedResult = openDBSafely(opts)
-    if ('db' in cachedResult) cachedDatabases.set(opts.name, cachedResult)
+    if ('db' in cachedResult) {
+      cachedDatabases.set(opts.name, cachedResult)
+    }
   }
   return cachedResult
 }

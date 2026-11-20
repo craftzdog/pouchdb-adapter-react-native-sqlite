@@ -4,7 +4,6 @@ import { defineConfig } from 'oxlint'
 const rulesNotAdoptedYet = {
   '@nkzw/no-instanceof': 'off',
   'array-callback-return': 'off',
-  curly: 'off',
   'import/no-namespace': 'off',
   'no-console': 'off',
   'no-empty': 'off',

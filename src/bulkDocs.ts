@@ -49,7 +49,9 @@ interface Options {
 async function convertBlobAttachmentsToBuffers(docInfos: Array<DocInfo>) {
   for (const docInfo of docInfos) {
     const attachments = docInfo.data && docInfo.data._attachments
-    if (!attachments) continue
+    if (!attachments) {
+      continue
+    }
     for (const name of Object.keys(attachments)) {
       const att = attachments[name]
       if (!att.stub && isBlob(att.data)) {
@@ -124,7 +126,9 @@ async function sqliteBulkDocs(
       }
     })
 
-    if (!digests.length) return
+    if (!digests.length) {
+      return
+    }
 
     for (const digest of digests) {
       await verifyAttachment(digest)
@@ -190,7 +194,9 @@ async function sqliteBulkDocs(
 
       function add(att: string) {
         const digest = data._attachments[att].digest as string
-        if (insertedDigests[digest]) return
+        if (insertedDigests[digest]) {
+          return
+        }
         insertedDigests[digest] = true
         const sql = 'INSERT INTO ' + ATTACH_AND_SEQ_STORE + ' (digest, seq) VALUES (?,?)'
         const sqlArgs = [digest, seq]
@@ -284,15 +290,20 @@ async function sqliteBulkDocs(
         },
         opts,
         (err?: any) => {
-          if (!err) resolve()
-          else reject(err)
+          if (!err) {
+            resolve()
+          } else {
+            reject(err)
+          }
         }
       )
     })
   }
 
   async function fetchExistingDocs(): Promise<void> {
-    if (!docInfos.length) return
+    if (!docInfos.length) {
+      return
+    }
 
     for (const docInfo of docInfos) {
       if (docInfo._id && isLocalId(docInfo._id)) {
@@ -324,7 +335,9 @@ async function sqliteBulkDocs(
     logger.debug('saveAttachment:', digest)
     let sql = 'SELECT digest FROM ' + ATTACH_STORE + ' WHERE digest=?'
     const result = await tx.execute(sql, [digest])
-    if (result.rows?.length) return
+    if (result.rows?.length) {
+      return
+    }
     sql = 'INSERT INTO ' + ATTACH_STORE + ' (digest, body, escaped) VALUES (?,?,0)'
     await tx.execute(sql, [digest, binaryStringToArrayBuffer(data)])
   }
@@ -333,8 +346,11 @@ async function sqliteBulkDocs(
 
   await new Promise<void>((resolve, reject) => {
     preprocessAttachments(docInfos, 'binary', (err: any) => {
-      if (err) reject(err)
-      else resolve()
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
     })
   })
 

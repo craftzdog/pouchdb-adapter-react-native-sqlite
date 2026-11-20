@@ -75,8 +75,12 @@ const noComments = {
     return {
       Program() {
         for (const comment of sourceCode.getAllComments()) {
-          if (comment.type === 'Shebang') continue
-          if (isJSDocBlock(comment) && documentsDeclaration(sourceCode, comment)) continue
+          if (comment.type === 'Shebang') {
+            continue
+          }
+          if (isJSDocBlock(comment) && documentsDeclaration(sourceCode, comment)) {
+            continue
+          }
           context.report({ loc: comment.loc, messageId: 'noComments' })
         }
       }

@@ -146,7 +146,9 @@ export function isUniqueConstraintError(error: { code?: string; message?: string
 export function handleSQLiteError(event: Error, callback?: (error: any) => void) {
   guardedConsole('error', 'SQLite threw an error', event)
   if (event.constructor && event.constructor.name === 'PouchError') {
-    if (callback) callback(event)
+    if (callback) {
+      callback(event)
+    }
     return event
   }
 
@@ -154,7 +156,9 @@ export function handleSQLiteError(event: Error, callback?: (error: any) => void)
   const errorName = (errorNameMatch && errorNameMatch[1]) || event.name
   const errorReason = event.message
   const error = createError(WSQ_ERROR, errorReason, errorName)
-  if (callback) callback(error)
+  if (callback) {
+    callback(error)
+  }
   return error
 }
 

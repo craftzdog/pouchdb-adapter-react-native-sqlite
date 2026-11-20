@@ -9,8 +9,12 @@ const makeDb = ({ failCommit, failLock }: { failCommit?: Error; failLock?: Error
   const statements: Array<string> = []
   const executeSync = (query: string) => {
     statements.push(query)
-    if (query === 'COMMIT;' && failCommit) throw failCommit
-    if (query === WRITE_LOCK && failLock) throw failLock
+    if (query === 'COMMIT;' && failCommit) {
+      throw failCommit
+    }
+    if (query === WRITE_LOCK && failLock) {
+      throw failLock
+    }
     return { rows: [] }
   }
   const transaction = async (fn: (tx: Transaction) => Promise<void>) => {
