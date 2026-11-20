@@ -18,8 +18,7 @@ const rulesNotAdoptedYet = {
   'unicorn/consistent-function-scoping': 'off',
   'unicorn/no-new-array': 'off',
   'unicorn/no-typeof-undefined': 'off',
-  'unicorn/prefer-string-slice': 'off',
-  'unicorn/text-encoding-identifier-case': 'off'
+  'unicorn/prefer-string-slice': 'off'
 } as const
 
 const correctnessRulesOfAddedPlugins = {
