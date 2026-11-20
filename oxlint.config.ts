@@ -7,7 +7,6 @@ const rulesThatDoNotFitThisCode = {
 } as const
 
 const rulesNotAdoptedYet = {
-  'array-callback-return': 'off',
   'import/no-namespace': 'off',
   'no-console': 'off',
   'no-undef': 'off',

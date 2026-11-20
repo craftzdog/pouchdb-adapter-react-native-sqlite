@@ -14,16 +14,8 @@ export const TestItem: React.FC<TestItemProps> = ({
   count,
   results
 }: TestItemProps) => {
-  let pass = 0
-  let fail = 0
-  results.map((r: TestResult) => {
-    if (r.type === 'correct') {
-      pass++
-    }
-    if (r.type === 'incorrect') {
-      fail++
-    }
-  })
+  const pass = results.filter((r: TestResult) => r.type === 'correct').length
+  const fail = results.filter((r: TestResult) => r.type === 'incorrect').length
 
   return (
     <View style={styles.container}>
