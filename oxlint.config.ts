@@ -14,7 +14,6 @@ const rulesNotAdoptedYet = {
   'quality/no-unsafe-dictionary-type': 'off',
   'react/purity': 'off',
   'react/set-state-in-effect': 'off',
-  'typescript/no-require-imports': 'off',
   'unicorn/consistent-function-scoping': 'off'
 } as const
 
@@ -73,6 +72,12 @@ export default defineConfig({
         'no-unreachable': 'error',
         'prefer-spread': 'off',
         'typescript/no-floating-promises': 'off'
+      }
+    },
+    {
+      files: ['example/*.config.js'],
+      rules: {
+        'typescript/no-require-imports': 'off'
       }
     }
   ],
