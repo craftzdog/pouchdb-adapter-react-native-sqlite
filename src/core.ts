@@ -75,7 +75,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
   let db: DB
   let txnQueue: TransactionQueue
   let instanceId: string
-  let encoding: string = 'utf8'
+  let encoding: string = 'UTF-8'
 
   api._name = opts.name
   logger.debug('Creating SqlPouch instance: %s', api._name, opts)
@@ -109,7 +109,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
   async function checkEncoding(tx: Transaction) {
     const res = await tx.execute("SELECT HEX('a') AS hex")
     const hex = res.rows[0]!.hex as string
-    encoding = hex.length === 2 ? 'utf8' : 'UTF-16'
+    encoding = hex.length === 2 ? 'UTF-8' : 'UTF-16'
   }
 
   async function fetchVersion(tx: Transaction) {
