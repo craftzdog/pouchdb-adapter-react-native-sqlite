@@ -54,7 +54,7 @@ class EventTargetPolyfill {
   }
 }
 
-if (typeof global.Buffer === 'undefined') {
+if (global.Buffer === undefined) {
   global.Buffer = Buffer
 }
 
@@ -63,14 +63,14 @@ global.process.env = global.process.env || {}
 
 global.__preserveFnSource = preserveFnSource
 
-if (typeof global.location === 'undefined') {
+if (global.location === undefined) {
   global.location = {}
 }
 
-if (typeof global.Event === 'undefined') {
+if (global.Event === undefined) {
   global.Event = EventPolyfill
 }
 
-if (typeof global.EventTarget === 'undefined') {
+if (global.EventTarget === undefined) {
   global.EventTarget = EventTargetPolyfill
 }

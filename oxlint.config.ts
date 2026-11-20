@@ -17,7 +17,6 @@ const rulesNotAdoptedYet = {
   'typescript/no-require-imports': 'off',
   'unicorn/consistent-function-scoping': 'off',
   'unicorn/no-new-array': 'off',
-  'unicorn/no-typeof-undefined': 'off',
   'unicorn/prefer-string-slice': 'off'
 } as const
 
