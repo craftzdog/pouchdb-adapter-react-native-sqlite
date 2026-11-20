@@ -1,4 +1,5 @@
 import type { DB, Transaction } from '@op-engineering/op-sqlite'
+
 import { META_STORE } from './constants'
 import { logger } from './debug'
 
@@ -12,7 +13,7 @@ export interface PendingTransaction {
 }
 
 export class TransactionQueue {
-  queue: PendingTransaction[] = []
+  queue: Array<PendingTransaction> = []
   inProgress = false
   db: DB
 
@@ -22,7 +23,6 @@ export class TransactionQueue {
 
   run() {
     if (this.inProgress) {
-      // Transaction is already in process bail out
       return
     }
 
@@ -39,28 +39,22 @@ export class TransactionQueue {
           if (tx.readonly) {
             logger.debug('---> transaction start!')
             await this.db.transaction(tx.fn)
-            // await tx.start({
-            //   commit: async () => {return { rowsAffected: 0 }},
-            //   execute: this.db.execute.bind(this.db),
-            //   rollback: async () => {return { rowsAffected: 0 }},
-            // })
           } else {
             logger.debug('---> write transaction start!')
-            await this.db.transaction(async (sqlTx) => {
+            await this.db.transaction(async sqlTx => {
               await sqlTx.execute(TAKE_WRITE_LOCK)
               await tx.fn(sqlTx)
             })
           }
           tx.resolve()
-        } catch (err) {
-          tx.reject(err)
+        } catch (error) {
+          tx.reject(error)
         } finally {
-          logger.debug(
-            '<--- transaction finished! queue.length:',
-            this.queue.length
-          )
+          logger.debug('<--- transaction finished! queue.length:', this.queue.length)
           this.inProgress = false
-          if (this.queue.length) this.run()
+          if (this.queue.length) {
+            this.run()
+          }
         }
       })
     } else {
@@ -81,9 +75,9 @@ export class TransactionQueue {
         readonly: true,
         fn,
         resolve,
-        reject,
+        reject
       }
-      const firstWrite = this.queue.findIndex((tx) => !tx.readonly)
+      const firstWrite = this.queue.findIndex(tx => !tx.readonly)
       const insertAt = firstWrite === -1 ? this.queue.length : firstWrite
       this.queue.splice(insertAt, 0, pending)
       this.run()

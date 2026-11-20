@@ -1,29 +1,21 @@
 import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
+
 import type { TestResult } from './types'
 
 type TestItemProps = {
   description: string
   count: number
-  results: TestResult[]
+  results: Array<TestResult>
 }
 
 export const TestItem: React.FC<TestItemProps> = ({
   description,
   count,
-  results,
+  results
 }: TestItemProps) => {
-  // get pass/fail stats from results
-  let pass = 0
-  let fail = 0
-  results.map((r: TestResult) => {
-    if (r.type === 'correct') {
-      pass++
-    }
-    if (r.type === 'incorrect') {
-      fail++
-    }
-  })
+  const pass = results.filter((r: TestResult) => r.type === 'correct').length
+  const fail = results.filter((r: TestResult) => r.type === 'incorrect').length
 
   return (
     <View style={styles.container}>
@@ -53,24 +45,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     gap: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#ccc'
   },
   label: {
     fontSize: 12,
-    flex: 8,
+    flex: 8
   },
   pass: {
     color: 'green',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   fail: {
     color: 'red',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   count: {
     flex: 1,
     textAlign: 'right',
     fontSize: 12,
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 })

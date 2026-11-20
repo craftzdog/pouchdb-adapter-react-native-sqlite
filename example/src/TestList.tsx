@@ -1,32 +1,19 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
-import { useRunTests } from './useRunTests'
-import { useTestList } from './useTestList'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+
 import { TestItem } from './TestItem'
 import type { SuiteResults } from './types'
+import { useRunTests } from './useRunTests'
+import { useTestList } from './useTestList'
 
-const tally = (results: SuiteResults): { pass: number; fail: number } => {
-  let pass = 0
-  let fail = 0
-  Object.values(results).forEach((suite) => {
-    suite.results.forEach((r) => {
-      if (r.type === 'correct') {
-        pass++
-      }
-      if (r.type === 'incorrect') {
-        fail++
-      }
-    })
-  })
-  return { pass, fail }
+const tally = (results: SuiteResults) => {
+  const testResults = Object.values(results).flatMap(suite => suite.results)
+  return {
+    pass: testResults.filter(r => r.type === 'correct').length,
+    fail: testResults.filter(r => r.type === 'incorrect').length
+  }
 }
 
-const Tests = () => {
+export const TestList = () => {
   let totalCount = 0
   const tests = useTestList()
   const [results, runTests, running] = useRunTests()
@@ -87,33 +74,31 @@ const Tests = () => {
   )
 }
 
-export default Tests
-
 const styles = StyleSheet.create({
   runButton: {
     padding: 10,
     marginVertical: 10,
     backgroundColor: 'navy',
     borderRadius: 4,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   runButtonDisabled: {
-    backgroundColor: '#888',
+    backgroundColor: '#888'
   },
   runButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   summary: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    paddingVertical: 6,
+    paddingVertical: 6
   },
   summaryText: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   header: {
     width: '100%',
@@ -124,31 +109,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     gap: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#ccc'
   },
   labelName: {
-    flex: 8,
+    flex: 8
   },
   label: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#999',
+    color: '#999'
   },
   pass: {
-    color: 'green',
+    color: 'green'
   },
   fail: {
-    color: 'red',
+    color: 'red'
   },
   footer: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 5,
+    paddingVertical: 5
   },
   totalCount: {
     textAlign: 'right',
     fontSize: 12,
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 })

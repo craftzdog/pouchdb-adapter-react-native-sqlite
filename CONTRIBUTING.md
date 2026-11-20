@@ -6,18 +6,18 @@ We want this community to be friendly and respectful to each other. Please follo
 
 ## Development workflow
 
-This project is a monorepo managed using [Yarn workspaces](https://yarnpkg.com/features/workspaces). It contains the following packages:
+This project is a monorepo managed using [pnpm workspaces](https://pnpm.io/workspaces). It contains the following packages:
 
 - The library package in the root directory.
 - An example app in the `example/` directory.
 
-To get started with the project, run `yarn` in the root directory to install the required dependencies for each package:
+To get started with the project, run `pnpm install` in the root directory to install the required dependencies for each package:
 
 ```sh
-yarn
+pnpm install
 ```
 
-> Since the project relies on Yarn workspaces, you cannot use [`npm`](https://github.com/npm/cli) for development.
+> Since the project relies on pnpm workspaces, you cannot use [`npm`](https://github.com/npm/cli) or Yarn for development.
 
 The [example app](/example/) demonstrates usage of the library. You need to run it to test any changes you make.
 
@@ -32,19 +32,19 @@ You can use various commands from the root directory to work with the project.
 To start the packager:
 
 ```sh
-yarn example start
+pnpm example start
 ```
 
 To run the example app on Android:
 
 ```sh
-yarn example android
+pnpm example android
 ```
 
 To run the example app on iOS:
 
 ```sh
-yarn example ios
+pnpm example ios
 ```
 
 To confirm that the app is running with the new architecture, you can check the Metro logs for a message like this:
@@ -55,23 +55,24 @@ Running "PouchdbAdapterReactNativeSqliteExample" with {"fabric":true,"initialPro
 
 Note the `"fabric":true` and `"concurrentRoot":true` properties.
 
-Make sure your code passes TypeScript and ESLint. Run the following to verify:
+Make sure your code passes TypeScript, oxlint and oxfmt. Run the following to verify:
 
 ```sh
-yarn typecheck
-yarn lint
+pnpm typecheck
+pnpm lint
+pnpm format --check
 ```
 
 To fix formatting errors, run the following:
 
 ```sh
-yarn lint --fix
+pnpm format
 ```
 
 Remember to add tests for your change if possible. Run the unit tests by:
 
 ```sh
-yarn test
+pnpm test
 ```
 
 ### Commit message convention
@@ -89,11 +90,11 @@ Our pre-commit hooks verify that your commit message matches this format when co
 
 ### Linting and tests
 
-[ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [TypeScript](https://www.typescriptlang.org/)
+[oxlint](https://oxc.rs/docs/guide/usage/linter), [oxfmt](https://oxc.rs/docs/guide/usage/formatter), [TypeScript](https://www.typescriptlang.org/)
 
-We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) for linting and formatting the code, and [Jest](https://jestjs.io/) for testing.
+We use [TypeScript](https://www.typescriptlang.org/) for type checking, [oxlint](https://oxc.rs/docs/guide/usage/linter) for linting, [oxfmt](https://oxc.rs/docs/guide/usage/formatter) for formatting the code, and [Vitest](https://vitest.dev/) with [vitest-native](https://vitest-native.danfry.dev/) for testing.
 
-Our pre-commit hooks verify that the linter and tests pass when committing.
+Our pre-commit hooks verify that the linter, the formatter and the type checker pass when committing.
 
 ### Publishing to npm
 
@@ -102,20 +103,21 @@ We use [release-it](https://github.com/release-it/release-it) to make it easier 
 To publish new versions, run the following:
 
 ```sh
-yarn release
+pnpm release
 ```
 
 ### Scripts
 
 The `package.json` file contains various scripts for common tasks:
 
-- `yarn`: setup project by installing dependencies.
-- `yarn typecheck`: type-check files with TypeScript.
-- `yarn lint`: lint files with ESLint.
-- `yarn test`: run unit tests with Jest.
-- `yarn example start`: start the Metro server for the example app.
-- `yarn example android`: run the example app on Android.
-- `yarn example ios`: run the example app on iOS.
+- `pnpm install`: setup project by installing dependencies.
+- `pnpm typecheck`: type-check files with TypeScript.
+- `pnpm lint`: lint files with oxlint.
+- `pnpm format`: format files with oxfmt.
+- `pnpm test`: run unit tests with Vitest.
+- `pnpm example start`: start the Metro server for the example app.
+- `pnpm example android`: run the example app on Android.
+- `pnpm example ios`: run the example app on iOS.
 
 ### Sending a pull request
 

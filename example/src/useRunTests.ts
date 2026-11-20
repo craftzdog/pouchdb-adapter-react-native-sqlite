@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
-import type * as MochaTypes from './mocha-types'
+
+import type { Runnable, Runner, Suite, Test } from './mocha-types'
 import { Mocha, rootSuite } from './MochaSetup'
 import type { Stats, SuiteResults, TestResult } from './types'
 
@@ -7,13 +8,24 @@ import type { Stats, SuiteResults, TestResult } from './types'
  * Walks up to the top-level (file) suite so deeply-nested PouchDB describes roll
  * their pass/fail counts up to the row shown for each test file.
  */
-const topSuiteTitle = (test: MochaTypes.Runnable): string => {
+const topSuiteTitle = (test: Runnable): string => {
   let suite = test.parent
   while (suite && suite.parent && !suite.parent.root) {
     suite = suite.parent
   }
   return suite?.title || ''
 }
+
+const createStats = (): Stats => ({
+  start: new Date(),
+  end: new Date(),
+  duration: 0,
+  suites: 0,
+  tests: 0,
+  passes: 0,
+  pending: 0,
+  failures: 0
+})
 
 export const useRunTests = (): [SuiteResults, () => void, boolean] => {
   const [results, setResults] = useState<SuiteResults>({})
@@ -32,17 +44,6 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
     [setResults]
   )
 
-  const defaultStats = {
-    start: new Date(),
-    end: new Date(),
-    duration: 0,
-    suites: 0,
-    tests: 0,
-    passes: 0,
-    pending: 0,
-    failures: 0,
-  }
-
   const run = () => {
     setResults({})
     setRunning(true)
@@ -55,17 +56,16 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
       EVENT_TEST_PENDING,
       EVENT_TEST_END,
       EVENT_SUITE_BEGIN,
-      EVENT_SUITE_END,
+      EVENT_SUITE_END
     } = Mocha.Runner.constants
 
-    let stats: Stats = { ...defaultStats }
+    const stats = createStats()
 
-    // Reset every test (recursively) so the suite can be re-run from the button.
-    rootSuite.eachTest((t: MochaTypes.Test) => {
+    rootSuite.eachTest((t: Test) => {
       t.reset()
     })
 
-    var runner = new Mocha.Runner(rootSuite) as MochaTypes.Runner
+    const runner = new Mocha.Runner(rootSuite) as Runner
     runner.stats = stats
 
     let indents = -1
@@ -74,25 +74,27 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
       .once(EVENT_RUN_BEGIN, () => {
         stats.start = new Date()
       })
-      .on(EVENT_SUITE_BEGIN, (suite: MochaTypes.Suite) => {
-        suite.root || stats.suites++
+      .on(EVENT_SUITE_BEGIN, (suite: Suite) => {
+        if (!suite.root) {
+          stats.suites++
+        }
         indents++
       })
       .on(EVENT_SUITE_END, () => {
         indents--
       })
-      .on(EVENT_TEST_PASS, (test: MochaTypes.Runnable) => {
+      .on(EVENT_TEST_PASS, (test: Runnable) => {
         const name = topSuiteTitle(test)
         stats.passes++
         addResult({
           indentation: indents,
           description: test.title,
           suiteName: name,
-          type: 'correct',
+          type: 'correct'
         })
         console.log(`${indent()}pass: ${test.title}`)
       })
-      .on(EVENT_TEST_FAIL, (test: MochaTypes.Runnable, err: Error) => {
+      .on(EVENT_TEST_FAIL, (test: Runnable, err: Error) => {
         const name = topSuiteTitle(test)
         stats.failures++
         addResult({
@@ -100,14 +102,14 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
           description: test.title,
           suiteName: name,
           type: 'incorrect',
-          errorMsg: err.message,
+          errorMsg: err.message
         })
         console.log(`${indent()}fail: ${test.title} - error: ${err.message}`)
       })
-      .on(EVENT_TEST_PENDING, function () {
+      .on(EVENT_TEST_PENDING, () => {
         stats.pending++
       })
-      .on(EVENT_TEST_END, function () {
+      .on(EVENT_TEST_END, () => {
         stats.tests++
       })
       .once(EVENT_RUN_END, () => {

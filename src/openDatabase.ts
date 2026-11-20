@@ -1,6 +1,9 @@
 import { open } from '@op-engineering/op-sqlite'
-import { TransactionQueue } from './transactionQueue'
 import type { DB } from '@op-engineering/op-sqlite'
+
+import { TransactionQueue } from './transactionQueue'
+
+const PAGE_CACHE_SIZE_KIB = 16_000
 
 type SQLiteOpenParams = Parameters<typeof open>
 export type OpenDatabaseOptions = SQLiteOpenParams[0] & {
@@ -8,16 +11,14 @@ export type OpenDatabaseOptions = SQLiteOpenParams[0] & {
   deterministic_revs?: boolean
   onOpen?: (db: DB) => void
 }
-type OpenDatabaseResult =
-  | {
-      db: DB
-      transactionQueue: TransactionQueue
-    }
-  | {
-      error: Error
-    }
+type OpenDatabase = {
+  db: DB
+  transactionQueue: TransactionQueue
+}
+type OpenDatabaseResult = OpenDatabase | { error: Error }
 
-const cachedDatabases = new Map<string, OpenDatabaseResult>()
+/** The open connections by file name, with how many PouchDB instances use each. */
+const openDatabases = new Map<string, OpenDatabase & { openCount: number }>()
 
 function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
   const { onOpen, ...sqliteOpts } = opts
@@ -26,38 +27,43 @@ function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
     db = open(sqliteOpts)
     db.executeSync('PRAGMA journal_mode = WAL')
     db.executeSync('PRAGMA synchronous = NORMAL')
-    // op-sqlite's build defaults to a 2 MiB page cache
-    db.executeSync('PRAGMA cache_size = -16000')
+    db.executeSync(`PRAGMA cache_size = -${PAGE_CACHE_SIZE_KIB}`)
     onOpen?.(db)
     const transactionQueue = new TransactionQueue(db)
     return { db, transactionQueue }
-  } catch (err: any) {
+  } catch (error: any) {
     try {
       db?.close()
     } catch {}
-    return { error: err }
+    return { error }
   }
 }
 
-function openDB(opts: OpenDatabaseOptions) {
-  let cachedResult: OpenDatabaseResult | undefined = cachedDatabases.get(
-    opts.name
-  )
-  if (!cachedResult) {
-    cachedResult = openDBSafely(opts)
-    if ('db' in cachedResult) cachedDatabases.set(opts.name, cachedResult)
+function openDB(opts: OpenDatabaseOptions): OpenDatabaseResult {
+  const openDatabase = openDatabases.get(opts.name)
+  if (openDatabase) {
+    openDatabases.set(opts.name, { ...openDatabase, openCount: openDatabase.openCount + 1 })
+    return openDatabase
   }
-  return cachedResult
+  const result = openDBSafely(opts)
+  if ('db' in result) {
+    openDatabases.set(opts.name, { ...result, openCount: 1 })
+  }
+  return result
 }
 
+/** Releases one use of the connection, and closes it when no PouchDB instance uses it anymore. */
 export function closeDB(name: string) {
-  const cachedResult = cachedDatabases.get(name)
-  if (cachedResult) {
-    if ('db' in cachedResult) {
-      cachedResult.db.close()
-    }
-    cachedDatabases.delete(name)
+  const openDatabase = openDatabases.get(name)
+  if (!openDatabase) {
+    return
   }
+  if (openDatabase.openCount > 1) {
+    openDatabases.set(name, { ...openDatabase, openCount: openDatabase.openCount - 1 })
+    return
+  }
+  openDatabase.db.close()
+  openDatabases.delete(name)
 }
 
 export default openDB

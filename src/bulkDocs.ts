@@ -1,21 +1,17 @@
-import {
-  preprocessAttachments,
-  isLocalId,
-  processDocs,
-  parseDoc,
-} from 'pouchdb-adapter-utils'
-import { compactTree, isDeleted } from 'pouchdb-merge'
-import { safeJsonParse, safeJsonStringify } from 'pouchdb-json'
+import type { Transaction } from '@op-engineering/op-sqlite'
+import { preprocessAttachments, isLocalId, processDocs, parseDoc } from 'pouchdb-adapter-utils'
 import { MISSING_STUB, createError } from 'pouchdb-errors'
+import { safeJsonParse, safeJsonStringify } from 'pouchdb-json'
+import { compactTree, isDeleted } from 'pouchdb-merge'
 
 import {
   DOC_STORE,
   BY_SEQ_STORE,
   ATTACH_STORE,
   ATTACH_AND_SEQ_STORE,
-  META_STORE,
+  META_STORE
 } from './constants'
-
+import { logger } from './debug'
 import {
   select,
   stringifyDoc,
@@ -26,16 +22,14 @@ import {
   blobToBuffer,
   getLastSeq,
   getStoredDocCount,
-  refreshDocCount,
+  refreshDocCount
 } from './utils'
-import type { Transaction } from '@op-engineering/op-sqlite'
-import { logger } from './debug'
 
 interface DocInfo {
   _id: string
   metadata: any
   data: any
-  stemmedRevs?: string[]
+  stemmedRevs?: Array<string>
   error?: any
 }
 
@@ -45,11 +39,26 @@ interface DBOptions {
 }
 
 interface Request {
-  docs: any[]
+  docs: Array<any>
 }
 
 interface Options {
   new_edits: boolean
+}
+
+async function convertBlobAttachmentsToBuffers(docInfos: Array<DocInfo>) {
+  for (const docInfo of docInfos) {
+    const attachments = docInfo.data && docInfo.data._attachments
+    if (!attachments) {
+      continue
+    }
+    for (const name of Object.keys(attachments)) {
+      const att = attachments[name]
+      if (!att.stub && isBlob(att.data)) {
+        att.data = await blobToBuffer(att.data)
+      }
+    }
+  }
 }
 
 async function sqliteBulkDocs(
@@ -63,42 +72,38 @@ async function sqliteBulkDocs(
   const newEdits = opts.new_edits
   const userDocs = req.docs
 
-  const docInfos: DocInfo[] = userDocs.map((doc) => {
+  const docInfos: Array<DocInfo> = userDocs.map(doc => {
     if (doc._id && isLocalId(doc._id)) {
       return doc
     }
     try {
       return parseDoc(doc, newEdits, dbOpts)
-    } catch (err: any) {
-      logger.error('Error parsing doc:', err)
+    } catch (error: any) {
+      logger.error('Error parsing doc:', error)
       return {
         ...doc,
-        error: err,
+        error
       }
     }
   })
 
-  const docInfoErrors = docInfos.filter((docInfo) => docInfo.error)
+  const docInfoErrors = docInfos.filter(docInfo => docInfo.error)
   if (docInfoErrors.length > 0) {
     throw docInfoErrors[0]?.error
   }
 
   let tx: Transaction
-  const results = new Array(docInfos.length)
+  const results = Array.from({ length: docInfos.length })
   const fetchedDocs = new Map<string, any>()
   let docCountDelta = 0
   const countedDocs = new Map<string, boolean>()
 
   async function verifyAttachment(digest: string) {
     logger.debug('verify attachment:', digest)
-    const sql =
-      'SELECT count(*) as cnt FROM ' + ATTACH_STORE + ' WHERE digest=?'
+    const sql = 'SELECT count(*) as cnt FROM ' + ATTACH_STORE + ' WHERE digest=?'
     const result = await tx.execute(sql, [digest])
     if (result.rows[0]?.cnt === 0) {
-      const err = createError(
-        MISSING_STUB,
-        'unknown stub attachment with digest ' + digest
-      )
+      const err = createError(MISSING_STUB, 'unknown stub attachment with digest ' + digest)
       logger.error('unknown:', err)
       throw err
     } else {
@@ -108,10 +113,10 @@ async function sqliteBulkDocs(
   }
 
   async function verifyAttachments(): Promise<void> {
-    const digests: string[] = []
-    docInfos.forEach((docInfo) => {
+    const digests: Array<string> = []
+    docInfos.forEach(docInfo => {
       if (docInfo.data && docInfo.data._attachments) {
-        Object.keys(docInfo.data._attachments).forEach((filename) => {
+        Object.keys(docInfo.data._attachments).forEach(filename => {
           const att = docInfo.data._attachments[filename]
           if (att.stub) {
             logger.debug('attachment digest', att.digest)
@@ -121,7 +126,9 @@ async function sqliteBulkDocs(
       }
     })
 
-    if (!digests.length) return
+    if (!digests.length) {
+      return
+    }
 
     for (const digest of digests) {
       await verifyAttachment(digest)
@@ -163,27 +170,23 @@ async function sqliteBulkDocs(
           ' WHERE doc_id=' +
           DOC_STORE +
           '.id AND rev=?) WHERE id=?'
-        : 'INSERT INTO ' +
-          DOC_STORE +
-          ' (id, winningseq, max_seq, json) VALUES (?,?,?,?);'
+        : 'INSERT INTO ' + DOC_STORE + ' (id, winningseq, max_seq, json) VALUES (?,?,?,?);'
       const metadataStr = safeJsonStringify(docInfo.metadata)
-      const params = isUpdate
-        ? [metadataStr, seq, winningRev, id]
-        : [id, seq, seq, metadataStr]
+      const params = isUpdate ? [metadataStr, seq, winningRev, id] : [id, seq, seq, metadataStr]
       await tx.execute(sql, params)
       docCountDelta += delta
       countedDocs.set(id, !winningRevIsDeleted)
       results[resultsIdx] = {
         ok: true,
         id: docInfo.metadata.id,
-        rev: rev,
+        rev
       }
       fetchedDocs.set(id, docInfo.metadata)
     }
 
     async function insertAttachmentMappings(seq: number) {
       const attsToAdd = Object.keys(data._attachments || {})
-      const digests: { [key: string]: boolean } = {}
+      const insertedDigests: { [key: string]: boolean } = {}
 
       if (!attsToAdd.length) {
         return
@@ -191,18 +194,16 @@ async function sqliteBulkDocs(
 
       function add(att: string) {
         const digest = data._attachments[att].digest as string
-        // A revision can reference the same content under two names (identical
-        // digest); the (digest, seq) index is UNIQUE, so insert each digest
-        // once per seq.
-        if (digests[digest]) return
-        digests[digest] = true
-        const sql =
-          'INSERT INTO ' + ATTACH_AND_SEQ_STORE + ' (digest, seq) VALUES (?,?)'
+        if (insertedDigests[digest]) {
+          return
+        }
+        insertedDigests[digest] = true
+        const sql = 'INSERT INTO ' + ATTACH_AND_SEQ_STORE + ' (digest, seq) VALUES (?,?)'
         const sqlArgs = [digest, seq]
         return tx.execute(sql, sqlArgs)
       }
 
-      await Promise.all(attsToAdd.map((att) => add(att)))
+      await Promise.all(attsToAdd.map(att => add(att)))
     }
 
     docInfo.data._id = docInfo.metadata.id
@@ -218,7 +219,7 @@ async function sqliteBulkDocs(
       if (!att.stub) {
         const data = att.data
         delete att.data
-        att.revpos = parseInt(winningRev, 10)
+        att.revpos = Number.parseInt(winningRev, 10)
         const digest = att.digest
         await saveAttachment(digest, data)
       }
@@ -230,10 +231,7 @@ async function sqliteBulkDocs(
     const id = data._id
     const rev = data._rev
     const json = stringifyDoc(data)
-    const sql =
-      'INSERT INTO ' +
-      BY_SEQ_STORE +
-      ' (doc_id, rev, json, deleted) VALUES (?, ?, ?, ?);'
+    const sql = 'INSERT INTO ' + BY_SEQ_STORE + ' (doc_id, rev, json, deleted) VALUES (?, ?, ?, ?);'
     const sqlArgs = [id, rev, json, deletedInt]
 
     try {
@@ -244,18 +242,11 @@ async function sqliteBulkDocs(
         await dataWritten(tx, seq)
       }
     } catch {
-      // constraint error, recover by updating instead (see #1638)
-      // https://github.com/pouchdb/pouchdb/issues/1638
       const fetchSql = select('seq', BY_SEQ_STORE, null, 'doc_id=? AND rev=?')
       const res = await tx.execute(fetchSql, [id, rev])
       const seq = res.rows[0]!.seq as number
-      logger.debug(
-        `Got a constraint error, updating instead: seq=${seq}, id=${id}, rev=${rev}`
-      )
-      const sql =
-        'UPDATE ' +
-        BY_SEQ_STORE +
-        ' SET json=?, deleted=? WHERE doc_id=? AND rev=?;'
+      logger.debug(`Got a constraint error, updating instead: seq=${seq}, id=${id}, rev=${rev}`)
+      const sql = 'UPDATE ' + BY_SEQ_STORE + ' SET json=?, deleted=? WHERE doc_id=? AND rev=?;'
       const sqlArgs = [json, deletedInt, id, rev]
       await tx.execute(sql, sqlArgs)
       await insertAttachmentMappings(seq)
@@ -299,25 +290,27 @@ async function sqliteBulkDocs(
         },
         opts,
         (err?: any) => {
-          if (!err) resolve()
-          else reject(err)
+          if (!err) {
+            resolve()
+          } else {
+            reject(err)
+          }
         }
       )
     })
   }
 
   async function fetchExistingDocs(): Promise<void> {
-    if (!docInfos.length) return
+    if (!docInfos.length) {
+      return
+    }
 
     for (const docInfo of docInfos) {
       if (docInfo._id && isLocalId(docInfo._id)) {
         continue
       }
       const id = docInfo.metadata.id
-      const result = await tx.execute(
-        'SELECT json FROM ' + DOC_STORE + ' WHERE id = ?',
-        [id]
-      )
+      const result = await tx.execute('SELECT json FROM ' + DOC_STORE + ' WHERE id = ?', [id])
       if (result.rows?.length) {
         const metadata = safeJsonParse(result.rows[0]!.json)
         fetchedDocs.set(id, metadata)
@@ -332,44 +325,32 @@ async function sqliteBulkDocs(
       return
     }
     const lastSeq = await getLastSeq(tx)
-    await tx.execute(
-      'UPDATE ' + META_STORE + ' SET doc_count = ?, doc_count_seq = ?',
-      [docCountBefore + docCountDelta, lastSeq]
-    )
+    await tx.execute('UPDATE ' + META_STORE + ' SET doc_count = ?, doc_count_seq = ?', [
+      docCountBefore + docCountDelta,
+      lastSeq
+    ])
   }
 
   async function saveAttachment(digest: string, data: any) {
     logger.debug('saveAttachment:', digest)
     let sql = 'SELECT digest FROM ' + ATTACH_STORE + ' WHERE digest=?'
     const result = await tx.execute(sql, [digest])
-    if (result.rows?.length) return
-    sql =
-      'INSERT INTO ' + ATTACH_STORE + ' (digest, body, escaped) VALUES (?,?,0)'
-    // Store as a BLOB (ArrayBuffer). Binding the raw binary string would route
-    // through op-sqlite's TEXT path, which truncates at the first NUL byte and
-    // mangles bytes >127 — corrupting binary attachments (e.g. PNGs).
+    if (result.rows?.length) {
+      return
+    }
+    sql = 'INSERT INTO ' + ATTACH_STORE + ' (digest, body, escaped) VALUES (?,?,0)'
     await tx.execute(sql, [digest, binaryStringToArrayBuffer(data)])
   }
 
-  // Pull replication delivers attachment payloads as RN Blobs (pouchdb-adapter-
-  // http's getAttachment returns `response.blob()`), which the node builds of
-  // pouchdb-md5/pouchdb-binary-utils can't process. Convert any Blob to a Buffer
-  // before preprocessAttachments so the whole pipeline stays on the Buffer path.
-  for (const docInfo of docInfos) {
-    const attachments = docInfo.data && docInfo.data._attachments
-    if (!attachments) continue
-    for (const name of Object.keys(attachments)) {
-      const att = attachments[name]
-      if (!att.stub && isBlob(att.data)) {
-        att.data = await blobToBuffer(att.data)
-      }
-    }
-  }
+  await convertBlobAttachmentsToBuffers(docInfos)
 
   await new Promise<void>((resolve, reject) => {
     preprocessAttachments(docInfos, 'binary', (err: any) => {
-      if (err) reject(err)
-      else resolve()
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
     })
   })
 
@@ -385,8 +366,8 @@ async function sqliteBulkDocs(
       }
       await updateDocCount(docCountBefore)
       sqliteChanges.notify(api._name)
-    } catch (err: any) {
-      throw handleSQLiteError(err)
+    } catch (error: any) {
+      throw handleSQLiteError(error)
     }
   })
 

@@ -1,0 +1,18 @@
+packages:
+  - example
+
+allowBuilds:
+  '@evilmartians/lefthook': true
+
+minimumReleaseAgeExclude:
+  - oxlint
+  - '@oxlint/*'
+  - oxfmt
+  - '@oxfmt/*'
+  - '@nkzw/oxlint-config'
+  - tsrs
+  - '@tsrs/*'
+  - react-native-quick-crypto
+
+overrides:
+  '@types/react': ^19.2.0

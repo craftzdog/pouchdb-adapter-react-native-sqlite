@@ -1,50 +1,24 @@
 import './shim'
 import React from 'react'
+import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
 
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native'
 import PouchDB from './pouchdb'
-import Tests from './Tests'
-// import { open } from '@op-engineering/op-sqlite'
+import { TestList } from './TestList'
 
-// @ts-ignore eslint-ignore-next-line
-const uiManager = global?.nativeFabricUIManager ? 'Fabric' : 'Paper'
+const appGlobal = globalThis as typeof globalThis & {
+  nativeFabricUIManager?: unknown
+  pouch?: unknown
+}
+
+const uiManager = appGlobal.nativeFabricUIManager ? 'Fabric' : 'Paper'
 
 console.log(`Using ${uiManager}`)
 
 const pouch = new PouchDB('mydb', {
   adapter: 'react-native-sqlite',
-  revs_limit: 100,
+  revs_limit: 100
 })
-// @ts-ignore
-globalThis.pouch = pouch
-
-// async function run() {
-//   const db = open({ name: 'test' })
-//   db.execute(
-//     'CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, name TEXT)'
-//   )
-//
-//   await db.transaction(async (tx) => {
-//     await Promise.all(
-//       Array.from({ length: 100 }, (_, i) =>
-//         tx
-//           .executeAsync('INSERT INTO test (name) VALUES (?)', ['foo'])
-//           .then((result) => console.log('insertId:', result.insertId))
-//       )
-//     )
-//   })
-//
-//   db.execute('DROP TABLE IF EXISTS test')
-// }
-//
-// run()
+appGlobal.pouch = pouch
 
 export default function App() {
   const [result, setResult] = React.useState<string>('')
@@ -63,8 +37,8 @@ export default function App() {
     try {
       const mydoc = await pouch.get(docId)
       setResult(JSON.stringify(mydoc, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handlePutDoc = async () => {
@@ -82,44 +56,29 @@ export default function App() {
       _rev: rev,
       _id: docId,
       title: 'Heroes',
-      count: count + 1,
+      count: count + 1
     })
     console.log('put:', r)
     setResult(JSON.stringify(r, null, 2))
   }
   const handlePutMultiDocs = async () => {
     setResult('')
-    let count = 0
+    const count = 0
 
     try {
       const res = await pouch.bulkDocs(
         Array.from({ length: 10 }, (_, i) => ({
           _id: `test:${i}`,
           title: 'Heroes',
-          count: count + 1,
+          count: count + 1
         }))
       )
       setResult(JSON.stringify(res, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message + '\n' + e.stack)
-      console.error(e)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message + '\n' + error.stack)
+      console.error(error)
     }
   }
-  // const handlePutMultiDocs = async () => {
-  //   setResult('')
-  //   let count = 0
-  //
-  //   const res = await Promise.all(
-  //     Array.from({ length: 100 }, (_, i) =>
-  //       pouch.put({
-  //         _id: `test:${i}`,
-  //         title: 'Heroes',
-  //         count: count + 1,
-  //       })
-  //     )
-  //   )
-  //   setResult(JSON.stringify(res, null, 2))
-  // }
   const handleRemoveDoc = async () => {
     setResult('')
     try {
@@ -127,8 +86,8 @@ export default function App() {
       const result = await pouch.remove(mydoc)
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handleReplicate = async () => {
@@ -147,9 +106,9 @@ export default function App() {
       console.log('ret:', result)
       setResult('Finished replicating from remote!')
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      console.error(e)
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      console.error(error)
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handleDestroyDB = async () => {
@@ -158,8 +117,8 @@ export default function App() {
       const result = await pouch.destroy()
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handleQuery = async () => {
@@ -172,12 +131,12 @@ export default function App() {
         descending: true,
         limit: 50,
         skip: 0,
-        conflicts: true,
+        conflicts: true
       })
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handleGetAttachment = async () => {
@@ -185,13 +144,13 @@ export default function App() {
     setImageData(null)
     try {
       const result = await pouch.get('file:9yqbnLGSq', {
-        attachments: true,
+        attachments: true
       })
       setResult(JSON.stringify(result, null, 2))
       setImageData('data:image/png;base64,' + result._attachments.index.data)
       console.log('ret:', result)
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
 
@@ -200,12 +159,12 @@ export default function App() {
     try {
       const result = await pouch.put({
         _id: '_local/mydoc',
-        title: 'Heroes',
+        title: 'Heroes'
       })
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
 
@@ -216,18 +175,15 @@ export default function App() {
       const result = await pouch.remove(mydoc)
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
 
   if (!showDemo) {
     return (
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainerStyle}
-      >
-        <Tests />
+      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainerStyle}>
+        <TestList />
         <TouchableOpacity
           onPress={() => setShowDemo(true)}
           style={[styles.button, styles.demoButton]}
@@ -239,14 +195,8 @@ export default function App() {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainerStyle}
-    >
-      <TouchableOpacity
-        onPress={() => setShowDemo(false)}
-        style={styles.button}
-      >
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainerStyle}>
+      <TouchableOpacity onPress={() => setShowDemo(false)} style={styles.button}>
         <Text style={styles.buttonText}>← Back to tests</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleAllDocs} style={styles.button}>
@@ -301,28 +251,23 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 12,
     paddingTop: 80,
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   },
   contentContainerStyle: {
-    gap: 12,
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+    gap: 12
   },
   button: {
     padding: 8,
     paddingHorizontal: 16,
     backgroundColor: 'navy',
-    borderRadius: 4,
+    borderRadius: 4
   },
   demoButton: {
     backgroundColor: '#555',
-    marginTop: 8,
+    marginTop: 8
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
-  },
+    fontSize: 16
+  }
 })

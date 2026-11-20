@@ -1,17 +1,18 @@
 import { open } from '@op-engineering/op-sqlite'
+import { afterEach, describe, expect, it, type Mock, vi } from 'vitest'
+
 import SqlPouchCore from '../core'
 
-jest.mock('@op-engineering/op-sqlite', () => ({ open: jest.fn() }))
-jest.mock('uuid', () => ({ v4: jest.fn(() => 'uuid') }))
+vi.mock('@op-engineering/op-sqlite', () => ({ open: vi.fn() }))
 
-const mockOpen = open as jest.Mock
+const mockOpen = open as unknown as Mock
 
 const makeConnection = () => ({
-  executeSync: jest.fn(),
-  execute: jest.fn(() => Promise.resolve({ rows: [] })),
-  transaction: jest.fn(() => new Promise(() => {})),
-  close: jest.fn(),
-  getDbPath: jest.fn(() => 'mydb.sqlite'),
+  executeSync: vi.fn(),
+  execute: vi.fn(() => Promise.resolve({ rows: [] })),
+  transaction: vi.fn(() => new Promise(() => {})),
+  close: vi.fn(),
+  getDbPath: vi.fn(() => 'mydb.sqlite')
 })
 
 const createPouch = (name: string) => {
@@ -20,8 +21,7 @@ const createPouch = (name: string) => {
   return api
 }
 
-const closePouch = (api: any) =>
-  new Promise<void>((resolve) => api._close(() => resolve()))
+const closePouch = (api: any) => new Promise<void>(resolve => api._close(() => resolve()))
 
 describe('_close', () => {
   afterEach(() => mockOpen.mockReset())
@@ -42,5 +42,18 @@ describe('_close', () => {
     await closePouch(createPouch('reopened'))
 
     expect(mockOpen).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps the connection open while another instance of the database is open', async () => {
+    const connection = makeConnection()
+    mockOpen.mockReturnValue(connection)
+    const first = createPouch('shared')
+    const second = createPouch('shared')
+
+    await closePouch(first)
+    expect(connection.close).not.toHaveBeenCalled()
+
+    await closePouch(second)
+    expect(connection.close).toHaveBeenCalledTimes(1)
   })
 })

@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "avoid",
+  "bracketSpacing": true,
+  "endOfLine": "lf",
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "none",
+  "sortImports": true,
+  "sortPackageJson": true,
+  "ignorePatterns": [
+    "lib/**",
+    "example/android/**",
+    "example/ios/**",
+    "example/vendor/**",
+    "example/src/tests/**",
+    "pnpm-lock.yaml"
+  ]
+}
