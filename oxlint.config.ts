@@ -48,6 +48,10 @@ export default defineConfig({
     {
       name: 'react-native',
       specifier: 'oxlint-plugin-react-native'
+    },
+    {
+      name: 'local',
+      specifier: './tools/oxlint/local-plugin.mjs'
     }
   ],
   settings: {
@@ -56,6 +60,7 @@ export default defineConfig({
     }
   },
   rules: {
+    'local/no-comments': 'error',
     'typescript/no-explicit-any': 'off',
     'typescript/no-this-alias': 'off',
     'typescript/no-unused-vars': [

@@ -5,6 +5,6 @@ export default defineConfig({
   plugins: [reactNative({ projectBabel: 'never' })],
   test: {
     environment: 'node',
-    include: ['src/**/*.test.{ts,tsx}']
+    include: ['src/**/*.test.{ts,tsx}', 'tools/**/*.test.mjs']
   }
 })
