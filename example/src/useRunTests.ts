@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import type * as MochaTypes from './mocha-types'
+import type { Runnable, Runner, Suite, Test } from './mocha-types'
 import { Mocha, rootSuite } from './MochaSetup'
 import type { Stats, SuiteResults, TestResult } from './types'
 
@@ -8,7 +8,7 @@ import type { Stats, SuiteResults, TestResult } from './types'
  * Walks up to the top-level (file) suite so deeply-nested PouchDB describes roll
  * their pass/fail counts up to the row shown for each test file.
  */
-const topSuiteTitle = (test: MochaTypes.Runnable): string => {
+const topSuiteTitle = (test: Runnable): string => {
   let suite = test.parent
   while (suite && suite.parent && !suite.parent.root) {
     suite = suite.parent
@@ -61,11 +61,11 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
 
     const stats: Stats = { ...defaultStats }
 
-    rootSuite.eachTest((t: MochaTypes.Test) => {
+    rootSuite.eachTest((t: Test) => {
       t.reset()
     })
 
-    const runner = new Mocha.Runner(rootSuite) as MochaTypes.Runner
+    const runner = new Mocha.Runner(rootSuite) as Runner
     runner.stats = stats
 
     let indents = -1
@@ -74,7 +74,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
       .once(EVENT_RUN_BEGIN, () => {
         stats.start = new Date()
       })
-      .on(EVENT_SUITE_BEGIN, (suite: MochaTypes.Suite) => {
+      .on(EVENT_SUITE_BEGIN, (suite: Suite) => {
         if (!suite.root) {
           stats.suites++
         }
@@ -83,7 +83,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
       .on(EVENT_SUITE_END, () => {
         indents--
       })
-      .on(EVENT_TEST_PASS, (test: MochaTypes.Runnable) => {
+      .on(EVENT_TEST_PASS, (test: Runnable) => {
         const name = topSuiteTitle(test)
         stats.passes++
         addResult({
@@ -94,7 +94,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
         })
         console.log(`${indent()}pass: ${test.title}`)
       })
-      .on(EVENT_TEST_FAIL, (test: MochaTypes.Runnable, err: Error) => {
+      .on(EVENT_TEST_FAIL, (test: Runnable, err: Error) => {
         const name = topSuiteTitle(test)
         stats.failures++
         addResult({
