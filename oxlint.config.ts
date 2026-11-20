@@ -10,7 +10,6 @@ const rulesNotAdoptedYet = {
   'no-empty': 'off',
   'no-undef': 'off',
   'no-unused-expressions': 'off',
-  'no-useless-rename': 'off',
   'no-var': 'off',
   'object-shorthand': 'off',
   'prefer-arrow-callback': 'off',
@@ -21,7 +20,6 @@ const rulesNotAdoptedYet = {
   'react/purity': 'off',
   'react/set-state-in-effect': 'off',
   'typescript/array-type': 'off',
-  'typescript/ban-ts-comment': 'off',
   'typescript/no-require-imports': 'off',
   'unicorn/catch-error-name': 'off',
   'unicorn/consistent-function-scoping': 'off',
@@ -29,7 +27,6 @@ const rulesNotAdoptedYet = {
   'unicorn/no-typeof-undefined': 'off',
   'unicorn/prefer-node-protocol': 'off',
   'unicorn/prefer-number-properties': 'off',
-  'unicorn/prefer-optional-catch-binding': 'off',
   'unicorn/prefer-string-slice': 'off',
   'unicorn/text-encoding-identifier-case': 'off'
 } as const
