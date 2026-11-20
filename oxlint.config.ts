@@ -6,7 +6,6 @@ const rulesNotAdoptedYet = {
   'array-callback-return': 'off',
   'import/no-namespace': 'off',
   'no-console': 'off',
-  'no-empty': 'off',
   'no-undef': 'off',
   'no-unused-expressions': 'off',
   'quality/no-chained-type-assertions': 'off',
@@ -48,6 +47,7 @@ export default defineConfig({
     'local/no-comments': 'error',
     'typescript/no-explicit-any': 'off',
     'typescript/no-this-alias': 'off',
+    'no-empty': ['error', { allowEmptyCatch: true }],
     'typescript/no-unused-vars': [
       'warn',
       {
