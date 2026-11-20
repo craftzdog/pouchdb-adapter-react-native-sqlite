@@ -184,16 +184,6 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     instanceId = result.rows[0]!.dbid as string
   }
 
-  async function ensureDocCount(tx: Transaction, dbVersion: number) {
-    if (dbVersion < 8) {
-      await tx.execute('ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count INTEGER')
-      await tx.execute('ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count_seq INTEGER')
-    }
-    if ((await getStoredDocCount(tx)) === null) {
-      await refreshDocCount(tx)
-    }
-  }
-
   api._remote = false
 
   api._id = (callback: (err: any, id?: string) => void) => {
@@ -832,68 +822,78 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
       }
     })
   }
+}
 
-  async function fetchAttachmentsIfNecessary(doc: any, opts: any, api: any, txn: any) {
-    const attachments = Object.keys(doc._attachments || {})
-    if (!attachments.length) {
-      return
-    }
+async function fetchAttachmentsIfNecessary(doc: any, opts: any, api: any, txn: any) {
+  const attachments = Object.keys(doc._attachments || {})
+  if (!attachments.length) {
+    return
+  }
 
-    const fetchAttachment = async (doc: any, att: string) => {
-      const attObj = doc._attachments[att]
-      const attOpts = { binary: opts.binary, ctx: txn }
-      return new Promise<void>((resolve, reject) => {
-        api._getAttachment(doc._id, att, attObj, attOpts, (err: any, data: any) => {
-          if (err) {
-            return reject(err)
-          }
-          doc._attachments[att] = Object.assign(pick(attObj, ['digest', 'content_type']), { data })
-          resolve()
-        })
-      })
-    }
-
-    await Promise.all(
-      attachments.map(async att => {
-        if (opts.attachments && opts.include_docs) {
-          await fetchAttachment(doc, att)
-        } else {
-          doc._attachments[att].stub = true
+  const fetchAttachment = async (doc: any, att: string) => {
+    const attObj = doc._attachments[att]
+    const attOpts = { binary: opts.binary, ctx: txn }
+    return new Promise<void>((resolve, reject) => {
+      api._getAttachment(doc._id, att, attObj, attOpts, (err: any, data: any) => {
+        if (err) {
+          return reject(err)
         }
+        doc._attachments[att] = Object.assign(pick(attObj, ['digest', 'content_type']), { data })
+        resolve()
       })
-    )
+    })
   }
 
-  async function getMaxSeq(tx: Transaction): Promise<number> {
-    const sql = 'SELECT MAX(seq) AS seq FROM ' + BY_SEQ_STORE
-    const res = await tx.execute(sql, [])
-    const updateSeq = (res.rows[0]!.seq as number) || 0
-    return updateSeq
+  await Promise.all(
+    attachments.map(async att => {
+      if (opts.attachments && opts.include_docs) {
+        await fetchAttachment(doc, att)
+      } else {
+        doc._attachments[att].stub = true
+      }
+    })
+  )
+}
+
+async function getMaxSeq(tx: Transaction): Promise<number> {
+  const sql = 'SELECT MAX(seq) AS seq FROM ' + BY_SEQ_STORE
+  const res = await tx.execute(sql, [])
+  const updateSeq = (res.rows[0]!.seq as number) || 0
+  return updateSeq
+}
+
+async function latest(
+  tx: Transaction,
+  id: string,
+  rev: string,
+  callback: (latestRev: string) => void,
+  finish: (err: any) => void
+) {
+  const sql = select(
+    SELECT_DOCS,
+    [DOC_STORE, BY_SEQ_STORE],
+    DOC_STORE_AND_BY_SEQ_JOINER,
+    DOC_STORE + '.id=?'
+  )
+  const sqlArgs = [id]
+
+  const results = await tx.execute(sql, sqlArgs)
+  if (!results.rows?.length) {
+    const err = createError(MISSING_DOC, 'missing')
+    return finish(err)
   }
+  const item = results.rows[0]!
+  const metadata = safeJsonParse(item.metadata)
+  callback(getLatest(rev, metadata))
+}
 
-  async function latest(
-    tx: Transaction,
-    id: string,
-    rev: string,
-    callback: (latestRev: string) => void,
-    finish: (err: any) => void
-  ) {
-    const sql = select(
-      SELECT_DOCS,
-      [DOC_STORE, BY_SEQ_STORE],
-      DOC_STORE_AND_BY_SEQ_JOINER,
-      DOC_STORE + '.id=?'
-    )
-    const sqlArgs = [id]
-
-    const results = await tx.execute(sql, sqlArgs)
-    if (!results.rows?.length) {
-      const err = createError(MISSING_DOC, 'missing')
-      return finish(err)
-    }
-    const item = results.rows[0]!
-    const metadata = safeJsonParse(item.metadata)
-    callback(getLatest(rev, metadata))
+async function ensureDocCount(tx: Transaction, dbVersion: number) {
+  if (dbVersion < 8) {
+    await tx.execute('ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count INTEGER')
+    await tx.execute('ALTER TABLE ' + META_STORE + ' ADD COLUMN doc_count_seq INTEGER')
+  }
+  if ((await getStoredDocCount(tx)) === null) {
+    await refreshDocCount(tx)
   }
 }
 

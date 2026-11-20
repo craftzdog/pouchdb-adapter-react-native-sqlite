@@ -13,8 +13,7 @@ const rulesNotAdoptedYet = {
   'quality/no-known-value-widening': 'off',
   'quality/no-unsafe-dictionary-type': 'off',
   'react/purity': 'off',
-  'react/set-state-in-effect': 'off',
-  'unicorn/consistent-function-scoping': 'off'
+  'react/set-state-in-effect': 'off'
 } as const
 
 const correctnessRulesOfAddedPlugins = {
