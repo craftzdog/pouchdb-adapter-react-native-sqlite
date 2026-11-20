@@ -6,8 +6,6 @@ const rulesThatDoNotFitThisCode = {
   'unicorn/text-encoding-identifier-case': 'off'
 } as const
 
-const rulesNotAdoptedYet = {} as const
-
 const correctnessRulesOfAddedPlugins = {
   'promise/no-callback-in-promise': 'off',
   'vitest/require-mock-type-parameters': 'off'
@@ -53,7 +51,6 @@ export default defineConfig({
     'react-native/no-raw-text': 'off',
     'react-native/sort-styles': 'off',
     ...rulesThatDoNotFitThisCode,
-    ...rulesNotAdoptedYet,
     ...correctnessRulesOfAddedPlugins
   },
   overrides: [
@@ -61,8 +58,7 @@ export default defineConfig({
       files: ['**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts'],
       rules: {
         'no-unreachable': 'error',
-        'prefer-spread': 'off',
-        'typescript/no-floating-promises': 'off'
+        'prefer-spread': 'off'
       }
     },
     {

@@ -85,7 +85,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
   if ('db' in openDBResult) {
     db = openDBResult.db
     txnQueue = openDBResult.transactionQueue
-    setup(cb)
+    setup(cb).catch((error: any) => handleSQLiteError(error, cb))
     logger.debug('Database was opened successfully.', db.getDbPath())
   } else {
     handleSQLiteError(openDBResult.error, cb)
@@ -191,7 +191,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
   }
 
   api._info = (callback: (err: any, info?: any) => void) => {
-    readTransaction(async (tx: Transaction) => {
+    void readTransaction(async (tx: Transaction) => {
       try {
         const seq = await getMaxSeq(tx)
         const docCount = await getDocCount(tx)
@@ -233,7 +233,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     let metadata: any
     const tx: Transaction = opts.ctx
     if (!tx) {
-      readTransaction(async txn => {
+      void readTransaction(async txn => {
         return new Promise(resolve => {
           api._get(id, Object.assign({ ctx: txn }, opts), (err: any, response: any) => {
             if (response) {
@@ -263,7 +263,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
       )
       sqlArgs = [id]
     } else if (opts.latest) {
-      latest(
+      void latest(
         tx,
         id,
         opts.rev,
@@ -273,7 +273,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
           api._get(id, opts, callback)
         },
         finish
-      )
+      ).catch((error: any) => finish(error))
       return
     } else {
       sql = select(
@@ -359,7 +359,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
       criteria.push(BY_SEQ_STORE + '.deleted = 0')
     }
 
-    readTransaction(async (tx: Transaction) => {
+    void readTransaction(async (tx: Transaction) => {
       const processResult = async (rows: Array<any>, results: Array<any>, keys: any) => {
         for (let i = 0, l = rows.length; i < l; i++) {
           const item = rows[i]
@@ -562,7 +562,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
       }
 
       let lastSeq = opts.since || 0
-      readTransaction(async (tx: Transaction) => {
+      void readTransaction(async (tx: Transaction) => {
         try {
           const result = await tx.execute(sql, sqlArgs)
 
@@ -651,7 +651,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     if (opts.ctx) {
       fetch(opts.ctx).catch((error: any) => handleSQLiteError(error, callback))
     } else {
-      readTransaction(async (txn: Transaction) => {
+      void readTransaction(async (txn: Transaction) => {
         try {
           await fetch(txn)
         } catch (error: any) {
@@ -671,14 +671,14 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         const data = safeJsonParse(result.rows[0]!.metadata)
         callback(null, data.rev_tree)
       }
-    })
+    }).catch((error: any) => handleSQLiteError(error, callback))
   }
 
   api._doCompaction = (docId: string, revs: Array<string>, callback: (err?: any) => void) => {
     if (!revs.length) {
       return callback()
     }
-    transaction(async (tx: Transaction) => {
+    void transaction(async (tx: Transaction) => {
       try {
         let sql = 'SELECT json AS metadata FROM ' + DOC_STORE + ' WHERE id = ?'
         const result = await tx.execute(sql, [docId])
@@ -696,15 +696,15 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         await tx.execute(sql, [safeJsonStringify(metadata), docId])
 
         await compactRevs(revs, docId, tx)
+        callback()
       } catch (error: any) {
         handleSQLiteError(error, callback)
       }
-      callback()
     })
   }
 
   api._getLocal = (id: string, callback: (err: any, doc?: any) => void) => {
-    readTransaction(async (tx: Transaction) => {
+    void readTransaction(async (tx: Transaction) => {
       try {
         const sql = 'SELECT json, rev FROM ' + LOCAL_STORE + ' WHERE id=?'
         const res = await tx.execute(sql, [id])
@@ -766,9 +766,9 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     }
 
     if (opts.ctx) {
-      putLocal(opts.ctx)
+      void putLocal(opts.ctx)
     } else {
-      transaction(putLocal)
+      void transaction(putLocal)
     }
   }
 
@@ -795,15 +795,15 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     }
 
     if (opts.ctx) {
-      removeLocal(opts.ctx)
+      void removeLocal(opts.ctx)
     } else {
-      transaction(removeLocal)
+      void transaction(removeLocal)
     }
   }
 
   api._destroy = (_opts: any, callback: (err: any, response?: any) => void) => {
     sqliteChanges.removeAllListeners(api._name)
-    transaction(async (tx: Transaction) => {
+    void transaction(async (tx: Transaction) => {
       try {
         const stores = [
           DOC_STORE,
@@ -813,9 +813,9 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
           LOCAL_STORE,
           ATTACH_AND_SEQ_STORE
         ]
-        stores.forEach(store => {
-          tx.execute('DROP TABLE IF EXISTS ' + store, [])
-        })
+        for (const store of stores) {
+          await tx.execute('DROP TABLE IF EXISTS ' + store, [])
+        }
         callback(null, { ok: true })
       } catch (error: any) {
         handleSQLiteError(error, callback)
