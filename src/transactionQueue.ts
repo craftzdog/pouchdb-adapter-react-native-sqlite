@@ -23,7 +23,6 @@ export class TransactionQueue {
 
   run() {
     if (this.inProgress) {
-      // Transaction is already in process bail out
       return
     }
 
@@ -40,11 +39,6 @@ export class TransactionQueue {
           if (tx.readonly) {
             logger.debug('---> transaction start!')
             await this.db.transaction(tx.fn)
-            // await tx.start({
-            //   commit: async () => {return { rowsAffected: 0 }},
-            //   execute: this.db.execute.bind(this.db),
-            //   rollback: async () => {return { rowsAffected: 0 }},
-            // })
           } else {
             logger.debug('---> write transaction start!')
             await this.db.transaction(async sqlTx => {

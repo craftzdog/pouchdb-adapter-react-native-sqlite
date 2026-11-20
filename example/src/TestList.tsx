@@ -21,7 +21,7 @@ const tally = (results: SuiteResults): { pass: number; fail: number } => {
   return { pass, fail }
 }
 
-const Tests = () => {
+export const TestList = () => {
   let totalCount = 0
   const tests = useTestList()
   const [results, runTests, running] = useRunTests()
@@ -81,8 +81,6 @@ const Tests = () => {
     </View>
   )
 }
-
-export default Tests
 
 const styles = StyleSheet.create({
   runButton: {

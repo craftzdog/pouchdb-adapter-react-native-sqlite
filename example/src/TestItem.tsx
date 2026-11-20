@@ -14,7 +14,6 @@ export const TestItem: React.FC<TestItemProps> = ({
   count,
   results
 }: TestItemProps) => {
-  // get pass/fail stats from results
   let pass = 0
   let fail = 0
   results.map((r: TestResult) => {

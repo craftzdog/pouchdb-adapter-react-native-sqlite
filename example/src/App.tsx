@@ -3,11 +3,14 @@ import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
 
 import PouchDB from './pouchdb'
-import Tests from './Tests'
-// import { open } from '@op-engineering/op-sqlite'
+import { TestList } from './TestList'
 
-// @ts-ignore eslint-ignore-next-line
-const uiManager = global?.nativeFabricUIManager ? 'Fabric' : 'Paper'
+const appGlobal = globalThis as typeof globalThis & {
+  nativeFabricUIManager?: unknown
+  pouch?: unknown
+}
+
+const uiManager = appGlobal.nativeFabricUIManager ? 'Fabric' : 'Paper'
 
 console.log(`Using ${uiManager}`)
 
@@ -15,29 +18,7 @@ const pouch = new PouchDB('mydb', {
   adapter: 'react-native-sqlite',
   revs_limit: 100
 })
-// @ts-ignore
-globalThis.pouch = pouch
-
-// async function run() {
-//   const db = open({ name: 'test' })
-//   db.execute(
-//     'CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, name TEXT)'
-//   )
-//
-//   await db.transaction(async (tx) => {
-//     await Promise.all(
-//       Array.from({ length: 100 }, (_, i) =>
-//         tx
-//           .executeAsync('INSERT INTO test (name) VALUES (?)', ['foo'])
-//           .then((result) => console.log('insertId:', result.insertId))
-//       )
-//     )
-//   })
-//
-//   db.execute('DROP TABLE IF EXISTS test')
-// }
-//
-// run()
+appGlobal.pouch = pouch
 
 export default function App() {
   const [result, setResult] = React.useState<string>('')
@@ -98,21 +79,6 @@ export default function App() {
       console.error(e)
     }
   }
-  // const handlePutMultiDocs = async () => {
-  //   setResult('')
-  //   let count = 0
-  //
-  //   const res = await Promise.all(
-  //     Array.from({ length: 100 }, (_, i) =>
-  //       pouch.put({
-  //         _id: `test:${i}`,
-  //         title: 'Heroes',
-  //         count: count + 1,
-  //       })
-  //     )
-  //   )
-  //   setResult(JSON.stringify(res, null, 2))
-  // }
   const handleRemoveDoc = async () => {
     setResult('')
     try {
@@ -217,7 +183,7 @@ export default function App() {
   if (!showDemo) {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainerStyle}>
-        <Tests />
+        <TestList />
         <TouchableOpacity
           onPress={() => setShowDemo(true)}
           style={[styles.button, styles.demoButton]}

@@ -57,6 +57,7 @@ export default defineConfig({
   },
   rules: {
     'typescript/no-explicit-any': 'off',
+    'typescript/no-this-alias': 'off',
     'typescript/no-unused-vars': [
       'warn',
       {

@@ -29,10 +29,18 @@ import {
   getStoredDocCount,
   refreshDocCount,
   arrayBufferToBinaryString,
-  btoa
+  btoa,
+  isUniqueConstraintError
 } from './utils'
 
-// these indexes cover the ground for most allDocs queries
+type AttachmentBody = string | ArrayBuffer
+
+const attachmentBodyToBuffer = (body: AttachmentBody) =>
+  typeof body === 'string' ? Buffer.from(body, 'binary') : Buffer.from(body)
+
+const attachmentBodyToBinaryString = (body: AttachmentBody) =>
+  typeof body === 'string' ? body : arrayBufferToBinaryString(body)
+
 const BY_SEQ_STORE_DELETED_INDEX_SQL =
   "CREATE INDEX IF NOT EXISTS 'by-seq-deleted-idx' ON " + BY_SEQ_STORE + ' (seq, deleted)'
 const BY_SEQ_STORE_DOC_ID_REV_INDEX_SQL =
@@ -62,11 +70,9 @@ const SELECT_DOCS =
 
 const sqliteChanges = new Changes()
 
-function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
-  // @ts-ignore
-  let api = this as any
+function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) {
+  const api = this
   let db: DB
-  // @ts-ignore
   let txnQueue: TransactionQueue
   let instanceId: string
   let encoding: string = 'UTF-8'
@@ -166,19 +172,9 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     instanceId = uuid()
     const initSeqArgs = [ADAPTER_VERSION, instanceId]
     await tx.execute(initSeq, initSeqArgs)
-    onGetInstanceId()
   }
 
   async function runMigrations(tx: Transaction, dbVersion: number) {
-    // const tasks = [setupDone]
-    //
-    // let i = dbVersion
-    // const nextMigration = (tx: Transaction) => {
-    //   tasks[i - 1](tx, nextMigration)
-    //   i++
-    // }
-    // nextMigration(tx)
-
     const migrated = dbVersion < ADAPTER_VERSION
     if (migrated) {
       await db.execute('UPDATE ' + META_STORE + ' SET db_version = ' + ADAPTER_VERSION)
@@ -186,7 +182,6 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     await ensureDocCount(tx, dbVersion)
     const result = await db.execute('SELECT dbid FROM ' + META_STORE)
     instanceId = result.rows[0]!.dbid as string
-    onGetInstanceId()
   }
 
   async function ensureDocCount(tx: Transaction, dbVersion: number) {
@@ -197,10 +192,6 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     if ((await getStoredDocCount(tx)) === null) {
       await refreshDocCount(tx)
     }
-  }
-
-  function onGetInstanceId() {
-    // Do nothing
   }
 
   api._remote = false
@@ -255,8 +246,6 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
       readTransaction(async txn => {
         return new Promise(resolve => {
           api._get(id, Object.assign({ ctx: txn }, opts), (err: any, response: any) => {
-            // Don't hand back a transaction that's about to finalize;
-            // _getAttachment opens its own when it has no ctx.
             if (response) {
               response.ctx = undefined
             }
@@ -321,11 +310,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
         doc = unstringifyDoc(item.data as string, metadata.id, item.rev as string)
         finish(null)
       })
-      .catch(e => {
-        // createError will throw in RN 0.76.3
-        // https://github.com/facebook/hermes/issues/1496
-        return finish(e)
-      })
+      .catch(e => finish(e))
   }
 
   api._allDocs = (opts: any, callback: (err: any, response?: any) => void) => {
@@ -662,32 +647,20 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
     const fetch = async (tx: Transaction) => {
       const result = await tx.execute(sql, [digest])
       const item = result.rows[0]!
-      const body = item.body
+      const body = item.body as AttachmentBody
       let res: any
-      // Attachments are stored as BLOBs, which op-sqlite returns as an
-      // ArrayBuffer; older rows may still be plain strings.
       if (opts.binary) {
-        // React Native's Blob can't be built from an ArrayBuffer, so return a
-        // typed Buffer (a Buffer with a `.type`) — matching pouchdb's Node
-        // behaviour.
-        res =
-          typeof body === 'string' ? Buffer.from(body, 'binary') : Buffer.from(body as ArrayBuffer)
+        res = attachmentBodyToBuffer(body)
         res.type = type
       } else {
-        const data =
-          typeof body === 'string' ? body : arrayBufferToBinaryString(body as ArrayBuffer)
-        res = btoa(data)
+        res = btoa(attachmentBodyToBinaryString(body))
       }
       callback(null, res)
     }
 
     if (opts.ctx) {
-      // Within an active transaction (fetchAttachmentsIfNecessary).
       fetch(opts.ctx).catch((e: any) => handleSQLiteError(e, callback))
     } else {
-      // Public getAttachment: open and hold our own read transaction until the
-      // read finishes. op-sqlite reads are async, so reusing the ctx from _get
-      // (which finalizes right after) would race the read against COMMIT.
       readTransaction(async (txn: Transaction) => {
         try {
           await fetch(txn)
@@ -794,15 +767,7 @@ function SqlPouch(opts: OpenDatabaseOptions, cb: (err: any) => void) {
           callback(createError(REV_CONFLICT))
         }
       } catch (e: any) {
-        // op-sqlite surfaces a UNIQUE constraint violation as a plain Error
-        // whose message contains "UNIQUE constraint failed" — it has no
-        // structured `code` — so match on the message too. A clashing _local
-        // INSERT (e.g. concurrent first-writes of the same id) is a rev
-        // conflict, not an unknown SQLite error (#2951).
-        if (
-          e.code === 'SQLITE_CONSTRAINT_UNIQUE' ||
-          /UNIQUE constraint failed/i.test(e.message || '')
-        ) {
+        if (isUniqueConstraintError(e)) {
           callback(createError(REV_CONFLICT))
         } else {
           handleSQLiteError(e, callback)

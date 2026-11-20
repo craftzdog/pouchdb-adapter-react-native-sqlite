@@ -3,6 +3,8 @@ import type { DB } from '@op-engineering/op-sqlite'
 
 import { TransactionQueue } from './transactionQueue'
 
+const PAGE_CACHE_SIZE_KIB = 16_000
+
 type SQLiteOpenParams = Parameters<typeof open>
 export type OpenDatabaseOptions = SQLiteOpenParams[0] & {
   revs_limit?: number
@@ -27,8 +29,7 @@ function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
     db = open(sqliteOpts)
     db.executeSync('PRAGMA journal_mode = WAL')
     db.executeSync('PRAGMA synchronous = NORMAL')
-    // op-sqlite's build defaults to a 2 MiB page cache
-    db.executeSync('PRAGMA cache_size = -16000')
+    db.executeSync(`PRAGMA cache_size = -${PAGE_CACHE_SIZE_KIB}`)
     onOpen?.(db)
     const transactionQueue = new TransactionQueue(db)
     return { db, transactionQueue }

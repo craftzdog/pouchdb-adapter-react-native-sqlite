@@ -61,7 +61,6 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
 
     let stats: Stats = { ...defaultStats }
 
-    // Reset every test (recursively) so the suite can be re-run from the button.
     rootSuite.eachTest((t: MochaTypes.Test) => {
       t.reset()
     })

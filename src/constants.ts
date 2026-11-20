@@ -2,28 +2,16 @@ function quote(str: string) {
   return "'" + str + "'"
 }
 
-const ADAPTER_VERSION = 8 // used to manage migrations
+/** The schema version; opening a database with an older one runs its migrations. */
+export const ADAPTER_VERSION = 8
 
-// The object stores created for each database
-// DOC_STORE stores the document meta data, its revision history and state
-const DOC_STORE = quote('document-store')
-// BY_SEQ_STORE stores a particular version of a document, keyed by its
-// sequence id
-const BY_SEQ_STORE = quote('by-sequence')
-// Where we store attachments
-const ATTACH_STORE = quote('attach-store')
-const LOCAL_STORE = quote('local-store')
-const META_STORE = quote('metadata-store')
-// where we store many-to-many relations between attachment
-// digests and seqs
-const ATTACH_AND_SEQ_STORE = quote('attach-seq-store')
-
-export {
-  ADAPTER_VERSION as ADAPTER_VERSION,
-  DOC_STORE as DOC_STORE,
-  BY_SEQ_STORE as BY_SEQ_STORE,
-  ATTACH_STORE as ATTACH_STORE,
-  LOCAL_STORE as LOCAL_STORE,
-  META_STORE as META_STORE,
-  ATTACH_AND_SEQ_STORE as ATTACH_AND_SEQ_STORE
-}
+/** Holds each document's metadata: its revision tree and whether it is deleted. */
+export const DOC_STORE = quote('document-store')
+/** Holds each revision of a document, keyed by its sequence number. */
+export const BY_SEQ_STORE = quote('by-sequence')
+/** Holds attachment bodies, keyed by digest. */
+export const ATTACH_STORE = quote('attach-store')
+export const LOCAL_STORE = quote('local-store')
+export const META_STORE = quote('metadata-store')
+/** Relates attachment digests to the sequence numbers that reference them. */
+export const ATTACH_AND_SEQ_STORE = quote('attach-seq-store')

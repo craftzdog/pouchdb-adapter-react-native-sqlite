@@ -34,17 +34,12 @@ const config = withMetroConfig(getDefaultConfig(__dirname), {
 
 config.resolver.unstable_enablePackageExports = true
 
-// These pouchdb packages ship a `browser` build that Metro picks by default, but
-// in React Native `isNode()` is true so the whole stack expects the Node
-// (Buffer/crypto) paths. Their browser builds break under RN:
-//   - pouchdb-binary-utils: `binaryStringToBlobOrBuffer` builds `new Blob([ArrayBuffer])`
-//     (RN's Blob can't wrap an ArrayBuffer); `blobOrBufferToBinaryString` reads via
-//     FileReader (can't read a Buffer).
-//   - pouchdb-md5: `binaryMd5` on non-string input reads via FileReader and uses
-//     `data.size` (undefined for a Buffer → NaN chunking) → the callback never fires,
-//     hanging every `putAttachment` of a Buffer blob.
-// The adapter no longer imports either directly, but pouchdb-adapter-utils (attachment
-// pre/post-processing in bulkDocs) and the conformance test helpers do. Force Node builds.
+/**
+ * pouchdb packages whose `browser` build Metro would pick, mapped to their Node build.
+ *
+ * pouchdb takes its Node code paths under React Native, which pass Buffers, and these browser
+ * builds cannot handle a Buffer there.
+ */
 const FORCE_NODE_BUILD = {
   'pouchdb-binary-utils': 'pouchdb-binary-utils/lib/index.js',
   'pouchdb-md5': 'pouchdb-md5/lib/index.js'

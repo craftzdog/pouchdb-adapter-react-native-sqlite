@@ -11,9 +11,11 @@ import {
   META_STORE
 } from './constants'
 
+/**
+ * Serializes a document without its `_id` and `_rev`, which have their own columns.
+ * Removes both fields from `doc`.
+ */
 function stringifyDoc(doc: Record<string, any>): string {
-  // don't bother storing the id/rev. it uses lots of space,
-  // in persistent map/reduce especially
   delete doc._id
   delete doc._rev
   return JSON.stringify(doc)
@@ -26,7 +28,7 @@ function unstringifyDoc(doc: string, id: string, rev: string): Record<string, an
   return parsedDoc
 }
 
-// question mark groups IN queries, e.g. 3 -> '(?,?,?)'
+/** Returns the placeholders of an `IN` clause with `num` values, e.g. 3 -> `(?,?,?)`. */
 function qMarks(num: number): string {
   let s = '('
   while (num--) {
@@ -64,8 +66,6 @@ async function compactRevs(revs: string[], docId: string, tx: Transaction): Prom
   const seqs: number[] = []
 
   async function deleteOrphans() {
-    // find orphaned attachment digests
-
     if (!seqs.length) {
       return
     }
@@ -116,13 +116,11 @@ async function compactRevs(revs: string[], docId: string, tx: Transaction): Prom
     }
   }
 
-  // collect the seqs for the revs being compacted and drop their by-seq rows
   for (const rev of revs) {
     const sql = 'SELECT seq FROM ' + BY_SEQ_STORE + ' WHERE doc_id=? AND rev=?'
 
     const res = await tx.execute(sql, [docId, rev])
     if (!res.rows?.length) {
-      // already deleted
       continue
     }
     const seq = res.rows[0]!.seq as number
@@ -131,8 +129,18 @@ async function compactRevs(revs: string[], docId: string, tx: Transaction): Prom
     await tx.execute('DELETE FROM ' + BY_SEQ_STORE + ' WHERE seq=?', [seq])
   }
 
-  // now that all by-seq rows are gone, clean up any orphaned attachments
   await deleteOrphans()
+}
+
+/**
+ * Tells whether `error` is a SQLite UNIQUE constraint violation. op-sqlite reports one as a
+ * plain `Error` with no `code`, so the message is checked as well.
+ */
+export function isUniqueConstraintError(error: { code?: string; message?: string }): boolean {
+  return (
+    error.code === 'SQLITE_CONSTRAINT_UNIQUE' ||
+    /UNIQUE constraint failed/i.test(error.message || '')
+  )
 }
 
 export function handleSQLiteError(event: Error, callback?: (error: any) => void) {
@@ -142,7 +150,6 @@ export function handleSQLiteError(event: Error, callback?: (error: any) => void)
     return event
   }
 
-  // event may actually be a SQLError object, so report is as such
   const errorNameMatch = event && event.constructor.toString().match(/function ([^(]+)/)
   const errorName = (errorNameMatch && errorNameMatch[1]) || event.name
   const errorReason = event.message

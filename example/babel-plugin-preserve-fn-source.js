@@ -1,19 +1,10 @@
-// Preserve Function source for the PouchDB conformance tests under Hermes.
-//
-// Hermes strips function source, so `fn.toString()` returns
-// "function (a0) { [bytecode] }" instead of the real body. pouchdb-mapreduce and
-// filtered replication compile design-doc views/filters by eval-ing
-// `fn.toString()`; without real source that eval throws "bytecode is not
-// defined" (and, once such a poisoned ddoc is pushed, crashes the Node
-// pouchdb-server the same way). Hermes itself *can* eval (`new Function` runs) —
-// only the source text is missing.
-//
-// This plugin wraps every FunctionExpression in the test files as
-// `__preserveFnSource(fn, "<original source>")`, which installs an own
-// `toString` returning the real source. So pouchdb's `mapFun.toString()` yields
-// runnable source again and the view/filter tests pass under Hermes. Scoped to
-// `src/tests/` by filename so it never touches app or adapter code, and marks
-// rewritten nodes to avoid reprocessing.
+/**
+ * Wraps every function expression in `src/tests/` as `__preserveFnSource(fn, "<source>")`.
+ *
+ * Hermes strips function source, so `fn.toString()` returns `[bytecode]`, but pouchdb compiles
+ * design-doc views and filters from it. `__preserveFnSource` (in `src/globals.js`) gives the
+ * function a `toString` that returns the real source. Other files are left alone.
+ */
 module.exports = function ({ types: t }) {
   const MARK = '_fnSourcePreserved'
   return {
