@@ -1,8 +1,12 @@
 import nkzw from '@nkzw/oxlint-config'
 import { defineConfig } from 'oxlint'
 
-const rulesNotAdoptedYet = {
+const rulesThatDoNotFitThisCode = {
   '@nkzw/no-instanceof': 'off',
+  'unicorn/text-encoding-identifier-case': 'off'
+} as const
+
+const rulesNotAdoptedYet = {
   'array-callback-return': 'off',
   'import/no-namespace': 'off',
   'no-console': 'off',
@@ -14,8 +18,7 @@ const rulesNotAdoptedYet = {
   'react/purity': 'off',
   'react/set-state-in-effect': 'off',
   'typescript/no-require-imports': 'off',
-  'unicorn/consistent-function-scoping': 'off',
-  'unicorn/text-encoding-identifier-case': 'off'
+  'unicorn/consistent-function-scoping': 'off'
 } as const
 
 const correctnessRulesOfAddedPlugins = {
@@ -62,6 +65,7 @@ export default defineConfig({
     'react-native/no-unused-styles': 'warn',
     'react-native/no-raw-text': 'off',
     'react-native/sort-styles': 'off',
+    ...rulesThatDoNotFitThisCode,
     ...rulesNotAdoptedYet,
     ...correctnessRulesOfAddedPlugins
   },
