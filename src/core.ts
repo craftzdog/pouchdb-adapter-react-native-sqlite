@@ -378,7 +378,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
           const data = unstringifyDoc(item.data, id, item.rev)
           const winningRev = data._rev
           const doc: any = {
-            id: id,
+            id,
             key: id,
             value: { rev: winningRev }
           }
@@ -414,7 +414,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         if (keys) {
           keys.forEach((key: string, index: number) => {
             if (!results[index]) {
-              results[index] = { key: key, error: 'not_found' }
+              results[index] = { key, error: 'not_found' }
             }
           })
         }
@@ -761,7 +761,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         }
         const res = await tx.execute(sql, values)
         if (res.rowsAffected) {
-          ret = { ok: true, id: id, rev: newRev }
+          ret = { ok: true, id, rev: newRev }
           callback(null, ret)
         } else {
           callback(createError(REV_CONFLICT))

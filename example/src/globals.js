@@ -8,7 +8,7 @@ import { Buffer } from 'buffer'
 function preserveFnSource(fn, src) {
   try {
     Object.defineProperty(fn, 'toString', {
-      value: function () {
+      value() {
         return src
       },
       configurable: true,

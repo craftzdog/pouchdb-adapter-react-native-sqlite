@@ -179,7 +179,7 @@ async function sqliteBulkDocs(
       results[resultsIdx] = {
         ok: true,
         id: docInfo.metadata.id,
-        rev: rev
+        rev
       }
       fetchedDocs.set(id, docInfo.metadata)
     }

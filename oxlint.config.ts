@@ -10,7 +10,6 @@ const rulesNotAdoptedYet = {
   'no-undef': 'off',
   'no-unused-expressions': 'off',
   'no-var': 'off',
-  'object-shorthand': 'off',
   'prefer-arrow-callback': 'off',
   'prefer-const': 'off',
   'quality/no-chained-type-assertions': 'off',
