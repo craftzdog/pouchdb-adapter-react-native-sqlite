@@ -743,7 +743,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     if (!oldRev) {
       newRev = doc._rev = '0-1'
     } else {
-      newRev = doc._rev = '0-' + (parseInt(oldRev.split('-')[1], 10) + 1)
+      newRev = doc._rev = '0-' + (Number.parseInt(oldRev.split('-')[1], 10) + 1)
     }
     const json = stringifyDoc(doc)
 

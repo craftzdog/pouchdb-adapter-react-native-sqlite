@@ -219,7 +219,7 @@ async function sqliteBulkDocs(
       if (!att.stub) {
         const data = att.data
         delete att.data
-        att.revpos = parseInt(winningRev, 10)
+        att.revpos = Number.parseInt(winningRev, 10)
         const digest = att.digest
         await saveAttachment(digest, data)
       }
