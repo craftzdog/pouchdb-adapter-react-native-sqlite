@@ -1,13 +1,6 @@
-import type { MochaClass, MochaInstance, Suite } from './mocha-types'
+import type { Suite } from './mocha-types'
 
-/**
- * The mocha runtime that `index.js` loads. Its browser entry puts the `Mocha` class and a
- * `mocha` instance on the global object.
- */
-const g = globalThis as unknown as { Mocha: MochaClass; mocha: MochaInstance }
-
-const Mocha = g.Mocha
-const mocha = g.mocha
+const { Mocha, mocha } = globalThis
 
 const DEFAULT_TEST_TIMEOUT_MS = 60 * 1000
 
@@ -16,11 +9,8 @@ const DEFAULT_TEST_TIMEOUT_MS = 60 * 1000
  * top-level suites instead of registering them a second time.
  */
 function replaceStaleSuitesOnFastRefresh() {
-  const bdd = globalThis as unknown as {
-    describe: ((title: string, fn: () => void) => Suite) & object
-  }
-  const originalDescribe = bdd.describe
-  bdd.describe = Object.assign((title: string, fn: () => void): Suite => {
+  const originalDescribe = globalThis.describe
+  globalThis.describe = Object.assign((title: string, fn: () => void): Suite => {
     const suite = originalDescribe(title, fn)
     const parent = suite.parent
     if (parent?.root) {

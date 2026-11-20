@@ -9,7 +9,6 @@ const rulesThatDoNotFitThisCode = {
 const rulesNotAdoptedYet = {
   'no-console': 'off',
   'no-undef': 'off',
-  'quality/no-chained-type-assertions': 'off',
   'react/purity': 'off',
   'react/set-state-in-effect': 'off'
 } as const
@@ -69,6 +68,12 @@ export default defineConfig({
         'no-unreachable': 'error',
         'prefer-spread': 'off',
         'typescript/no-floating-promises': 'off'
+      }
+    },
+    {
+      files: ['**/*.test.ts', '**/*.test.tsx', '**/*.test.mjs'],
+      rules: {
+        'quality/no-chained-type-assertions': 'off'
       }
     },
     {

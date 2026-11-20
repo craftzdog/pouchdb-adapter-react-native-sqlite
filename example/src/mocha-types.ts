@@ -49,3 +49,15 @@ export interface MochaInstance {
   cleanReferencesAfterRun(clean: boolean): MochaInstance
   suite: Suite
 }
+
+export type DescribeFunction = (title: string, fn: () => void) => Suite
+
+/**
+ * The globals of the mocha runtime that `index.js` loads: its browser entry sets `Mocha` and
+ * `mocha`, and `mocha.setup({ ui: 'bdd' })` sets `describe`.
+ */
+declare global {
+  var Mocha: MochaClass
+  var mocha: MochaInstance
+  var describe: DescribeFunction
+}
