@@ -10,7 +10,6 @@ const rulesNotAdoptedYet = {
   'no-console': 'off',
   'no-undef': 'off',
   'quality/no-chained-type-assertions': 'off',
-  'quality/no-known-value-widening': 'off',
   'react/purity': 'off',
   'react/set-state-in-effect': 'off'
 } as const

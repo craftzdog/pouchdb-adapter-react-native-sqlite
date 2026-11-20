@@ -5,20 +5,12 @@ import type { SuiteResults } from './types'
 import { useRunTests } from './useRunTests'
 import { useTestList } from './useTestList'
 
-const tally = (results: SuiteResults): { pass: number; fail: number } => {
-  let pass = 0
-  let fail = 0
-  Object.values(results).forEach(suite => {
-    suite.results.forEach(r => {
-      if (r.type === 'correct') {
-        pass++
-      }
-      if (r.type === 'incorrect') {
-        fail++
-      }
-    })
-  })
-  return { pass, fail }
+const tally = (results: SuiteResults) => {
+  const testResults = Object.values(results).flatMap(suite => suite.results)
+  return {
+    pass: testResults.filter(r => r.type === 'correct').length,
+    fail: testResults.filter(r => r.type === 'incorrect').length
+  }
 }
 
 export const TestList = () => {
