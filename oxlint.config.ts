@@ -8,8 +8,7 @@ const rulesThatDoNotFitThisCode = {
 
 const rulesNotAdoptedYet = {
   'no-console': 'off',
-  'no-undef': 'off',
-  'react/set-state-in-effect': 'off'
+  'no-undef': 'off'
 } as const
 
 const correctnessRulesOfAddedPlugins = {
