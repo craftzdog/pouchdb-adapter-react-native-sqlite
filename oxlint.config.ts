@@ -9,7 +9,6 @@ const rulesNotAdoptedYet = {
   'no-empty': 'off',
   'no-undef': 'off',
   'no-unused-expressions': 'off',
-  'prefer-arrow-callback': 'off',
   'quality/no-chained-type-assertions': 'off',
   'quality/no-known-value-widening': 'off',
   'quality/no-unsafe-dictionary-type': 'off',

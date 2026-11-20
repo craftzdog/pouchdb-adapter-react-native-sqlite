@@ -104,10 +104,10 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
         })
         console.log(`${indent()}fail: ${test.title} - error: ${err.message}`)
       })
-      .on(EVENT_TEST_PENDING, function () {
+      .on(EVENT_TEST_PENDING, () => {
         stats.pending++
       })
-      .on(EVENT_TEST_END, function () {
+      .on(EVENT_TEST_END, () => {
         stats.tests++
       })
       .once(EVENT_RUN_END, () => {
