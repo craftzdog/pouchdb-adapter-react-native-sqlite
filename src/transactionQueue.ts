@@ -3,8 +3,9 @@ import { logger } from './debug'
 
 export interface PendingTransaction {
   readonly: boolean
-  start: (tx: Transaction) => Promise<void>
-  finish: () => void
+  fn: (tx: Transaction) => Promise<void>
+  resolve: () => void
+  reject: (err: unknown) => void
 }
 
 export class TransactionQueue {
@@ -34,7 +35,7 @@ export class TransactionQueue {
         try {
           if (tx.readonly) {
             logger.debug('---> transaction start!')
-            await this.db.transaction(tx.start)
+            await this.db.transaction(tx.fn)
             // await tx.start({
             //   commit: async () => {return { rowsAffected: 0 }},
             //   execute: this.db.execute.bind(this.db),
@@ -42,14 +43,16 @@ export class TransactionQueue {
             // })
           } else {
             logger.debug('---> write transaction start!')
-            await this.db.transaction(tx.start)
+            await this.db.transaction(tx.fn)
           }
+          tx.resolve()
+        } catch (err) {
+          tx.reject(err)
         } finally {
           logger.debug(
             '<--- transaction finished! queue.length:',
             this.queue.length
           )
-          tx.finish()
           this.inProgress = false
           if (this.queue.length) this.run()
         }
@@ -61,11 +64,7 @@ export class TransactionQueue {
 
   async push(fn: (tx: Transaction) => Promise<void>) {
     return new Promise<void>((resolve, reject) => {
-      this.queue.push({
-        readonly: false,
-        start: (tx) => fn(tx).then(resolve, reject),
-        finish: () => {},
-      })
+      this.queue.push({ readonly: false, fn, resolve, reject })
       this.run()
     })
   }
@@ -74,8 +73,9 @@ export class TransactionQueue {
     return new Promise<void>((resolve, reject) => {
       const pending: PendingTransaction = {
         readonly: true,
-        start: (tx) => fn(tx).then(resolve, reject),
-        finish: () => {},
+        fn,
+        resolve,
+        reject,
       }
       const firstWrite = this.queue.findIndex((tx) => !tx.readonly)
       const insertAt = firstWrite === -1 ? this.queue.length : firstWrite
