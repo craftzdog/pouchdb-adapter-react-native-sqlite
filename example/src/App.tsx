@@ -37,8 +37,8 @@ export default function App() {
     try {
       const mydoc = await pouch.get(docId)
       setResult(JSON.stringify(mydoc, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handlePutDoc = async () => {
@@ -74,9 +74,9 @@ export default function App() {
         }))
       )
       setResult(JSON.stringify(res, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message + '\n' + e.stack)
-      console.error(e)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message + '\n' + error.stack)
+      console.error(error)
     }
   }
   const handleRemoveDoc = async () => {
@@ -86,8 +86,8 @@ export default function App() {
       const result = await pouch.remove(mydoc)
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handleReplicate = async () => {
@@ -106,9 +106,9 @@ export default function App() {
       console.log('ret:', result)
       setResult('Finished replicating from remote!')
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      console.error(e)
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      console.error(error)
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handleDestroyDB = async () => {
@@ -117,8 +117,8 @@ export default function App() {
       const result = await pouch.destroy()
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handleQuery = async () => {
@@ -135,8 +135,8 @@ export default function App() {
       })
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
   const handleGetAttachment = async () => {
@@ -149,8 +149,8 @@ export default function App() {
       setResult(JSON.stringify(result, null, 2))
       setImageData('data:image/png;base64,' + result._attachments.index.data)
       console.log('ret:', result)
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
 
@@ -163,8 +163,8 @@ export default function App() {
       })
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
 
@@ -175,8 +175,8 @@ export default function App() {
       const result = await pouch.remove(mydoc)
       console.log('ret:', result)
       setResult(JSON.stringify(result, null, 2))
-    } catch (e: any) {
-      setResult(e.name + ': ' + e.message)
+    } catch (error: any) {
+      setResult(error.name + ': ' + error.message)
     }
   }
 

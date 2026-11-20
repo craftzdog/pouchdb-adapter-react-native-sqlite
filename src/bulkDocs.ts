@@ -78,11 +78,11 @@ async function sqliteBulkDocs(
     }
     try {
       return parseDoc(doc, newEdits, dbOpts)
-    } catch (err: any) {
-      logger.error('Error parsing doc:', err)
+    } catch (error: any) {
+      logger.error('Error parsing doc:', error)
       return {
         ...doc,
-        error: err
+        error
       }
     }
   })
@@ -366,8 +366,8 @@ async function sqliteBulkDocs(
       }
       await updateDocCount(docCountBefore)
       sqliteChanges.notify(api._name)
-    } catch (err: any) {
-      throw handleSQLiteError(err)
+    } catch (error: any) {
+      throw handleSQLiteError(error)
     }
   })
 

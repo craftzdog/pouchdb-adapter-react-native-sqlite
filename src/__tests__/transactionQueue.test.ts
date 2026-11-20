@@ -24,9 +24,9 @@ const makeDb = ({ failCommit, failLock }: { failCommit?: Error; failLock?: Error
         execute: async (query: string) => executeSync(query)
       } as unknown as Transaction)
       executeSync('COMMIT;')
-    } catch (err) {
+    } catch (error) {
       executeSync('ROLLBACK;')
-      throw err
+      throw error
     }
   }
   return { db: { transaction } as unknown as DB, statements }

@@ -15,7 +15,6 @@ const rulesNotAdoptedYet = {
   'react/purity': 'off',
   'react/set-state-in-effect': 'off',
   'typescript/no-require-imports': 'off',
-  'unicorn/catch-error-name': 'off',
   'unicorn/consistent-function-scoping': 'off',
   'unicorn/no-new-array': 'off',
   'unicorn/no-typeof-undefined': 'off',

@@ -33,11 +33,11 @@ function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
     onOpen?.(db)
     const transactionQueue = new TransactionQueue(db)
     return { db, transactionQueue }
-  } catch (err: any) {
+  } catch (error: any) {
     try {
       db?.close()
     } catch {}
-    return { error: err }
+    return { error }
   }
 }
 

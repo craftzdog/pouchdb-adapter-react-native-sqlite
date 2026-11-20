@@ -8,8 +8,8 @@ function ReactNativeSQLitePouch(
 ) {
   try {
     SqlPouchCore.call(this, opts, callback)
-  } catch (err) {
-    callback(err)
+  } catch (error) {
+    callback(error)
   }
 }
 

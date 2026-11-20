@@ -210,8 +210,8 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
           update_seq: seq,
           sqlite_encoding: encoding
         })
-      } catch (e: any) {
-        handleSQLiteError(e, callback)
+      } catch (error: any) {
+        handleSQLiteError(error, callback)
       }
     })
   }
@@ -232,8 +232,8 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         sqliteChanges
       )
       callback(null, response)
-    } catch (err: any) {
-      handleSQLiteError(err, callback)
+    } catch (error: any) {
+      handleSQLiteError(error, callback)
     }
   }
 
@@ -310,7 +310,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         doc = unstringifyDoc(item.data as string, metadata.id, item.rev as string)
         finish(null)
       })
-      .catch(e => finish(e))
+      .catch(error => finish(error))
   }
 
   api._allDocs = (opts: any, callback: (err: any, response?: any) => void) => {
@@ -504,8 +504,8 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
           returnVal.update_seq = updateSeq
         }
         callback(null, returnVal)
-      } catch (e: any) {
-        handleSQLiteError(e, callback)
+      } catch (error: any) {
+        handleSQLiteError(error, callback)
       }
     })
   }
@@ -619,8 +619,8 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
               last_seq: lastSeq
             })
           }
-        } catch (e: any) {
-          handleSQLiteError(e, opts.complete)
+        } catch (error: any) {
+          handleSQLiteError(error, opts.complete)
         }
       })
     }
@@ -659,13 +659,13 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     }
 
     if (opts.ctx) {
-      fetch(opts.ctx).catch((e: any) => handleSQLiteError(e, callback))
+      fetch(opts.ctx).catch((error: any) => handleSQLiteError(error, callback))
     } else {
       readTransaction(async (txn: Transaction) => {
         try {
           await fetch(txn)
-        } catch (e: any) {
-          handleSQLiteError(e, callback)
+        } catch (error: any) {
+          handleSQLiteError(error, callback)
         }
       })
     }
@@ -706,8 +706,8 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         await tx.execute(sql, [safeJsonStringify(metadata), docId])
 
         await compactRevs(revs, docId, tx)
-      } catch (e: any) {
-        handleSQLiteError(e, callback)
+      } catch (error: any) {
+        handleSQLiteError(error, callback)
       }
       callback()
     })
@@ -725,8 +725,8 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         } else {
           callback(createError(MISSING_DOC))
         }
-      } catch (e: any) {
-        handleSQLiteError(e, callback)
+      } catch (error: any) {
+        handleSQLiteError(error, callback)
       }
     })
   }
@@ -766,11 +766,11 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         } else {
           callback(createError(REV_CONFLICT))
         }
-      } catch (e: any) {
-        if (isUniqueConstraintError(e)) {
+      } catch (error: any) {
+        if (isUniqueConstraintError(error)) {
           callback(createError(REV_CONFLICT))
         } else {
-          handleSQLiteError(e, callback)
+          handleSQLiteError(error, callback)
         }
       }
     }
@@ -799,8 +799,8 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
         }
         ret = { ok: true, id: doc._id, rev: '0-0' }
         callback(null, ret)
-      } catch (e: any) {
-        handleSQLiteError(e, callback)
+      } catch (error: any) {
+        handleSQLiteError(error, callback)
       }
     }
 
@@ -827,8 +827,8 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
           tx.execute('DROP TABLE IF EXISTS ' + store, [])
         })
         callback(null, { ok: true })
-      } catch (e: any) {
-        handleSQLiteError(e, callback)
+      } catch (error: any) {
+        handleSQLiteError(error, callback)
       }
     })
   }

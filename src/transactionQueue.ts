@@ -47,8 +47,8 @@ export class TransactionQueue {
             })
           }
           tx.resolve()
-        } catch (err) {
-          tx.reject(err)
+        } catch (error) {
+          tx.reject(error)
         } finally {
           logger.debug('<--- transaction finished! queue.length:', this.queue.length)
           this.inProgress = false
