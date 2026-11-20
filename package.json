@@ -2,22 +2,22 @@
   "name": "pouchdb-adapter-react-native-sqlite",
   "version": "4.4.2",
   "description": "PouchDB adapter for React Native SQLite",
-  "source": "./src/index.ts",
-  "main": "./lib/commonjs/index.js",
-  "module": "./lib/module/index.js",
-  "exports": {
-    ".": {
-      "pouchdb-adapter-react-native-sqlite-source": "./src/index.ts",
-      "import": {
-        "types": "./lib/typescript/module/src/index.d.ts",
-        "default": "./lib/module/index.js"
-      },
-      "require": {
-        "types": "./lib/typescript/commonjs/src/index.d.ts",
-        "default": "./lib/commonjs/index.js"
-      }
-    }
+  "keywords": [
+    "android",
+    "ios",
+    "react-native"
+  ],
+  "homepage": "https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite#readme",
+  "bugs": {
+    "url": "https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite/issues"
   },
+  "license": "MIT",
+  "author": "Takuya Matsuyama <hi@craftz.dog> (https://github.com/craftzdog)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite.git"
+  },
+  "source": "./src/index.ts",
   "files": [
     "src",
     "lib",
@@ -37,58 +37,33 @@
     "!**/__mocks__",
     "!**/.*"
   ],
-  "scripts": {
-    "example": "yarn workspace pouchdb-adapter-react-native-sqlite-example",
-    "test": "jest",
-    "typecheck": "tsc",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "clean": "del-cli lib",
-    "prepare": "bob build",
-    "release": "release-it"
+  "main": "./lib/commonjs/index.js",
+  "module": "./lib/module/index.js",
+  "exports": {
+    ".": {
+      "pouchdb-adapter-react-native-sqlite-source": "./src/index.ts",
+      "import": {
+        "types": "./lib/typescript/module/src/index.d.ts",
+        "default": "./lib/module/index.js"
+      },
+      "require": {
+        "types": "./lib/typescript/commonjs/src/index.d.ts",
+        "default": "./lib/commonjs/index.js"
+      }
+    }
   },
-  "keywords": [
-    "react-native",
-    "ios",
-    "android"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite.git"
-  },
-  "author": "Takuya Matsuyama <hi@craftz.dog> (https://github.com/craftzdog)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite/issues"
-  },
-  "homepage": "https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "devDependencies": {
-    "@commitlint/config-conventional": "^17.0.2",
-    "@craftzdog/pouchdb-errors": "^9.0.1",
-    "@evilmartians/lefthook": "^1.5.0",
-    "@react-native-community/cli": "20.2.0",
-    "@react-native/babel-preset": "0.88.1",
-    "@react-native/eslint-config": "0.88.1",
-    "@react-native/jest-preset": "0.88.1",
-    "@release-it/conventional-changelog": "^9.0.2",
-    "@types/jest": "^29.5.5",
-    "@types/pouchdb-core": "^7.0.15",
-    "@types/react": "^19.2.0",
-    "commitlint": "^17.0.2",
-    "del-cli": "^5.1.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "jest": "^29.7.0",
-    "prettier": "^3.0.3",
-    "react": "19.3.1",
-    "react-native": "0.88.1",
-    "react-native-builder-bob": "^0.44.0",
-    "release-it": "^17.10.0",
-    "turbo": "^1.10.7",
-    "typescript": "^5.2.2"
+  "scripts": {
+    "example": "pnpm --filter pouchdb-adapter-react-native-sqlite-example",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit && pnpm example run typecheck",
+    "lint": "oxlint",
+    "clean": "del-cli lib",
+    "prepare": "bob build",
+    "release": "release-it",
+    "format": "oxfmt"
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.1.2",
@@ -102,85 +77,42 @@
     "pouchdb-utils": "^9.0.0",
     "react-native-quick-base64": "^3.0.1"
   },
-  "resolutions": {
-    "@types/react": "^19.2.0"
+  "devDependencies": {
+    "@commitlint/config-conventional": "^17.0.2",
+    "@craftzdog/pouchdb-errors": "^9.0.1",
+    "@evilmartians/lefthook": "^1.5.0",
+    "@nkzw/oxlint-config": "^3.0.1",
+    "@react-native-community/cli": "20.2.0",
+    "@react-native/babel-preset": "0.88.1",
+    "@release-it/conventional-changelog": "^9.0.2",
+    "@types/debug": "^4.1.13",
+    "@types/pouchdb-core": "^7.0.15",
+    "@types/react": "^19.2.0",
+    "commitlint": "^17.0.2",
+    "del-cli": "^5.1.0",
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
+    "oxlint-plugin-react-native": "^0.2.44",
+    "react": "19.3.1",
+    "react-native": "0.88.1",
+    "react-native-builder-bob": "^0.44.0",
+    "release-it": "^17.10.0",
+    "tsrs": "7.1.0-beta.tsrs3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0",
+    "vitest-native": "^0.15.1"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
-  },
-  "workspaces": [
-    "example"
-  ],
-  "packageManager": "yarn@3.8.7",
-  "jest": {
-    "preset": "@react-native/jest-preset",
-    "roots": [
-      "<rootDir>/src"
-    ],
-    "modulePathIgnorePatterns": [
-      "<rootDir>/example/node_modules",
-      "<rootDir>/lib/"
-    ]
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
   },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
-      }
-    }
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native",
-      "plugin:prettier/recommended"
-    ],
-    "rules": {
-      "@typescript-eslint/no-shadow": "off",
-      "react-native/no-inline-styles": "off",
-      "react/react-in-jsx-scope": "off",
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false,
-          "semi": false
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/",
-    "example/src/tests/"
-  ],
-  "prettier": {
-    "quoteProps": "consistent",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "useTabs": false,
-    "semi": false
-  },
+  "packageManager": "pnpm@12.21.0",
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
@@ -204,5 +136,22 @@
         }
       ]
     ]
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular"
+      }
+    }
   }
 }

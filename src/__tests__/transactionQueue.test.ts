@@ -1,12 +1,11 @@
 import type { DB, Transaction } from '@op-engineering/op-sqlite'
+import { describe, expect, it, vi } from 'vitest'
+
 import { TransactionQueue } from '../transactionQueue'
 
 const WRITE_LOCK = "UPDATE 'metadata-store' SET dbid = dbid"
 
-const makeDb = ({
-  failCommit,
-  failLock,
-}: { failCommit?: Error; failLock?: Error } = {}) => {
+const makeDb = ({ failCommit, failLock }: { failCommit?: Error; failLock?: Error } = {}) => {
   const statements: string[] = []
   const executeSync = (query: string) => {
     statements.push(query)
@@ -18,7 +17,7 @@ const makeDb = ({
     executeSync('BEGIN TRANSACTION;')
     try {
       await fn({
-        execute: async (query: string) => executeSync(query),
+        execute: async (query: string) => executeSync(query)
       } as unknown as Transaction)
       executeSync('COMMIT;')
     } catch (err) {
@@ -34,7 +33,7 @@ describe('TransactionQueue', () => {
     const { db, statements } = makeDb()
     const queue = new TransactionQueue(db)
 
-    await queue.push(async (tx) => {
+    await queue.push(async tx => {
       await tx.execute('INSERT INTO docs VALUES (1)')
     })
 
@@ -42,7 +41,7 @@ describe('TransactionQueue', () => {
       'BEGIN TRANSACTION;',
       WRITE_LOCK,
       'INSERT INTO docs VALUES (1)',
-      'COMMIT;',
+      'COMMIT;'
     ])
   })
 
@@ -52,7 +51,7 @@ describe('TransactionQueue', () => {
     const failure = new Error('constraint failed')
 
     await expect(
-      queue.push(async (tx) => {
+      queue.push(async tx => {
         await tx.execute('INSERT INTO docs VALUES (1)')
         throw failure
       })
@@ -62,7 +61,7 @@ describe('TransactionQueue', () => {
       'BEGIN TRANSACTION;',
       WRITE_LOCK,
       'INSERT INTO docs VALUES (1)',
-      'ROLLBACK;',
+      'ROLLBACK;'
     ])
   })
 
@@ -95,7 +94,7 @@ describe('TransactionQueue', () => {
     const failed = queue.push(async () => {
       throw new Error('constraint failed')
     })
-    const next = queue.push(async (tx) => {
+    const next = queue.push(async tx => {
       await tx.execute('INSERT INTO docs VALUES (2)')
     })
 
@@ -105,7 +104,7 @@ describe('TransactionQueue', () => {
       'BEGIN TRANSACTION;',
       WRITE_LOCK,
       'INSERT INTO docs VALUES (2)',
-      'COMMIT;',
+      'COMMIT;'
     ])
   })
 
@@ -113,22 +112,18 @@ describe('TransactionQueue', () => {
     const { db, statements } = makeDb()
     const queue = new TransactionQueue(db)
 
-    await queue.push(async (tx) => {
+    await queue.push(async tx => {
       await tx.execute('SELECT 1')
     })
 
-    expect(statements.slice(0, 3)).toEqual([
-      'BEGIN TRANSACTION;',
-      WRITE_LOCK,
-      'SELECT 1',
-    ])
+    expect(statements.slice(0, 3)).toEqual(['BEGIN TRANSACTION;', WRITE_LOCK, 'SELECT 1'])
   })
 
   it('leaves a read without the write lock', async () => {
     const { db, statements } = makeDb()
     const queue = new TransactionQueue(db)
 
-    await queue.pushReadOnly(async (tx) => {
+    await queue.pushReadOnly(async tx => {
       await tx.execute('SELECT 1')
     })
 
@@ -139,7 +134,7 @@ describe('TransactionQueue', () => {
     const locked = new Error('database is locked')
     const { db, statements } = makeDb({ failLock: locked })
     const queue = new TransactionQueue(db)
-    const fn = jest.fn(async () => {})
+    const fn = vi.fn(async () => {})
 
     await expect(queue.push(fn)).rejects.toBe(locked)
 

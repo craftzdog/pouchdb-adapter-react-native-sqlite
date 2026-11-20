@@ -1,11 +1,13 @@
 import { open } from '@op-engineering/op-sqlite'
+import { afterEach, describe, expect, it, type Mock, vi } from 'vitest'
+
 import openDB, { closeDB } from '../openDatabase'
 
-jest.mock('@op-engineering/op-sqlite', () => ({ open: jest.fn() }))
+vi.mock('@op-engineering/op-sqlite', () => ({ open: vi.fn() }))
 
-const mockOpen = open as jest.Mock
+const mockOpen = open as unknown as Mock
 
-const makeConnection = () => ({ executeSync: jest.fn(), close: jest.fn() })
+const makeConnection = () => ({ executeSync: vi.fn(), close: vi.fn() })
 
 describe('openDB', () => {
   afterEach(() => {
@@ -16,10 +18,8 @@ describe('openDB', () => {
   it('hands the connection to onOpen once it is configured', () => {
     const connection = makeConnection()
     mockOpen.mockReturnValue(connection)
-    const onOpen = jest.fn(() => {
-      expect(connection.executeSync).toHaveBeenCalledWith(
-        'PRAGMA journal_mode = WAL'
-      )
+    const onOpen = vi.fn(() => {
+      expect(connection.executeSync).toHaveBeenCalledWith('PRAGMA journal_mode = WAL')
     })
 
     const result = openDB({ name: 'test.sqlite', onOpen })
@@ -32,7 +32,7 @@ describe('openDB', () => {
 
   it('calls onOpen once for a database that is already open', () => {
     mockOpen.mockReturnValue(makeConnection())
-    const onOpen = jest.fn()
+    const onOpen = vi.fn()
 
     openDB({ name: 'test.sqlite', onOpen })
     openDB({ name: 'test.sqlite', onOpen })
@@ -49,7 +49,7 @@ describe('openDB', () => {
       name: 'test.sqlite',
       onOpen: () => {
         throw failure
-      },
+      }
     })
 
     expect(result).toEqual({ error: failure })
@@ -58,7 +58,7 @@ describe('openDB', () => {
   it('closes the connection and retries the next opening when onOpen throws', () => {
     const connection = makeConnection()
     mockOpen.mockReturnValue(connection)
-    const onOpen = jest
+    const onOpen = vi
       .fn()
       .mockImplementationOnce(() => {
         throw new Error('database is locked')

@@ -188,7 +188,7 @@ testUtils.assertCouchReachable = async () => {
   } catch (err) {
     throw new Error(
       `CouchDB-compatible server is not reachable at ${url} (${err.message}). ` +
-        'Start it with `yarn run-pouchdb-server` in example/.'
+        'Start it with `pnpm run-pouchdb-server` in example/.'
     )
   } finally {
     clearTimeout(timer)

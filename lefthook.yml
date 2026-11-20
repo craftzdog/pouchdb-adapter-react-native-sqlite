@@ -2,13 +2,15 @@ pre-commit:
   parallel: true
   commands:
     lint:
-      glob: '*.{js,ts,jsx,tsx}'
-      run: npx eslint {staged_files}
+      glob: '*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
+      run: pnpm exec oxlint {staged_files}
+    format:
+      run: pnpm exec oxfmt --check --no-error-on-unmatched-pattern {staged_files}
     types:
-      glob: '*.{js,ts, jsx, tsx}'
-      run: npx tsc
+      glob: '*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
+      run: pnpm typecheck
 commit-msg:
   parallel: true
   commands:
     commitlint:
-      run: npx commitlint --edit
+      run: pnpm exec commitlint --edit
