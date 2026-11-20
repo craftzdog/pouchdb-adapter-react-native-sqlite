@@ -47,9 +47,6 @@ export class TransactionQueue {
           } else {
             logger.debug('---> write transaction start!')
             await this.db.transaction(async (sqlTx) => {
-              // A write as the first statement makes SQLite take the write
-              // lock now, under busy_timeout, instead of upgrading a read
-              // snapshot that another connection may have made stale.
               await sqlTx.execute(TAKE_WRITE_LOCK)
               await tx.fn(sqlTx)
             })
