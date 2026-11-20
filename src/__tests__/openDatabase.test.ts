@@ -39,6 +39,7 @@ describe('openDB', () => {
 
     expect(mockOpen).toHaveBeenCalledTimes(1)
     expect(onOpen).toHaveBeenCalledTimes(1)
+    closeDB('test.sqlite')
   })
 
   it('reports an error thrown by onOpen as a failed opening', () => {

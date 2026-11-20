@@ -118,7 +118,7 @@ You can specify the following options in the PouchDB options:
 
 - `location`: The location of the SQLite database file. See [op-sqlite's docs](https://op-engineering.github.io/op-sqlite/docs/configuration) for more details.
 - `encryptionKey`: The encryption key for SQLCipher. See [op-sqlite's docs](https://op-engineering.github.io/op-sqlite/docs/api#sqlcipher-open) for more details.
-- `onOpen`: A function called with the op-sqlite connection, right after the database is opened and configured. PouchDB instances with the same name share one connection, so it runs once per connection, not once per instance: a later instance's `onOpen` is not called while the connection is open, and it runs again only after the database has been closed or has failed to open. Use it to run your own `PRAGMA` statements, or to keep the connection for your own queries. An error thrown from it fails the opening of the database.
+- `onOpen`: A function called with the op-sqlite connection, right after the database is opened and configured. PouchDB instances with the same name share one connection, so it runs once per connection, not once per instance: a later instance's `onOpen` is not called while the connection is open, and it runs again only after every instance has closed the database, or after it failed to open. Use it to run your own `PRAGMA` statements, or to keep the connection for your own queries. An error thrown from it fails the opening of the database.
 
   ```ts
   const pouch = new PouchDB('mydb', {

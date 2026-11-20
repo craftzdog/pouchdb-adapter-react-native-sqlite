@@ -11,16 +11,14 @@ export type OpenDatabaseOptions = SQLiteOpenParams[0] & {
   deterministic_revs?: boolean
   onOpen?: (db: DB) => void
 }
-type OpenDatabaseResult =
-  | {
-      db: DB
-      transactionQueue: TransactionQueue
-    }
-  | {
-      error: Error
-    }
+type OpenDatabase = {
+  db: DB
+  transactionQueue: TransactionQueue
+}
+type OpenDatabaseResult = OpenDatabase | { error: Error }
 
-const cachedDatabases = new Map<string, OpenDatabaseResult>()
+/** The open connections by file name, with how many PouchDB instances use each. */
+const openDatabases = new Map<string, OpenDatabase & { openCount: number }>()
 
 function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
   const { onOpen, ...sqliteOpts } = opts
@@ -41,25 +39,31 @@ function openDBSafely(opts: OpenDatabaseOptions): OpenDatabaseResult {
   }
 }
 
-function openDB(opts: OpenDatabaseOptions) {
-  let cachedResult: OpenDatabaseResult | undefined = cachedDatabases.get(opts.name)
-  if (!cachedResult) {
-    cachedResult = openDBSafely(opts)
-    if ('db' in cachedResult) {
-      cachedDatabases.set(opts.name, cachedResult)
-    }
+function openDB(opts: OpenDatabaseOptions): OpenDatabaseResult {
+  const openDatabase = openDatabases.get(opts.name)
+  if (openDatabase) {
+    openDatabases.set(opts.name, { ...openDatabase, openCount: openDatabase.openCount + 1 })
+    return openDatabase
   }
-  return cachedResult
+  const result = openDBSafely(opts)
+  if ('db' in result) {
+    openDatabases.set(opts.name, { ...result, openCount: 1 })
+  }
+  return result
 }
 
+/** Releases one use of the connection, and closes it when no PouchDB instance uses it anymore. */
 export function closeDB(name: string) {
-  const cachedResult = cachedDatabases.get(name)
-  if (cachedResult) {
-    if ('db' in cachedResult) {
-      cachedResult.db.close()
-    }
-    cachedDatabases.delete(name)
+  const openDatabase = openDatabases.get(name)
+  if (!openDatabase) {
+    return
   }
+  if (openDatabase.openCount > 1) {
+    openDatabases.set(name, { ...openDatabase, openCount: openDatabase.openCount - 1 })
+    return
+  }
+  openDatabase.db.close()
+  openDatabases.delete(name)
 }
 
 export default openDB

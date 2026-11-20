@@ -43,4 +43,17 @@ describe('_close', () => {
 
     expect(mockOpen).toHaveBeenCalledTimes(2)
   })
+
+  it('keeps the connection open while another instance of the database is open', async () => {
+    const connection = makeConnection()
+    mockOpen.mockReturnValue(connection)
+    const first = createPouch('shared')
+    const second = createPouch('shared')
+
+    await closePouch(first)
+    expect(connection.close).not.toHaveBeenCalled()
+
+    await closePouch(second)
+    expect(connection.close).toHaveBeenCalledTimes(1)
+  })
 })
