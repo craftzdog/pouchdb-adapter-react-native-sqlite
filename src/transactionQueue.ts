@@ -1,5 +1,8 @@
 import type { DB, Transaction } from '@op-engineering/op-sqlite'
+import { META_STORE } from './constants'
 import { logger } from './debug'
+
+const TAKE_WRITE_LOCK = 'UPDATE ' + META_STORE + ' SET dbid = dbid'
 
 export interface PendingTransaction {
   readonly: boolean
@@ -43,7 +46,13 @@ export class TransactionQueue {
             // })
           } else {
             logger.debug('---> write transaction start!')
-            await this.db.transaction(tx.fn)
+            await this.db.transaction(async (sqlTx) => {
+              // A write as the first statement makes SQLite take the write
+              // lock now, under busy_timeout, instead of upgrading a read
+              // snapshot that another connection may have made stale.
+              await sqlTx.execute(TAKE_WRITE_LOCK)
+              await tx.fn(sqlTx)
+            })
           }
           tx.resolve()
         } catch (err) {
