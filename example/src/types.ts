@@ -12,7 +12,7 @@ export type SuiteResults = {
 }
 
 export type SuiteResult = {
-  results: TestResult[]
+  results: Array<TestResult>
 }
 
 export type TestResult = {

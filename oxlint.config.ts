@@ -19,7 +19,6 @@ const rulesNotAdoptedYet = {
   'quality/no-unsafe-dictionary-type': 'off',
   'react/purity': 'off',
   'react/set-state-in-effect': 'off',
-  'typescript/array-type': 'off',
   'typescript/no-require-imports': 'off',
   'unicorn/catch-error-name': 'off',
   'unicorn/consistent-function-scoping': 'off',

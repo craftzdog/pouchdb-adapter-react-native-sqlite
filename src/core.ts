@@ -262,7 +262,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     }
 
     let sql: string
-    let sqlArgs: any[]
+    let sqlArgs: Array<any>
 
     if (!opts.rev) {
       sql = select(
@@ -314,7 +314,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
   }
 
   api._allDocs = (opts: any, callback: (err: any, response?: any) => void) => {
-    const results: any[] = []
+    const results: Array<any> = []
 
     const start = 'startkey' in opts ? opts.startkey : false
     const end = 'endkey' in opts ? opts.endkey : false
@@ -325,12 +325,12 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     const offset = 'skip' in opts ? opts.skip : 0
     const inclusiveEnd = opts.inclusive_end !== false
 
-    let sqlArgs: any[] = []
-    const criteria: string[] = []
-    const keyChunks: any[] = []
+    let sqlArgs: Array<any> = []
+    const criteria: Array<string> = []
+    const keyChunks: Array<any> = []
 
     if (keys) {
-      const destinctKeys: string[] = []
+      const destinctKeys: Array<string> = []
       keys.forEach((key: string) => {
         if (destinctKeys.indexOf(key) === -1) {
           destinctKeys.push(key)
@@ -370,7 +370,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     }
 
     readTransaction(async (tx: Transaction) => {
-      const processResult = async (rows: any[], results: any[], keys: any) => {
+      const processResult = async (rows: Array<any>, results: Array<any>, keys: any) => {
         for (let i = 0, l = rows.length; i < l; i++) {
           const item = rows[i]
           const metadata = safeJsonParse(item.metadata)
@@ -436,7 +436,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
 
         if (keys) {
           let finishedCount = 0
-          const allRows: any[] = []
+          const allRows: Array<any> = []
           for (const keyChunk of keyChunks) {
             sqlArgs = []
             criteria.length = 0
@@ -485,7 +485,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
             ' OFFSET ' +
             offset
           const result = await tx.execute(sql, sqlArgs)
-          const rows: any[] = []
+          const rows: Array<any> = []
           if (result.rows) {
             for (let index = 0; index < result.rows.length; index++) {
               rows.push(result.rows[index])
@@ -531,7 +531,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
       limit = 1
     }
 
-    const results: any[] = []
+    const results: Array<any> = []
     let numResults = 0
 
     const fetchChanges = () => {
@@ -684,7 +684,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     })
   }
 
-  api._doCompaction = (docId: string, revs: string[], callback: (err?: any) => void) => {
+  api._doCompaction = (docId: string, revs: Array<string>, callback: (err?: any) => void) => {
     if (!revs.length) {
       return callback()
     }
@@ -751,7 +751,7 @@ function SqlPouch(this: any, opts: OpenDatabaseOptions, cb: (err: any) => void) 
     const putLocal = async (tx: Transaction) => {
       try {
         let sql: string
-        let values: any[]
+        let values: Array<any>
         if (oldRev) {
           sql = 'UPDATE ' + LOCAL_STORE + ' SET rev=?, json=? WHERE id=? AND rev=?'
           values = [newRev, json, id, oldRev]

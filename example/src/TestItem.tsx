@@ -6,7 +6,7 @@ import type { TestResult } from './types'
 type TestItemProps = {
   description: string
   count: number
-  results: TestResult[]
+  results: Array<TestResult>
 }
 
 export const TestItem: React.FC<TestItemProps> = ({

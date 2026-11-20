@@ -42,9 +42,9 @@ function qMarks(num: number): string {
 
 function select(
   selector: string,
-  table: string | string[],
+  table: string | Array<string>,
   joiner?: string | null,
-  where?: string | string[],
+  where?: string | Array<string>,
   orderBy?: string
 ): string {
   return (
@@ -58,12 +58,12 @@ function select(
   )
 }
 
-async function compactRevs(revs: string[], docId: string, tx: Transaction): Promise<void> {
+async function compactRevs(revs: Array<string>, docId: string, tx: Transaction): Promise<void> {
   if (!revs.length) {
     return
   }
 
-  const seqs: number[] = []
+  const seqs: Array<number> = []
 
   async function deleteOrphans() {
     if (!seqs.length) {
@@ -77,7 +77,7 @@ async function compactRevs(revs: string[], docId: string, tx: Transaction): Prom
       qMarks(seqs.length)
 
     let res = await tx.execute(sql, seqs)
-    const digestsToCheck: string[] = []
+    const digestsToCheck: Array<string> = []
     if (res.rows) {
       for (let i = 0; i < res.rows.length; i++) {
         digestsToCheck.push(res.rows[i]!.digest as string)

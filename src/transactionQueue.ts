@@ -13,7 +13,7 @@ export interface PendingTransaction {
 }
 
 export class TransactionQueue {
-  queue: PendingTransaction[] = []
+  queue: Array<PendingTransaction> = []
   inProgress = false
   db: DB
 

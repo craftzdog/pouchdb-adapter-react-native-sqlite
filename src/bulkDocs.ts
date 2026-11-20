@@ -29,7 +29,7 @@ interface DocInfo {
   _id: string
   metadata: any
   data: any
-  stemmedRevs?: string[]
+  stemmedRevs?: Array<string>
   error?: any
 }
 
@@ -39,14 +39,14 @@ interface DBOptions {
 }
 
 interface Request {
-  docs: any[]
+  docs: Array<any>
 }
 
 interface Options {
   new_edits: boolean
 }
 
-async function convertBlobAttachmentsToBuffers(docInfos: DocInfo[]) {
+async function convertBlobAttachmentsToBuffers(docInfos: Array<DocInfo>) {
   for (const docInfo of docInfos) {
     const attachments = docInfo.data && docInfo.data._attachments
     if (!attachments) continue
@@ -70,7 +70,7 @@ async function sqliteBulkDocs(
   const newEdits = opts.new_edits
   const userDocs = req.docs
 
-  const docInfos: DocInfo[] = userDocs.map(doc => {
+  const docInfos: Array<DocInfo> = userDocs.map(doc => {
     if (doc._id && isLocalId(doc._id)) {
       return doc
     }
@@ -111,7 +111,7 @@ async function sqliteBulkDocs(
   }
 
   async function verifyAttachments(): Promise<void> {
-    const digests: string[] = []
+    const digests: Array<string> = []
     docInfos.forEach(docInfo => {
       if (docInfo.data && docInfo.data._attachments) {
         Object.keys(docInfo.data._attachments).forEach(filename => {

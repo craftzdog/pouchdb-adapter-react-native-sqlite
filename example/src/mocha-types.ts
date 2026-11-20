@@ -2,7 +2,7 @@ export interface Suite {
   title: string
   root: boolean
   parent?: Suite
-  suites: Suite[]
+  suites: Array<Suite>
   total(): number
   timeout(ms: number): void
   eachTest(fn: (test: Test) => void): void
@@ -29,8 +29,8 @@ export interface RunnerConstants {
 
 export interface Runner {
   stats: unknown
-  once(event: string, fn: (...args: any[]) => void): Runner
-  on(event: string, fn: (...args: any[]) => void): Runner
+  once(event: string, fn: (...args: Array<any>) => void): Runner
+  on(event: string, fn: (...args: Array<any>) => void): Runner
   run(): Runner
   abort(): void
 }

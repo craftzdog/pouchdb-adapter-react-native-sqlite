@@ -6,7 +6,7 @@ import { TransactionQueue } from '../transactionQueue'
 const WRITE_LOCK = "UPDATE 'metadata-store' SET dbid = dbid"
 
 const makeDb = ({ failCommit, failLock }: { failCommit?: Error; failLock?: Error } = {}) => {
-  const statements: string[] = []
+  const statements: Array<string> = []
   const executeSync = (query: string) => {
     statements.push(query)
     if (query === 'COMMIT;' && failCommit) throw failCommit

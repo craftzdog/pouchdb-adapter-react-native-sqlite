@@ -256,11 +256,6 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     gap: 12
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20
-  },
   button: {
     padding: 8,
     paddingHorizontal: 16,
