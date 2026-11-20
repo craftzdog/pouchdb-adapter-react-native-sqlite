@@ -11,7 +11,6 @@ const rulesNotAdoptedYet = {
   'no-undef': 'off',
   'quality/no-chained-type-assertions': 'off',
   'quality/no-known-value-widening': 'off',
-  'quality/no-unsafe-dictionary-type': 'off',
   'react/purity': 'off',
   'react/set-state-in-effect': 'off'
 } as const

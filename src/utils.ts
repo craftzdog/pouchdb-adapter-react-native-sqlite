@@ -11,17 +11,22 @@ import {
   META_STORE
 } from './constants'
 
+type JsonValue = string | number | boolean | null | Array<JsonValue> | JsonObject
+
+/** A document body as stored: any JSON object. */
+type JsonObject = { [field: string]: JsonValue }
+
 /**
  * Serializes a document without its `_id` and `_rev`, which have their own columns.
  * Removes both fields from `doc`.
  */
-function stringifyDoc(doc: Record<string, any>): string {
+function stringifyDoc(doc: JsonObject): string {
   delete doc._id
   delete doc._rev
   return JSON.stringify(doc)
 }
 
-function unstringifyDoc(doc: string, id: string, rev: string): Record<string, any> {
+function unstringifyDoc(doc: string, id: string, rev: string): JsonObject {
   const parsedDoc = JSON.parse(doc)
   parsedDoc._id = id
   parsedDoc._rev = rev
