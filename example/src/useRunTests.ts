@@ -75,7 +75,9 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
         stats.start = new Date()
       })
       .on(EVENT_SUITE_BEGIN, (suite: MochaTypes.Suite) => {
-        suite.root || stats.suites++
+        if (!suite.root) {
+          stats.suites++
+        }
         indents++
       })
       .on(EVENT_SUITE_END, () => {

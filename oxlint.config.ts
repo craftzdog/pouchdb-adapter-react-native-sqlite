@@ -10,7 +10,6 @@ const rulesNotAdoptedYet = {
   'import/no-namespace': 'off',
   'no-console': 'off',
   'no-undef': 'off',
-  'no-unused-expressions': 'off',
   'quality/no-chained-type-assertions': 'off',
   'quality/no-known-value-widening': 'off',
   'quality/no-unsafe-dictionary-type': 'off',
