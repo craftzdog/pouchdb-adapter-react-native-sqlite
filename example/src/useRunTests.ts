@@ -65,7 +65,7 @@ export const useRunTests = (): [SuiteResults, () => void, boolean] => {
       t.reset()
     })
 
-    var runner = new Mocha.Runner(rootSuite) as MochaTypes.Runner
+    const runner = new Mocha.Runner(rootSuite) as MochaTypes.Runner
     runner.stats = stats
 
     let indents = -1
