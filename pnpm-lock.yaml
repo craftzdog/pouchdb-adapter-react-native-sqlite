@@ -220,7 +220,7 @@ importers:
         version: 1.13.6
       '@nkzw/oxlint-config':
         specifier: ^3.0.1
-        version: 3.0.1(eslint@10.15.0(supports-color@8.1.1))(oxlint@1.94.0)(supports-color@8.1.1)(tsrs@7.1.0-beta.tsrs4)(typescript@7.0.2)
+        version: 3.0.2(eslint@10.15.0(supports-color@8.1.1))(oxlint@1.94.0)(supports-color@8.1.1)(tsrs@7.1.0-beta.tsrs4)(typescript@7.0.2)
       '@react-native-community/cli':
         specifier: 20.2.0
         version: 20.2.0(supports-color@8.1.1)(typescript@7.0.2)
@@ -1283,13 +1283,16 @@ packages:
       '@emnapi/core': ^1.7.1 || 2.0.0-beta.2
       '@emnapi/runtime': ^1.7.1 || 2.0.0-beta.2
 
-  '@nkzw/eslint-plugin@2.0.0':
-    resolution: {integrity: sha512-IoU8kOqHfnf7se2dGxMD/7RPm6WVjzjOjWSo7FulRx3lJzuZvXioSkT5Nd82l66DH3Pl2whw74lPT1di3KMwFA==}
+  '@nkzw/eslint-plugin@3.0.0':
+    resolution: {integrity: sha512-J6Ms/OzUxx7BNBggCKOqFWbESgAJYjvXvekCjjpxVJA2fBv5xOsC5P+2WDYqQUMCvDOU3GxBgG/jrmbqf+/wQA==}
     peerDependencies:
       eslint: '>= 9'
+    peerDependenciesMeta:
+      eslint:
+        optional: true
 
-  '@nkzw/oxlint-config@3.0.1':
-    resolution: {integrity: sha512-okUqb58T73yJmCB7E6ZSrfW+dmsDj2ZesWIm/GAwAkf2b2VGDj92zPQZpz3mkuOlS+l0mXpNlOGYqXFhriiYAA==}
+  '@nkzw/oxlint-config@3.0.2':
+    resolution: {integrity: sha512-Fummai9da8qs3hc2eSAMnMeLjvF43BTqcM2dpIDDWOi1Idmd/Jr7RA4y6iER2uZJynqDKM2E+9abbKt5uMVRSQ==}
     peerDependencies:
       oxlint: '>=1.94.0'
       tsrs: '>=0.25.0-ts7.1.0-beta || ^7.1.0-beta.tsrs2'
@@ -6762,13 +6765,13 @@ snapshots:
       '@tybys/wasm-util': 0.10.5
     optional: true
 
-  '@nkzw/eslint-plugin@2.0.0(eslint@10.15.0(supports-color@8.1.1))':
-    dependencies:
+  '@nkzw/eslint-plugin@3.0.0(eslint@10.15.0(supports-color@8.1.1))':
+    optionalDependencies:
       eslint: 10.15.0(supports-color@8.1.1)
 
-  '@nkzw/oxlint-config@3.0.1(eslint@10.15.0(supports-color@8.1.1))(oxlint@1.94.0)(supports-color@8.1.1)(tsrs@7.1.0-beta.tsrs4)(typescript@7.0.2)':
+  '@nkzw/oxlint-config@3.0.2(eslint@10.15.0(supports-color@8.1.1))(oxlint@1.94.0)(supports-color@8.1.1)(tsrs@7.1.0-beta.tsrs4)(typescript@7.0.2)':
     dependencies:
-      '@nkzw/eslint-plugin': 2.0.0(eslint@10.15.0(supports-color@8.1.1))
+      '@nkzw/eslint-plugin': 3.0.0(eslint@10.15.0(supports-color@8.1.1))
       eslint-plugin-no-only-tests: 3.4.0
       eslint-plugin-perfectionist: 5.14.0(eslint@10.15.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@7.0.2)
       oxlint: 1.94.0
