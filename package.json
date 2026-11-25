@@ -112,7 +112,7 @@
       "@commitlint/config-conventional"
     ]
   },
-  "packageManager": "pnpm@12.21.0",
+  "packageManager": "pnpm@12.23.0",
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
