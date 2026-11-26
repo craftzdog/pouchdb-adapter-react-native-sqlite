@@ -190,10 +190,10 @@ importers:
     dependencies:
       '@craftzdog/react-native-buffer':
         specifier: ^6.1.2
-        version: 6.1.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+        version: 6.1.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       '@op-engineering/op-sqlite':
         specifier: ^18.2.3
-        version: 18.2.5(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+        version: 18.2.5(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       debug:
         specifier: ^4.4.3
         version: 4.4.3(supports-color@8.1.1)
@@ -217,7 +217,7 @@ importers:
         version: 9.0.0
       react-native-quick-base64:
         specifier: ^3.0.1
-        version: 3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+        version: 3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
     devDependencies:
       '@commitlint/config-conventional':
         specifier: ^17.0.2
@@ -248,7 +248,7 @@ importers:
         version: 7.0.15
       '@types/react':
         specifier: ^19.2.0
-        version: 19.3.0
+        version: 19.3.1
       commitlint:
         specifier: ^17.0.2
         version: 17.8.1
@@ -269,7 +269,7 @@ importers:
         version: 19.3.1
       react-native:
         specifier: 0.88.1
-        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1)
       react-native-builder-bob:
         specifier: ^0.44.0
         version: 0.44.1(supports-color@8.1.1)
@@ -299,10 +299,10 @@ importers:
         version: 9.0.1
       '@craftzdog/react-native-buffer':
         specifier: ^6.1.2
-        version: 6.1.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+        version: 6.1.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       '@op-engineering/op-sqlite':
         specifier: ^18.2.3
-        version: 18.2.5(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+        version: 18.2.5(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       debug:
         specifier: ^4.4.0
         version: 4.4.3(supports-color@8.1.1)
@@ -335,19 +335,19 @@ importers:
         version: 19.3.1
       react-native:
         specifier: 0.88.1
-        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1)
       react-native-nitro-modules:
         specifier: 0.37.2
-        version: 0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+        version: 0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       react-native-quick-base64:
         specifier: 3.0.2
-        version: 3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+        version: 3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       react-native-quick-crypto:
         specifier: 1.1.10
-        version: 1.1.10(react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1))(react-native-quick-base64@3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1))(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+        version: 1.1.10(react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1))(react-native-quick-base64@3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1))(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       react-native-url-polyfill:
         specifier: 3.0.0
-        version: 3.0.0(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))
+        version: 3.0.0(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))
     devDependencies:
       '@babel/core':
         specifier: ^7.25.2
@@ -2030,8 +2030,8 @@ packages:
   '@types/pouchdb-find@7.3.3':
     resolution: {integrity: sha512-U7zXk67s9Ar+9Pwj5kSbuMnn8zif0AOOIPy4KRFeJ/S/Tk+mNS90soj+3OV21H8xyB7WTxjvS1JLablZC6C6ow==}
 
-  '@types/react@19.3.0':
-    resolution: {integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==}
+  '@types/react@19.3.1':
+    resolution: {integrity: sha512-HNTkBIm8zmHX8LUXX2vtZ/ONzehrV1J3abl2fUIiZ5qxTYRCj/z+rDeFwOltqCLl9lRdUTKWT41OLtYuFV/Arg==}
 
   '@types/semver@7.8.0':
     resolution: {integrity: sha512-1mAINjtQCXXeLkJ9ehXkwOcBpqtLxiVtKhpUf83DdRNdQKV0iXZpaHYqRr7nj+wvxuJzoAmAwXI+sCNMv1CzLQ==}
@@ -6617,10 +6617,10 @@ snapshots:
 
   '@craftzdog/pouchdb-errors@9.0.1': {}
 
-  '@craftzdog/react-native-buffer@6.1.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)':
+  '@craftzdog/react-native-buffer@6.1.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)':
     dependencies:
       ieee754: 1.2.1
-      react-native-quick-base64: 3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+      react-native-quick-base64: 3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
     transitivePeerDependencies:
       - react
       - react-native
@@ -6869,10 +6869,10 @@ snapshots:
     dependencies:
       '@octokit/openapi-types': 24.2.0
 
-  '@op-engineering/op-sqlite@18.2.5(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)':
+  '@op-engineering/op-sqlite@18.2.5(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)':
     dependencies:
       react: 19.3.1
-      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1)
 
   '@oxc-project/types@0.156.0': {}
 
@@ -7267,14 +7267,14 @@ snapshots:
 
   '@react-native/typescript-config@0.88.1': {}
 
-  '@react-native/virtualized-lists@0.88.1(@types/react@19.3.0)(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)':
+  '@react-native/virtualized-lists@0.88.1(@types/react@19.3.1)(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)':
     dependencies:
       invariant: 2.2.4
       nullthrows: 1.1.1
       react: 19.3.1
-      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1)
     optionalDependencies:
-      '@types/react': 19.3.0
+      '@types/react': 19.3.1
 
   '@release-it/conventional-changelog@9.0.4(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)(release-it@17.11.0(supports-color@8.1.1)(typescript@7.0.2))':
     dependencies:
@@ -7455,7 +7455,7 @@ snapshots:
     dependencies:
       '@types/pouchdb-core': 7.0.15
 
-  '@types/react@19.3.0':
+  '@types/react@19.3.1':
     dependencies:
       csstype: 3.2.3
 
@@ -10221,43 +10221,43 @@ snapshots:
       escape-string-regexp: 5.0.0
       fast-glob: 3.3.3
 
-  react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1):
+  react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1):
     dependencies:
       nitro-core: 0.37.2
       react: 19.3.1
-      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1)
 
-  react-native-quick-base64@3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1):
+  react-native-quick-base64@3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1):
     dependencies:
       react: 19.3.1
-      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1)
 
-  ? react-native-quick-crypto@1.1.10(react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1))(react-native-quick-base64@3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1))(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+  ? react-native-quick-crypto@1.1.10(react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1))(react-native-quick-base64@3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1))(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
   : dependencies:
-      '@craftzdog/react-native-buffer': 6.1.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+      '@craftzdog/react-native-buffer': 6.1.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       events: 3.3.0
       react: 19.3.1
-      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
-      react-native-nitro-modules: 0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
-      react-native-quick-base64: 3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1)
+      react-native-nitro-modules: 0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+      react-native-quick-base64: 3.0.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       readable-stream: 4.7.0
       safe-buffer: 5.2.1
       string_decoder: 1.3.0
       util: 0.12.5
 
-  react-native-url-polyfill@3.0.0(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)):
+  react-native-url-polyfill@3.0.0(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1)):
     dependencies:
-      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1)
       whatwg-url-without-unicode: 8.0.0-3
 
-  react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1):
+  react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1):
     dependencies:
       '@react-native/asset-utils': 0.88.1
       '@react-native/codegen': 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))
       '@react-native/community-cli-plugin': 0.88.1(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)
       '@react-native/gradle-plugin': 0.88.1
       '@react-native/normalize-colors': 0.88.1
-      '@react-native/virtualized-lists': 0.88.1(@types/react@19.3.0)(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+      '@react-native/virtualized-lists': 0.88.1(@types/react@19.3.1)(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(supports-color@8.1.1)(typescript@7.0.2))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.1)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
       anser: 1.4.10
       ansi-regex: 5.0.1
       base64-js: 1.5.1
@@ -10283,7 +10283,7 @@ snapshots:
       ws: 7.5.14
       yargs: 17.7.3
     optionalDependencies:
-      '@types/react': 19.3.0
+      '@types/react': 19.3.1
     transitivePeerDependencies:
       - '@babel/core'
       - '@react-native-community/cli'
